@@ -1,11 +1,11 @@
 /* Querent design tokens — shared with the landing page and prototype. */
-/* Querent — journal identity: Times New Roman throughout, ivory paper, black ink, oxblood accent. */
+/* Querent — journal identity: Georgia throughout (screen-friendly serif), ivory paper, black ink, oxblood accent. */
 :root{
   --bg:#FBFAF6; --surface:#FFFFFF; --sunk:#F3F0EA; --ink:#161514; --ink-2:#3A3733; --muted:#6F6A63; --rule:#E2DDD3;
   --accent:#8A1C2B; --accent-soft:#F5E8E9;
   --green:#1E6B47; --green-soft:#E4EFE8; --amber:#94650F; --amber-soft:#F6EEDB; --red:#B42318; --red-soft:#FBEAE8; --blue:#1F4E8C; --blue-soft:#E8EDF5;
-  --serif:"Times New Roman",Times,"Liberation Serif","Nimbus Roman",serif;
-  --sans:"Times New Roman",Times,"Liberation Serif","Nimbus Roman",serif;
+  --serif:Georgia,"Iowan Old Style","Palatino Linotype","DejaVu Serif",serif;
+  --sans:Georgia,"Iowan Old Style","Palatino Linotype","DejaVu Serif",serif;
   --mono:ui-monospace,"SFMono-Regular",Menlo,monospace;
   color-scheme:light;
 }
@@ -16,7 +16,7 @@
 
 *{box-sizing:border-box}
 html,body{margin:0}
-body{background:var(--bg);color:var(--ink);font-family:var(--serif);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--ink);font-family:var(--serif);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
 a{color:inherit}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
@@ -29,7 +29,7 @@ svg.i{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.7;flex
 .shell{display:grid;grid-template-columns:232px minmax(0,1fr) 300px;max-width:1360px;margin:0 auto;min-height:100vh}
 .side{position:sticky;top:0;height:100vh;padding:20px 14px;border-right:1px solid var(--rule);display:flex;flex-direction:column;gap:4px}
 .brand{display:flex;align-items:center;gap:10px;padding:4px 10px 18px;text-decoration:none;color:var(--ink)}
-.brand .word{font-family:var(--serif);font-size:27px;font-weight:400;letter-spacing:.01em;line-height:1}
+.brand .word{font-family:var(--serif);font-size:25px;font-weight:400;letter-spacing:.01em;line-height:1}
 .navb{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:3px;color:var(--ink-2);text-decoration:none;font-size:16.5px}
 .navb:hover{background:var(--sunk)}
 .navb.on{color:var(--accent);font-weight:700;background:none;box-shadow:inset 3px 0 0 var(--accent);border-radius:0}
@@ -45,7 +45,7 @@ svg.i{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.7;flex
 .tabs{display:flex;gap:22px;border-bottom:1px solid var(--rule);margin-bottom:16px;overflow-x:auto;scrollbar-width:none}
 .tabs a{padding:0 0 10px;color:var(--muted);white-space:nowrap;border-bottom:2px solid transparent;text-decoration:none}
 .tabs a.on{color:var(--accent);font-weight:700;border-color:var(--accent)}
-h1.pg{font-family:var(--serif);font-weight:700;font-size:34px;margin:4px 0 6px}
+h1.pg{font-family:var(--serif);font-weight:700;font-size:31px;margin:4px 0 6px}
 .pgsub{color:var(--muted);margin:0 0 18px}
 
 .card{background:var(--surface);border:1px solid var(--rule);border-radius:4px;padding:18px;margin-bottom:14px}
@@ -59,7 +59,7 @@ h1.pg{font-family:var(--serif);font-weight:700;font-size:34px;margin:4px 0 6px}
 .who small{color:var(--muted);font-size:14px}
 .ph .t{margin-left:auto;color:var(--muted);font-size:14px;white-space:nowrap}
 .kind{display:inline-block;font-size:13.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
-.ptitle{font-family:var(--serif);font-size:24px;line-height:1.2;font-weight:700;margin:0 0 6px}
+.ptitle{font-family:var(--serif);font-size:21px;line-height:1.3;font-weight:700;margin:0 0 6px}
 .ptitle a{text-decoration:none}
 .ptitle a:hover{text-decoration:underline}
 .pbody{color:var(--ink-2);margin:0 0 12px;white-space:pre-wrap}
