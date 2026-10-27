@@ -23,20 +23,16 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en">
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=Public+Sans:wght@400;500;600;700;800&display=swap" />
       </head>
       <body>
         <div className="mtop">
-          <Link className="brand" href="/"><Mark size={30} />QUERENT</Link>
+          <Link className="brand" href="/"><Mark size={28} /><span className="word">Querent</span></Link>
           {user ? <Link className="btn sm" href="/notifications" aria-label="Notifications"><Icon name="bell" />{unread > 0 && unread}</Link> : <Link className="btn sm pri" href="/login">Sign in</Link>}
         </div>
         {process.env.DEMO_ACCOUNTS === "1" && <div className="notice" style={{ margin: 0, borderRadius: 0, textAlign: "center" }}>Demo version of Querent. People, studies and DOIs are fictional; anyone can sign in to the demo accounts.</div>}
         <div className="shell">
           <aside className="side" aria-label="Main navigation">
-            <Link className="brand" href="/"><Mark />QUERENT</Link>
+            <Link className="brand" href="/"><Mark /><span className="word">Querent</span></Link>
             <nav style={{ display: "grid", gap: 4 }}>
               <NavLink href="/" exact><Icon name="home" />Home</NavLink>
               <NavLink href="/questions"><Icon name="q" />Questions</NavLink>

@@ -13,7 +13,7 @@ export default async function Login({ searchParams }: { searchParams: Promise<{ 
   return (
     <main className="main" id="main">
       <div className="auth">
-        <Link className="brand" href="/" style={{ padding: "0 0 24px" }}><Mark />QUERENT</Link>
+        <Link className="brand" href="/" style={{ padding: "0 0 24px" }}><Mark /><span className="word">Querent</span></Link>
         <h1 className="pg">Sign in</h1>
         <p className="pgsub">We'll email you a link. No password needed.</p>
         {sp.error && <div className="msg err" style={{ marginBottom: 14 }}>That sign-in link is invalid or has expired. Request a new one.</div>}
