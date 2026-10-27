@@ -29,11 +29,11 @@ export function Icon({ name, className = "i" }: { name: keyof typeof PATHS | str
 }
 
 export function Mark({ size = 34 }: { size?: number }) {
-  // A Q with a dot inside that leans toward the tail: an eye examining something closely.
+  // A Q with a dot in the middle, like a pupil looking straight at you.
   return (
     <svg width={size} height={size} viewBox="0 0 100 100" aria-hidden="true" fill="none" strokeLinecap="round">
       <circle cx="46" cy="46" r="30" stroke="currentColor" strokeWidth="10" />
-      <circle cx="53" cy="53" r="9" fill="currentColor" />
+      <circle cx="46" cy="46" r="9" fill="currentColor" />
       <path d="M66 66l18 18" stroke="var(--gold)" strokeWidth="10" />
     </svg>
   );
