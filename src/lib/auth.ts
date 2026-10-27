@@ -14,7 +14,7 @@ const LOGIN_TOKEN_MINUTES = 15;
 
 export const hashToken = (t: string) => createHash("sha256").update(t).digest("hex");
 const newToken = () => randomBytes(32).toString("base64url");
-export const appUrl = () => (process.env.APP_URL ?? "http://localhost:3000").replace(/\/$/, "");
+export const appUrl = () => (process.env.SITE_URL ?? process.env.APP_URL ?? "http://localhost:3000").replace(/\/$/, "");
 
 export type Role = (typeof schema.roleEnum.enumValues)[number];
 export interface CurrentUser {

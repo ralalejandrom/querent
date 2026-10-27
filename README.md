@@ -95,7 +95,7 @@ scripts/grant-role.ts
 
 ## Deploying
 
-**Demo deployment on Vercel (no email provider needed):** import the repo in Vercel, add a Neon Postgres database from the Storage tab (it sets `DATABASE_URL`), and set `APP_URL` to the deployment URL, `ALLOW_DEMO_SEED=1` and `DEMO_ACCOUNTS=1`. The build runs migrations and seeds demo data on first deploy, and the sign-in page offers one-click demo accounts. Remove `DEMO_ACCOUNTS` and set `ALLOW_DEMO_SEED=0` before inviting real users.
+**Demo deployment on Vercel (no email provider needed):** import the repo in Vercel, add a Neon Postgres database from the Storage tab (it sets `DATABASE_URL`), and set `APP_URL` (or `SITE_URL`, which takes precedence) to the deployment URL, `ALLOW_DEMO_SEED=1` and `DEMO_ACCOUNTS=1`. The build runs migrations and seeds demo data on first deploy, and the sign-in page offers one-click demo accounts. Remove `DEMO_ACCOUNTS` and set `ALLOW_DEMO_SEED=0` before inviting real users.
 
 **Production:**
 

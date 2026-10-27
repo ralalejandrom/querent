@@ -12,7 +12,7 @@ const TAGLINE = "The future of science, reviewed in the open";
 const PITCH = "Researchers share evidence. Qualified peers examine the claims. Readers can follow the reasoning, limitations, and disagreements.";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.APP_URL || "https://lyncei.com"),
+  metadataBase: new URL(process.env.SITE_URL || process.env.APP_URL || "https://lyncei.com"),
   title: { default: `Lyncei — ${TAGLINE}`, template: "%s · Lyncei" },
   description: PITCH,
   openGraph: { type: "website", siteName: "Lyncei", title: `Lyncei — ${TAGLINE}`, description: PITCH, images: [{ url: "/og.png", width: 1200, height: 630, alt: `Lyncei — ${TAGLINE}.` }] },
