@@ -29,13 +29,12 @@ export function Icon({ name, className = "i" }: { name: keyof typeof PATHS | str
 }
 
 export function Mark({ size = 34 }: { size?: number }) {
-  // "Lens Eye": an eye inside a lens; reads as a Q, a magnifier and an eye.
+  // A Q with a coral dot inside: the question, and the eye that examines it.
   return (
-    <svg width={size} height={size} viewBox="0 0 100 100" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="47" cy="47" r="30" />
-      <path d="M25 47c6-9 13-13 22-13s16 4 22 13c-6 9-13 13-22 13s-16-4-22-13z" />
-      <circle cx="47" cy="47" r="6" fill="currentColor" stroke="none" />
-      <path d="M68 68l16 16" stroke="var(--gold)" />
+    <svg width={size} height={size} viewBox="0 0 100 100" aria-hidden="true" fill="none" strokeLinecap="round">
+      <circle cx="46" cy="46" r="30" stroke="currentColor" strokeWidth="10" />
+      <circle cx="46" cy="46" r="9" fill="var(--gold)" />
+      <path d="M66 66l18 18" stroke="currentColor" strokeWidth="10" />
     </svg>
   );
 }
