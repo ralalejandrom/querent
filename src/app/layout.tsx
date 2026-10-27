@@ -8,9 +8,15 @@ import { Icon, Mark } from "@/components/ui";
 import { NavLink } from "@/components/client";
 import { signOutAction } from "./actions";
 
+const TAGLINE = "The future of science, reviewed in the open";
+const PITCH = "Researchers share what they’re discovering. Peers check it in public. Everyone can see what’s real.";
+
 export const metadata: Metadata = {
-  title: { default: "Querent", template: "%s · Querent" },
-  description: "The social network where every post can be peer-reviewed.",
+  metadataBase: new URL(process.env.APP_URL || "https://querent.science"),
+  title: { default: `Querent — ${TAGLINE}`, template: "%s · Querent" },
+  description: PITCH,
+  openGraph: { type: "website", siteName: "Querent", title: `Querent — ${TAGLINE}`, description: PITCH, images: [{ url: "/og.png", width: 1200, height: 630, alt: `Querent — ${TAGLINE}.` }] },
+  twitter: { card: "summary_large_image", title: `Querent — ${TAGLINE}`, description: PITCH, images: ["/og.png"] },
 };
 export const viewport: Viewport = { width: "device-width", initialScale: 1, viewportFit: "cover" };
 
