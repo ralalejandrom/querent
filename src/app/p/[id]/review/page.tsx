@@ -20,7 +20,24 @@ export default async function ReviewPage({ params }: { params: Promise<{ id: str
     <main className="main" id="main" style={{ maxWidth: 760 }}>
       <Link className="back" href={`/p/${id}`}><Icon name="left" />Back to post</Link>
       <h1 className="pg">Write a review</h1>
-      <p className="pgsub">{d.post.title}</p>
+      <p className="pgsub">Review what the post claims and how it uses its source.</p>
+      {/* Metrics-free view of the post: likes, views and follower counts are hidden here so popularity doesn't color the review. */}
+      <article className="card" aria-label="Post under review">
+        <div className="ph"><div className="who"><b>{d.post.author.displayName}</b><small>{d.post.author.field}</small></div></div>
+        <h2 className="ptitle">{d.post.title}</h2>
+        {d.post.body && <p className="pbody">{d.post.body}</p>}
+        {d.post.source ? (
+          <a className="study" href={d.post.source.doi ? `https://doi.org/${d.post.source.doi}` : "#"} target="_blank" rel="noopener noreferrer">
+            <span className="thumb" />
+            <div style={{ minWidth: 0 }}>
+              <b>{d.post.source.title}</b>
+              <span>{[d.post.source.venue, d.post.source.publishedYear].filter(Boolean).join(" · ") || "Source"}</span>
+              {d.post.source.doi && <span className="doi">doi:{d.post.source.doi}</span>}
+            </div>
+          </a>
+        ) : <div className="study missing">No source linked</div>}
+      </article>
+      <p className="hint" style={{ margin: "10px 0 18px" }}>Likes, views and follower counts are hidden while you review, so the assessment rests on the content and its source.</p>
       {!isReviewer(user) ? <Empty title="Reviewer access needed">Only verified reviewers can publish reviews. An integrity admin grants reviewer status after checking your field of expertise.</Empty>
         : d.post.author.id === user.id ? <Empty title="This is your post">You can't review your own work.</Empty>
         : !d.post.source ? <Empty title="No source linked">Posts need a source before they can be reviewed.</Empty>
