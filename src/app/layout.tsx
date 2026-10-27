@@ -33,6 +33,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <Link className="brand" href="/"><Mark size={30} />QUERENT</Link>
           {user ? <Link className="btn sm" href="/notifications" aria-label="Notifications"><Icon name="bell" />{unread > 0 && unread}</Link> : <Link className="btn sm pri" href="/login">Sign in</Link>}
         </div>
+        {process.env.DEMO_ACCOUNTS === "1" && <div className="notice" style={{ margin: 0, borderRadius: 0, textAlign: "center" }}>Demo version of Querent. People, studies and DOIs are fictional; anyone can sign in to the demo accounts.</div>}
         <div className="shell">
           <aside className="side" aria-label="Main navigation">
             <Link className="brand" href="/"><Mark />QUERENT</Link>

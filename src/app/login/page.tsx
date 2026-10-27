@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { ActionForm, Submit } from "@/components/client";
 import { Mark } from "@/components/ui";
-import { requestLoginAction } from "@/app/actions";
+import { demoLoginAction, requestLoginAction } from "@/app/actions";
 
 export const metadata = { title: "Sign in" };
 
@@ -22,6 +22,17 @@ export default async function Login({ searchParams }: { searchParams: Promise<{ 
           <label className="f">Email<input type="email" name="email" autoComplete="email" placeholder="you@university.edu" required /></label>
           <Submit>Email me a sign-in link</Submit>
         </ActionForm>
+        {process.env.DEMO_ACCOUNTS === "1" && (
+          <div className="box" style={{ marginTop: 24 }}>
+            <h3>Try a demo account</h3>
+            <p className="hint" style={{ marginTop: 0 }}>Fictional people with sample data. Anyone can use these, so don't post anything private.</p>
+            <div className="checks">
+              {[["admin", "Moderator + reviewer", "Querent Admin"], ["priyashah", "Verified reviewer", "Dr. Priya Shah"], ["sofiamendes", "Member · PhD student", "Sofia Mendes"]].map(([h, role, name]) => (
+                <form key={h} action={demoLoginAction.bind(null, h)}><button className="btn" style={{ width: "100%", justifyContent: "space-between" }}><span>{name}</span><span className="hint">{role}</span></button></form>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </main>
   );

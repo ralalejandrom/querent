@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { and, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import { db, schema } from "@/db";
-import { endSession, isModerator, isReviewer, requireUser, sendLoginLink } from "@/lib/auth";
+import { endSession, isModerator, isReviewer, requireUser, sendLoginLink, startSession } from "@/lib/auth";
 import { audit, notify } from "@/lib/audit";
 import { fetchCrossref, normalizeDoi } from "@/lib/doi";
 import { computeRigor, REVIEW_TYPE_LABELS, type ReviewType } from "@/lib/rigor";
@@ -20,12 +20,24 @@ const uuid = z.string().uuid();
 export async function requestLoginAction(_: ActionState, fd: FormData): Promise<ActionState> {
   const email = z.string().email().max(254).safeParse(str(fd, "email"));
   if (!email.success) return { error: "Enter a valid email address." };
+  if (!process.env.RESEND_API_KEY && process.env.NODE_ENV === "production") {
+    return { error: "Email sign-in isn't set up on this server yet." + (process.env.DEMO_ACCOUNTS === "1" ? " Use a demo account below." : "") };
+  }
   try {
     await sendLoginLink(email.data, str(fd, "next") || "/");
   } catch {
     return { error: "We couldn't send the email right now. Try again in a minute." };
   }
   return { ok: "Check your inbox for a sign-in link. It expires in 15 minutes." };
+}
+
+/** Demo deployments only: one-click sign-in to the fictional seeded accounts (…@example.com). */
+export async function demoLoginAction(handle: string) {
+  if (process.env.DEMO_ACCOUNTS !== "1") redirect("/login");
+  const [u] = await db.select({ id: schema.users.id, email: schema.users.email }).from(schema.users).where(eq(schema.users.handle, handle)).limit(1);
+  if (!u || !u.email.endsWith("@example.com")) redirect("/login");
+  await startSession(u.id);
+  redirect("/");
 }
 
 export async function signOutAction() {

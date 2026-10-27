@@ -12,9 +12,10 @@ const db = drizzle(pool, { schema });
 const ago = (h: number) => new Date(Date.now() - h * 3_600_000);
 
 async function main() {
-  if (process.env.NODE_ENV === "production") throw new Error("Refusing to seed production.");
+  if (process.env.NODE_ENV === "production" && process.env.ALLOW_DEMO_SEED !== "1") throw new Error("Refusing to seed production. Set ALLOW_DEMO_SEED=1 for a demo deployment.");
   const [{ n }] = await db.select({ n: count() }).from(schema.users);
   if (Number(n) > 0) { console.log("Database already has users; skipping seed."); return; }
+  if (process.env.ALLOW_DEMO_SEED === "0") { console.log("ALLOW_DEMO_SEED=0; skipping seed."); return; }
 
   const topics = await db.insert(schema.topics).values(
     ["Cardiology", "Oncology", "Neuroscience", "Metabolism", "Methodology", "Epidemiology"].map((label) => ({ label, slug: label.toLowerCase() })),
