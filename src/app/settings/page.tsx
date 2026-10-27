@@ -6,7 +6,7 @@ import { updateProfileAction } from "@/app/actions";
 
 export const metadata = { title: "Settings" };
 
-export default async function Settings({ searchParams }: { searchParams: Promise<{ orcid?: string }> }) {
+export default async function Settings({ searchParams }: { searchParams: Promise<{ orcid?: string; welcome?: string }> }) {
   const user = await requireUser("/settings");
   const sp = await searchParams;
   const [u] = await db.select().from(schema.users).where(eq(schema.users.id, user.id));
@@ -14,6 +14,7 @@ export default async function Settings({ searchParams }: { searchParams: Promise
   return (
     <main className="main" id="main" style={{ maxWidth: 680 }}>
       <h1 className="pg">Settings</h1>
+      {sp.welcome === "1" && <div className="msg ok" style={{ marginBottom: 16 }}>Welcome to Lyncei. Start by adding your name and field so people know who you are.</div>}
       <div className="sec"><h2>Profile</h2></div>
       <ActionForm action={updateProfileAction}>
         <label className="f">Name<input type="text" name="displayName" defaultValue={u.displayName} maxLength={80} /></label>

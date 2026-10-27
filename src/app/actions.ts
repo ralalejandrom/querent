@@ -2,10 +2,11 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 import { and, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import { db, schema } from "@/db";
-import { endSession, isModerator, isReviewer, requireUser, sendLoginLink, startSession } from "@/lib/auth";
+import { consumeLoginToken, endSession, isModerator, isReviewer, requireUser, sendLoginLink, startSession } from "@/lib/auth";
 import { audit, notify } from "@/lib/audit";
 import { fetchCrossref, normalizeDoi } from "@/lib/doi";
 import { computeRigor, REVIEW_TYPE_LABELS, type ReviewType } from "@/lib/rigor";
@@ -17,9 +18,31 @@ const str = (fd: FormData, k: string) => String(fd.get(k) ?? "").trim();
 const uuid = z.string().uuid();
 
 /* ------------------------------------------------------------- sign-in */
+// Best-effort throttle per IP within one server instance; the per-email limit lives in sendLoginLink.
+const loginHits = new Map<string, number[]>();
+function loginThrottled(ip: string): boolean {
+  const now = Date.now();
+  const recent = (loginHits.get(ip) ?? []).filter((t) => now - t < 15 * 60_000);
+  recent.push(now);
+  loginHits.set(ip, recent);
+  return recent.length > 10;
+}
+
+/** Second step of email sign-in: runs only when the person clicks "Sign in" on /auth/verify. */
+export async function confirmLoginAction(fd: FormData) {
+  const token = str(fd, "token");
+  const next = str(fd, "next") || "/";
+  const safeNext = next.startsWith("/") && !next.startsWith("//") ? next : "/";
+  const user = token ? await consumeLoginToken(token) : null;
+  if (!user) redirect("/login?error=invalid");
+  await startSession(user.id);
+  redirect(user.isNew ? "/settings?welcome=1" : safeNext);
+}
 export async function requestLoginAction(_: ActionState, fd: FormData): Promise<ActionState> {
   const email = z.string().email().max(254).safeParse(str(fd, "email"));
   if (!email.success) return { error: "Enter a valid email address." };
+  const ip = ((await headers()).get("x-forwarded-for") ?? "").split(",")[0].trim() || "unknown";
+  if (loginThrottled(ip)) return { error: "Too many sign-in requests. Wait a few minutes and try again." };
   if (!process.env.RESEND_API_KEY && process.env.NODE_ENV === "production") {
     return { error: "Email sign-in isn't set up on this server yet." + (process.env.DEMO_ACCOUNTS === "1" ? " Use a demo account below." : "") };
   }

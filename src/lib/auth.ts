@@ -3,7 +3,7 @@ import { cache } from "react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createHash, randomBytes } from "node:crypto";
-import { and, eq, gt, isNull, sql } from "drizzle-orm";
+import { and, count, eq, gt, isNull, sql } from "drizzle-orm";
 import { db, schema } from "@/db";
 import { slugify } from "./text";
 import { sendEmail } from "./email";
@@ -27,21 +27,60 @@ export interface CurrentUser {
   roles: Set<Role>;
 }
 
-/** Sends a one-time sign-in link. Always succeeds from the caller's view so emails can't be enumerated. */
+const MAX_LINKS_PER_EMAIL = 5; // per LOGIN_TOKEN_MINUTES window
+
+const esc = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+function loginEmailHtml(link: string): string {
+  return `<!doctype html><html><body style="margin:0;background:#F4F5F7;font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;color:#16141F">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="padding:32px 16px"><tr><td align="center">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:480px;background:#fff;border-radius:14px;padding:32px">
+<tr><td style="font-size:22px;font-weight:600;letter-spacing:-.02em;padding-bottom:20px">Lyncei</td></tr>
+<tr><td style="font-family:Georgia,serif;font-size:24px;line-height:1.25;padding-bottom:12px">Your sign-in link</td></tr>
+<tr><td style="font-size:15px;line-height:1.55;color:#3B4452;padding-bottom:24px">Use the button below to sign in. It works once and expires in ${LOGIN_TOKEN_MINUTES} minutes.</td></tr>
+<tr><td style="padding-bottom:24px"><a href="${esc(link)}" style="display:inline-block;background:#16141F;color:#fff;text-decoration:none;font-weight:600;font-size:15px;padding:12px 22px;border-radius:999px">Sign in to Lyncei</a></td></tr>
+<tr><td style="font-size:13px;line-height:1.5;color:#6B6878">If you didn't ask for this email, you can ignore it. Nobody can sign in without the link.</td></tr>
+</table></td></tr></table></body></html>`;
+}
+
+/**
+ * Sends a one-time sign-in link. Always succeeds from the caller's view so emails can't be enumerated.
+ * Quietly stops sending after MAX_LINKS_PER_EMAIL requests per window for the same address.
+ */
 export async function sendLoginLink(email: string, next = "/"): Promise<void> {
+  const address = email.toLowerCase();
+  const since = new Date(Date.now() - LOGIN_TOKEN_MINUTES * 60_000);
+  const [{ n }] = await db.select({ n: count() }).from(schema.loginTokens)
+    .where(and(eq(schema.loginTokens.email, address), gt(schema.loginTokens.createdAt, since)));
+  if (n >= MAX_LINKS_PER_EMAIL) return;
+
   const token = newToken();
   await db.insert(schema.loginTokens).values({
     tokenHash: hashToken(token),
-    email: email.toLowerCase(),
+    email: address,
     expiresAt: new Date(Date.now() + LOGIN_TOKEN_MINUTES * 60_000),
   });
   const safeNext = next.startsWith("/") && !next.startsWith("//") ? next : "/";
   const link = `${appUrl()}/auth/verify?token=${encodeURIComponent(token)}&next=${encodeURIComponent(safeNext)}`;
   await sendEmail({
-    to: email,
+    to: address,
     subject: "Your Lyncei sign-in link",
-    text: `Sign in to Lyncei:\n\n${link}\n\nThis link expires in ${LOGIN_TOKEN_MINUTES} minutes. If you didn't ask for it, you can ignore this email.`,
+    text: `Sign in to Lyncei:\n\n${link}\n\nThis link works once and expires in ${LOGIN_TOKEN_MINUTES} minutes. If you didn't ask for it, you can ignore this email.`,
+    html: loginEmailHtml(link),
   });
+}
+
+/** Emails listed in ADMIN_EMAILS (comma-separated) get the founding team's roles when they sign in. */
+const FOUNDER_ROLES = ["member", "reviewer", "moderator", "integrity_admin", "platform_admin"] as const;
+async function grantFounderRoles(userId: string, email: string): Promise<void> {
+  const admins = (process.env.ADMIN_EMAILS ?? "").split(",").map((e) => e.trim().toLowerCase()).filter(Boolean);
+  if (!admins.includes(email.toLowerCase())) return;
+  const added = await db.insert(schema.userRoles)
+    .values(FOUNDER_ROLES.map((role) => ({ userId, role })))
+    .onConflictDoNothing()
+    .returning({ role: schema.userRoles.role });
+  if (added.length) {
+    await db.insert(schema.auditEvents).values({ actorId: null, entityType: "user", entityId: userId, action: "role.granted", after: { roles: added.map((a) => a.role), via: "ADMIN_EMAILS" } as never });
+  }
 }
 
 async function uniqueHandle(base: string): Promise<string> {
@@ -54,8 +93,8 @@ async function uniqueHandle(base: string): Promise<string> {
   return `${root}${randomBytes(3).toString("hex")}`;
 }
 
-/** Consumes a sign-in token, creating the account on first sign-in. Returns the user id or null if invalid. */
-export async function consumeLoginToken(token: string): Promise<string | null> {
+/** Consumes a sign-in token, creating the account on first sign-in. Returns the user or null if invalid. */
+export async function consumeLoginToken(token: string): Promise<{ id: string; isNew: boolean } | null> {
   const now = new Date();
   const [row] = await db
     .update(schema.loginTokens)
@@ -66,16 +105,19 @@ export async function consumeLoginToken(token: string): Promise<string | null> {
 
   const [existing] = await db.select().from(schema.users).where(sql`lower(${schema.users.email}) = ${row.email}`).limit(1);
   if (existing) {
+    if (existing.deletedAt) return null;
     if (!existing.emailVerifiedAt) await db.update(schema.users).set({ emailVerifiedAt: now }).where(eq(schema.users.id, existing.id));
-    return existing.id;
+    await grantFounderRoles(existing.id, row.email);
+    return { id: existing.id, isNew: false };
   }
   const local = row.email.split("@")[0] ?? "member";
   const [created] = await db
     .insert(schema.users)
     .values({ email: row.email, handle: await uniqueHandle(local), displayName: local, emailVerifiedAt: now })
     .returning({ id: schema.users.id });
-  await db.insert(schema.userRoles).values({ userId: created.id, role: "member" });
-  return created.id;
+  await db.insert(schema.userRoles).values({ userId: created.id, role: "member" }).onConflictDoNothing();
+  await grantFounderRoles(created.id, row.email);
+  return { id: created.id, isNew: true };
 }
 
 export async function startSession(userId: string): Promise<void> {
