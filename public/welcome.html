@@ -223,8 +223,10 @@ footer .brand .word{font-size:18px}
 @media (max-width:760px){
   .app{grid-template-columns:minmax(0,1fr)}
   .app .side,.app .right{display:none}
-  .laptop{width:100%}
-  .phone{display:none}
+  /* On narrow screens a laptop mockup becomes a tall, cramped column, so show the phone alone instead. */
+  .laptop{display:none}
+  .devices{display:flex;justify-content:center;padding:8px 0 24px}
+  .phone{position:relative;right:auto;bottom:auto;width:min(340px,82%);min-width:0}
   .inst .wrap{grid-template-columns:1fr;gap:28px}
   .inst .right{border-left:0;padding-left:0;border-top:1px solid var(--rule);padding-top:28px}
   .commit{grid-template-columns:1fr}
