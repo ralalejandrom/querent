@@ -40,8 +40,31 @@ export function Mark({ size = 34 }: { size?: number }) {
 }
 
 const AV_COLORS = ["#B5654A", "#4C6E9E", "#6E8B5A", "#8A5A9E", "#4E8C8A", "#A2803C", "#5A6FB5", "#9E5A6E"];
+// Portrait photos for the fictional demo accounts only (Unsplash license). Real accounts keep initials.
+const DEMO_PHOTOS: Record<string, string> = {
+  elenacastro: "photo-1573497019940-1c28c88b4f3e",
+  marcuslee: "photo-1560250097-0b93528c311a",
+  amirakhalil: "photo-1594824476967-48c8b964273f",
+  jonahpark: "photo-1544168190-79c17527004f",
+  priyashah: "photo-1770134223774-13b735e29201",
+  sofiamendes: "photo-1765005204058-10418f5123c5",
+};
+const demoPhoto = (handle: string) =>
+  process.env.DEMO_ACCOUNTS === "1" && DEMO_PHOTOS[handle]
+    ? `https://images.unsplash.com/${DEMO_PHOTOS[handle]}?w=144&h=144&fit=facearea&facepad=2.4&q=75&fm=jpg`
+    : null;
+
 export function Avatar({ name, handle, size = "" }: { name: string; handle: string; size?: "" | "sm" | "lg" }) {
   const color = AV_COLORS[[...handle].reduce((a, c) => a + c.charCodeAt(0), 0) % AV_COLORS.length];
+  const photo = demoPhoto(handle);
+  if (photo) {
+    return (
+      <Link href={`/u/${handle}`} className={`av ${size}`} style={{ background: color }} aria-label={name}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={photo} alt="" loading="lazy" decoding="async" />
+      </Link>
+    );
+  }
   return <Link href={`/u/${handle}`} className={`av ${size}`} style={{ background: color }} aria-label={name}>{initials(name)}</Link>;
 }
 

@@ -101,6 +101,7 @@ svg{display:block}
 .tabs span{padding-bottom:7px}
 .tabs .on{color:var(--ink);font-weight:600;border-bottom:2px solid var(--ink)}
 .post-h{display:flex;gap:9px;align-items:center;margin-bottom:8px}
+img.av{object-fit:cover;background:#E4E7EC}
 .av{width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;line-height:1;font-weight:600;font-size:10.5px;letter-spacing:.02em;color:#fff;flex:none}
 .av.anon{background:#EEF1F5;color:#4A5A72;box-shadow:inset 0 0 0 1.2px #B8C2CF}
 .anon-note{font-size:9.5px;color:var(--muted);border-top:1px solid var(--rule);padding-top:7px}
@@ -400,7 +401,7 @@ footer .brand .word{font-size:18px}
               <div class="main">
                 <div class="search"><svg><use href="#i-search"/></svg>Search studies, topics, people…</div>
                 <div class="tabs"><span class="on">For you</span><span>Latest research</span><span>Clinical practice</span><span>Methodology</span><span>Your network</span></div>
-                <div class="post-h"><span class="av a1">EC</span><div><b>Dr. Elena Castro</b><small>Cardiologist</small></div><span class="t">2h</span></div>
+                <div class="post-h"><img class="av" src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><div><b>Dr. Elena Castro</b><small>Cardiologist</small></div><span class="t">2h</span></div>
                 <div class="ptitle">Early results from a multicenter trial on SGLT2 inhibitors in heart failure with preserved ejection fraction</div>
                 <div class="pbody">The trial reports a reduction in the composite primary outcome. Here's a summary of the key findings, the limitations and what they could mean for practice.</div>
                 <div class="study"><span class="thumb"></span><div><b>Original study</b><span>DOI linked · Peer-reviewed article · 2026</span></div></div>
@@ -419,7 +420,7 @@ footer .brand .word{font-size:18px}
                   <h4>Reviewers</h4>
                   <div class="rv"><span class="av anon">R1</span><div>Reviewer 1<span>Biostatistics · anonymous</span></div></div>
                   <div class="rv"><span class="av anon">R2</span><div>Reviewer 2<span>Internal medicine · anonymous</span></div></div>
-                  <div class="rv"><span class="av a3">RG</span><div>Dr. Rafael Gómez<span>Cardiology · signed</span></div></div>
+                  <div class="rv"><img class="av" src="https://images.unsplash.com/photo-1686063165043-45243dab25ab?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><div>Dr. Rafael Gómez<span>Cardiology · signed</span></div></div>
                   <div class="anon-note">Each reviewer chooses: anonymous or signed</div>
                 </div>
               </aside>
@@ -433,12 +434,12 @@ footer .brand .word{font-size:18px}
             <div class="notch"></div>
             <div class="top"><b>Lyncei</b><svg width="14" height="14" style="stroke:var(--ink);fill:none;stroke-width:2"><use href="#i-search"/></svg></div>
             <div class="tabs"><span class="on">For you</span><span>Following</span><span>Clinical</span></div>
-            <div class="post-h"><span class="av a5">JP</span><div><b>Dr. Jonah Park</b><small>Oncologist</small></div><span class="t">4h</span></div>
+            <div class="post-h"><img class="av" src="https://images.unsplash.com/photo-1544168190-79c17527004f?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><div><b>Dr. Jonah Park</b><small>Oncologist</small></div><span class="t">4h</span></div>
             <div class="ptitle">Updated meta-analysis on neoadjuvant immunotherapy in early-stage NSCLC</div>
             <div class="chart"></div>
             <div class="inprog"><b>Review in progress</b><small>Source checked · appraisal underway</small><span class="bar"><i></i></span></div>
             <div class="acts"><span class="h"><svg><use href="#i-heart"/></svg>86</span><span><svg><use href="#i-chat"/></svg>14</span><span><svg><use href="#i-share"/></svg>6</span></div>
-            <div class="post-h" style="border-top:1px solid var(--rule);padding-top:10px"><span class="av a6">SM</span><div><b>Sofia Mendes</b><small>PhD student · Neuroscience</small></div><span class="t">6h</span></div>
+            <div class="post-h" style="border-top:1px solid var(--rule);padding-top:10px"><img class="av" src="https://images.unsplash.com/photo-1765005204058-10418f5123c5?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><div><b>Sofia Mendes</b><small>PhD student · Neuroscience</small></div><span class="t">6h</span></div>
             <div class="ptitle">Behind the paper: why our sleep study surprised us</div>
             <div class="acts"><span class="h"><svg><use href="#i-heart"/></svg>41</span><span><svg><use href="#i-chat"/></svg>9</span><span><svg><use href="#i-share"/></svg>3</span></div>
             <div class="dock">
@@ -483,8 +484,8 @@ footer .brand .word{font-size:18px}
         <p>Ask, add evidence or object. Every contribution is labeled by type.</p>
         <div class="card">
           <div class="dtabs"><span class="on">Discussion (28)</span><span>Expert insights (7)</span><span>Related</span></div>
-          <div class="cmt"><div class="post-h"><span class="av a6">PS</span><div><b>Dr. Priya Shah</b><small>Endocrinology · 2h</small></div></div><p>These findings match previous studies, but the heterogeneity across patient populations matters here.</p><div class="acts"><span><svg><use href="#i-heart"/></svg>24</span><span><svg><use href="#i-chat"/></svg>Reply</span></div></div>
-          <div class="cmt reply"><div class="post-h"><span class="av a2">LF</span><div><b>Dr. Lucas Ferreira</b><small>Epidemiology · 1h</small></div></div><p>Agreed. The subgroup analysis in older adults is especially interesting.</p></div>
+          <div class="cmt"><div class="post-h"><img class="av" src="https://images.unsplash.com/photo-1770134223774-13b735e29201?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><div><b>Dr. Priya Shah</b><small>Endocrinology · 2h</small></div></div><p>These findings match previous studies, but the heterogeneity across patient populations matters here.</p><div class="acts"><span><svg><use href="#i-heart"/></svg>24</span><span><svg><use href="#i-chat"/></svg>Reply</span></div></div>
+          <div class="cmt reply"><div class="post-h"><img class="av" src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><div><b>Dr. Lucas Ferreira</b><small>Epidemiology · 1h</small></div></div><p>Agreed. The subgroup analysis in older adults is especially interesting.</p></div>
           <span class="more">View 4 more replies</span>
         </div>
       </div>
@@ -520,7 +521,7 @@ footer .brand .word{font-size:18px}
             <g stroke="#FF8A6B" stroke-opacity=".55" stroke-width="1.4" fill="none"><path d="M40 150L95 120 150 165 205 130M95 120l20 85 55 25M150 165l-35 40M40 150l30 90 45-35M70 240l60 40 45-50M175 230l30-100"/></g>
             <g fill="#FFD9CC"><circle cx="40" cy="150" r="5"/><circle cx="95" cy="120" r="7"/><circle cx="150" cy="165" r="5"/><circle cx="205" cy="130" r="6"/><circle cx="115" cy="205" r="8"/><circle cx="175" cy="230" r="5"/><circle cx="70" cy="240" r="6"/><circle cx="130" cy="280" r="5"/></g>
           </svg>
-          <div class="who"><span class="av a2">LN</span><b>Neuroscience lab</b></div>
+          <div class="who"><img class="av" src="https://images.unsplash.com/photo-1685475896056-8f5c6fb7e8a7?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><b>Neuroscience lab</b></div>
           <div class="side"><span>♥<small>2.1k</small></span><span>💬<small>148</small></span></div>
           <div class="cap">
             <span class="chip ok">Source checked</span>
@@ -536,7 +537,7 @@ footer .brand .word{font-size:18px}
             <g fill="none" stroke="#FFB49E" stroke-opacity=".5"><circle cx="120" cy="190" r="70"/><circle cx="120" cy="190" r="46"/><circle cx="120" cy="190" r="22" fill="#FF8A6B" fill-opacity=".35"/></g>
             <g fill="#FFD9CC" fill-opacity=".8"><circle cx="58" cy="120" r="10"/><circle cx="190" cy="140" r="7"/><circle cx="182" cy="265" r="12"/><circle cx="62" cy="272" r="6"/></g>
           </svg>
-          <div class="who"><span class="av a1">IM</span><b>Immunology postdoc</b></div>
+          <div class="who"><img class="av" src="https://images.unsplash.com/photo-1618053448748-b7251851d014?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><b>Immunology postdoc</b></div>
           <div class="side"><span>♥<small>5.4k</small></span><span>💬<small>312</small></span></div>
           <div class="cap">
             <span class="chip info">Critical appraisal available</span>
@@ -553,7 +554,7 @@ footer .brand .word{font-size:18px}
             <g fill="#8FA6C4" fill-opacity=".55"><rect x="44" y="230" width="22" height="60" rx="3"/><rect x="80" y="200" width="22" height="90" rx="3"/><rect x="116" y="215" width="22" height="75" rx="3"/><rect x="152" y="170" width="22" height="120" rx="3"/></g>
             <path d="M40 250C80 230 100 160 140 175s50-40 72-60" fill="none" stroke="#FF8A6B" stroke-width="3" stroke-linecap="round"/>
           </svg>
-          <div class="who"><span class="av a5">EP</span><b>Epidemiology PhD</b></div>
+          <div class="who"><img class="av" src="https://images.unsplash.com/photo-1573497491765-dccce02b29df?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><b>Epidemiology PhD</b></div>
           <div class="side"><span>♥<small>860</small></span><span>💬<small>57</small></span></div>
           <div class="cap">
             <span class="chip prog">Review in progress</span>
@@ -663,7 +664,7 @@ footer .brand .word{font-size:18px}
 <footer>
   <div class="wrap">
     <a class="brand" href="/" aria-label="Lyncei home"><svg width="26" height="26" aria-hidden="true"><use href="#mark"/></svg><span class="word">Lyncei</span></a>
-    <span>© 2026 Lyncei · Boston, MA · Product previews show illustrative content.</span>
+    <span>© 2026 Lyncei · Boston, MA · Product previews show illustrative content; portrait photos from Unsplash.</span>
   </div>
 </footer>
 

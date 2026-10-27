@@ -53,6 +53,7 @@ h1.pg{font-family:var(--serif);font-weight:400;font-size:32px;letter-spacing:-.0
 .av{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;font-size:13px;flex:none;text-decoration:none}
 .av.sm{width:28px;height:28px;font-size:11px}
 .av.lg{width:72px;height:72px;font-size:24px}
+.av img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
 .who{line-height:1.25;min-width:0}
 .who a{display:block;font-weight:700;font-size:14.5px;text-decoration:none}
 .who a:hover{text-decoration:underline}
