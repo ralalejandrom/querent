@@ -84,7 +84,7 @@ svg{display:block}
 .devices{position:relative;min-width:0;padding-bottom:20px}
 .laptop{position:relative;width:84%;}
 /* Real proportions: MacBook Air 13.6" lid 30.41 x 21.5 cm; iPhone 7.16 x 14.76 cm (phone = 23.55% of the lid width, set by script). */
-.laptop .screen{background:#1C1F24;border-radius:18px 18px 6px 6px;padding:2.2% 2.2% 2.6%;box-shadow:0 40px 60px -30px rgba(20,26,34,.45);aspect-ratio:30.41/21.5;display:flex}
+.laptop .screen{background:#1C1F24;border-radius:18px 18px 6px 6px;padding:2.2% 2.2% 2.6%;box-shadow:0 40px 60px -30px rgba(20,26,34,.45);aspect-ratio:30.41/21.5;display:flex;overflow:hidden;min-width:0}
 .laptop .base{height:14px;margin:0 -6%;background:linear-gradient(180deg,#C9CCD1,#9EA3AA);border-radius:0 0 18px 18px}
 .laptop .base::after{content:"";display:block;width:16%;height:6px;margin:0 auto;background:#8A8F96;border-radius:0 0 8px 8px}
 .app{background:var(--surface);border-radius:8px;display:grid;grid-template-columns:150px minmax(0,1fr) 190px;flex:1;min-height:0;overflow:hidden;font-size:12px;color:var(--ink)}
@@ -242,7 +242,7 @@ svg{display:block}
 .pill:focus-visible,.form input:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 
 /* ---------- reels + visuals ---------- */
-.reels{background:linear-gradient(180deg,var(--bg),var(--sky-1))}
+.reels{background:linear-gradient(180deg,var(--bg),var(--sky-1));overflow:hidden}
 .phones{display:flex;justify-content:center;align-items:flex-end;gap:34px;margin:36px 0 18px}
 .reel{position:relative;width:250px;aspect-ratio:9/19;border-radius:38px;background:#16141F;padding:9px;box-shadow:0 40px 60px -30px rgba(22,20,31,.55);overflow:hidden;flex:none}
 .reel.mid{width:280px;transform:translateY(-18px)}
@@ -286,7 +286,10 @@ footer .brand .word{font-size:18px}
 /* ---------- responsive ---------- */
 @media (max-width:1080px){
   .steps{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .hero .wrap{grid-template-columns:1fr}
+  .phones{overflow-x:auto;justify-content:flex-start;scroll-snap-type:x mandatory;padding:10px 2px 24px;gap:18px;-webkit-overflow-scrolling:touch}
+  .reel.mid{transform:none}
+  .reel{scroll-snap-align:center}
+  .hero .wrap{grid-template-columns:minmax(0,1fr)}
   .devices{max-width:820px}
   .features .wrap{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:44px}
   .feat:nth-child(3){border-left:0;padding-left:0}
@@ -302,8 +305,7 @@ footer .brand .word{font-size:18px}
   .trust div{display:flex;align-items:center;gap:12px;max-width:none;font-size:15px}
   .trust svg{width:22px;height:22px;flex:none}
   .two,.three{grid-template-columns:1fr}
-  .phones{overflow-x:auto;justify-content:flex-start;scroll-snap-type:x mandatory;padding:10px 4px 24px;gap:18px;margin-inline:-20px;padding-inline:20px}
-  .reel,.reel.mid{width:230px;transform:none;scroll-snap-align:center}
+  .reel,.reel.mid{width:230px}
   .steps{grid-template-columns:1fr}
   .sec .wrap{padding-block:44px}
   .scope,.jcard{padding:22px}
@@ -312,6 +314,9 @@ footer .brand .word{font-size:18px}
   .commit{grid-template-columns:1fr}
 }
 @media (max-width:560px){
+  .jcard .form .pill{width:100%;justify-content:center;white-space:normal;text-align:center}
+  .jcard{min-width:0}
+  .two > *{min-width:0}
   .features .wrap{grid-template-columns:1fr}
   .feat{border-left:0;padding:0}
   .site-header .pill{display:none}
