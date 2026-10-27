@@ -207,6 +207,17 @@ img.av{object-fit:cover;background:#E4E7EC}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
 .planned{font-family:var(--sans);font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border:1px solid var(--rule);border-radius:3px;padding:2px 6px;margin-left:10px;align-self:center}
 .sec{border-top:1px solid var(--rule);background:var(--bg)}
+.why{background:#16141F;color:#F5F7FB;border-top:0}
+.why .wrap{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:48px;align-items:start}
+.why .eyebrow{color:#FF8A6B}
+.why h2{color:#F5F7FB}.why h2 em{font-style:italic;color:#9AA8FF}
+.why p.lead{color:#CFCBD6;line-height:1.6;margin:0 0 18px;font-size:17px}
+.why a.src{color:#F5F7FB;font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.why ul{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.why li{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;padding:14px 0;border-top:1px solid #2E2B3A;font-size:15px;line-height:1.45}
+.why li span:first-child{color:#A7A2B0}.why li span:last-child{color:#F5F7FB;font-weight:600}
+@media (max-width:860px){.why .wrap{grid-template-columns:minmax(0,1fr);gap:24px}}
+
 .sec.alt{background:var(--sky-1)}
 .sec .wrap{padding-block:64px}
 .eyebrow{font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin:0 0 10px}
@@ -501,6 +512,22 @@ footer .brand .word{font-size:18px}
           <div class="collab"><span class="ic"><svg><use href="#i-globe"/></svg></span><div><b>Innovation &amp; translation</b><small>From research to real-world solutions</small></div><span class="chev">›</span></div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <section class="sec why" id="why-now" aria-labelledby="whynow-h">
+    <div class="wrap">
+      <div>
+        <p class="eyebrow">Why now</p>
+        <h2 id="whynow-h">Science has moved to the feed. <em>Its rigor hasn’t.</em></h2>
+        <p class="lead">In June 2026, <i>Nature</i>’s editors wrote that young audiences now get their news mainly from video-first platforms, that science videos there rarely credit their sources, and that platforms should flag claims that haven’t been verified. Lyncei is built for exactly that.</p>
+        <a class="src" href="https://www.nature.com/articles/d41586-026-01723-1" target="_blank" rel="noopener noreferrer">Read the Nature editorial</a>
+      </div>
+      <ul aria-label="What Nature calls for and what Lyncei does">
+        <li><span>Science videos rarely credit their sources</span><span>Every reviewable post links its source</span></li>
+        <li><span>Creators with undisclosed financial interests</span><span>Conflicts declared before any review</span></li>
+        <li><span>Unverified claims look like verified ones</span><span>Review labels on every post, never set by likes</span></li>
+      </ul>
     </div>
   </section>
 
