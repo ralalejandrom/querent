@@ -221,12 +221,8 @@ footer .brand .word{font-size:18px}
   .nav{display:none}
 }
 @media (max-width:760px){
-  .app{grid-template-columns:minmax(0,1fr)}
-  .app .side,.app .right{display:none}
-  /* On narrow screens a laptop mockup becomes a tall, cramped column, so show the phone alone instead. */
-  .laptop{display:none}
-  .devices{display:flex;justify-content:center;padding:8px 0 24px}
-  .phone{position:relative;right:auto;bottom:auto;width:min(340px,82%);min-width:0}
+  /* Narrow screens: keep the full Mac + iPhone composition at its desktop width; a script scales it down to fit. */
+  .devices{width:820px;max-width:none}
   .inst .wrap{grid-template-columns:1fr;gap:28px}
   .inst .right{border-left:0;padding-left:0;border-top:1px solid var(--rule);padding-top:28px}
   .commit{grid-template-columns:1fr}
@@ -450,6 +446,17 @@ footer .brand .word{font-size:18px}
 </footer>
 
 <script>
+(function(){
+  var d=document.querySelector('.devices'); if(!d) return;
+  function fit(){
+    if(window.innerWidth>760){d.style.zoom='';return;}
+    var host=d.parentElement, cs=getComputedStyle(host);
+    var w=host.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);
+    d.style.zoom=String(Math.min(1,w/820));
+  }
+  fit(); window.addEventListener('resize',fit);
+})();
+
 /* Set WAITLIST_ENDPOINT to a form backend URL (Formspree, Tally, Supabase function) when hosting on your own domain. */
 const WAITLIST_ENDPOINT = "";
 (function(){
