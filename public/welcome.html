@@ -81,11 +81,12 @@ svg{display:block}
 
 /* devices */
 .devices{position:relative;min-width:0;padding-bottom:20px}
-.laptop{position:relative;width:92%;}
-.laptop .screen{background:#1C1F24;border-radius:18px 18px 6px 6px;padding:12px 12px 14px;box-shadow:0 40px 60px -30px rgba(20,26,34,.45)}
+.laptop{position:relative;width:84%;}
+/* Real proportions: MacBook Air 13.6" lid 30.41 x 21.5 cm; iPhone 7.16 x 14.76 cm (phone = 23.55% of the lid width, set by script). */
+.laptop .screen{background:#1C1F24;border-radius:18px 18px 6px 6px;padding:2.2% 2.2% 2.6%;box-shadow:0 40px 60px -30px rgba(20,26,34,.45);aspect-ratio:30.41/21.5;display:flex}
 .laptop .base{height:14px;margin:0 -6%;background:linear-gradient(180deg,#C9CCD1,#9EA3AA);border-radius:0 0 18px 18px}
 .laptop .base::after{content:"";display:block;width:16%;height:6px;margin:0 auto;background:#8A8F96;border-radius:0 0 8px 8px}
-.app{background:var(--surface);border-radius:8px;display:grid;grid-template-columns:150px minmax(0,1fr) 190px;min-height:390px;overflow:hidden;font-size:12px;color:var(--ink)}
+.app{background:var(--surface);border-radius:8px;display:grid;grid-template-columns:150px minmax(0,1fr) 190px;flex:1;min-height:0;overflow:hidden;font-size:12px;color:var(--ink)}
 .app .side{border-right:1px solid var(--rule);padding:14px 10px;display:flex;flex-direction:column;gap:4px}
 .app .side .lg{font-family:var(--serif);font-weight:400;font-size:18px;padding:2px 8px 14px}
 .app .side a{display:flex;gap:9px;align-items:center;padding:7px 8px;border-radius:7px;text-decoration:none;color:var(--ink-2)}
@@ -100,6 +101,8 @@ svg{display:block}
 .tabs .on{color:var(--ink);font-weight:600;border-bottom:2px solid var(--ink)}
 .post-h{display:flex;gap:9px;align-items:center;margin-bottom:8px}
 .av{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:10.5px;color:var(--surface);flex:none}
+.av.anon{background:#E8ECF2;color:#4A5568}
+.anon-note{font-size:9.5px;color:var(--muted);border-top:1px solid var(--rule);padding-top:7px}
 .av.a1{background:#B5654A}.av.a2{background:#4C6E9E}.av.a3{background:#6E8B5A}.av.a4{background:#8A5A9E}.av.a5{background:#4E8C8A}.av.a6{background:#A2803C}
 .post-h b{display:block;font-size:12px}
 .post-h small{color:var(--muted);font-size:10.5px}
@@ -131,9 +134,9 @@ svg{display:block}
 .rv .av{width:24px;height:24px;font-size:9.5px}
 .rv span{color:var(--muted);display:block;font-size:9.5px}
 
-.phone{position:absolute;right:-1%;bottom:-6px;width:31%;min-width:200px;background:#1C1F24;border-radius:34px;padding:9px;box-shadow:0 40px 60px -28px rgba(20,26,34,.55)}
-.phone .scr{background:var(--surface);border-radius:26px;overflow:hidden;padding:12px 12px 8px;font-size:11px;position:relative}
-.phone .notch{width:38%;height:16px;background:#1C1F24;border-radius:0 0 12px 12px;margin:-12px auto 8px}
+.phone{position:absolute;right:0;bottom:0;width:300px;aspect-ratio:7.16/14.76;display:flex;background:#1C1F24;border-radius:46px;padding:11px;box-shadow:0 40px 60px -28px rgba(20,26,34,.55)}
+.phone .scr{flex:1;display:flex;flex-direction:column;background:var(--surface);border-radius:36px;overflow:hidden;padding:12px 16px 10px;font-size:12px;position:relative}
+.phone .notch{width:34%;height:24px;background:#1C1F24;border-radius:14px;margin:0 auto 14px;flex:none}
 .phone .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
 .phone .top b{font-family:var(--serif);font-weight:400;font-size:17px}
 .phone .tabs{gap:10px;font-size:10px}
@@ -147,7 +150,7 @@ svg{display:block}
 .bar{height:5px;border-radius:5px;background:color-mix(in srgb,var(--green) 18%,transparent);overflow:hidden}
 .bar i{display:block;height:100%;width:66%;background:var(--green)}
 .phone .acts{gap:12px;font-size:10px;margin-bottom:8px}
-.dock{display:flex;justify-content:space-between;border-top:1px solid var(--rule);padding-top:8px;color:var(--muted);font-size:8.5px;text-align:center}
+.dock{margin-top:auto;display:flex;justify-content:space-between;border-top:1px solid var(--rule);padding-top:8px;color:var(--muted);font-size:8.5px;text-align:center}
 .dock div{display:grid;justify-items:center;gap:2px}
 .dock svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8}
 .dock .on{color:var(--ink)}
@@ -319,7 +322,7 @@ footer .brand .word{font-size:18px}
                 <div class="ptitle">Early results from a multicenter trial on SGLT2 inhibitors in heart failure with preserved ejection fraction</div>
                 <div class="pbody">The trial reports a reduction in the composite primary outcome. Here's a summary of the key findings, the limitations and what they could mean for practice.</div>
                 <div class="study"><span class="thumb"></span><div><b>Original study</b><span>DOI linked · Peer-reviewed article · 2026</span></div></div>
-                <div class="reviewed"><span class="check"><svg><use href="#i-check"/></svg></span><div><b>Human expert review completed</b><span>3 reviewers · Methodology, Statistics, Clinical relevance</span></div><span class="vr">View review</span></div>
+                <div class="reviewed"><span class="check"><svg><use href="#i-check"/></svg></span><div><b>Verified review completed</b><span>3 anonymous experts · Methodology, Statistics, Clinical relevance</span></div><span class="vr">View review</span></div>
                 <div class="acts"><span class="h"><svg><use href="#i-heart"/></svg>142</span><span><svg><use href="#i-chat"/></svg>28</span><span><svg><use href="#i-share"/></svg>12</span></div>
               </div>
               <aside class="right">
@@ -331,10 +334,11 @@ footer .brand .word{font-size:18px}
                   <div class="q"><i class="am"></i><span>Reproducibility<b>Pending further evidence</b></span></div>
                 </div>
                 <div class="box">
-                  <h4>Expert reviewers</h4>
-                  <div class="rv"><span class="av a2">ML</span><div>Dr. Marcus Lee<span>Biostatistics</span></div></div>
-                  <div class="rv"><span class="av a4">AK</span><div>Dr. Amira Khalil<span>Internal Medicine</span></div></div>
-                  <div class="rv"><span class="av a3">RG</span><div>Dr. Rafael Gómez<span>Cardiology</span></div></div>
+                  <h4>Verified reviewers</h4>
+                  <div class="rv"><span class="av anon">R1</span><div>Reviewer 1<span>Biostatistics · verified</span></div></div>
+                  <div class="rv"><span class="av anon">R2</span><div>Reviewer 2<span>Internal medicine · verified</span></div></div>
+                  <div class="rv"><span class="av anon">R3</span><div>Reviewer 3<span>Cardiology · verified</span></div></div>
+                  <div class="anon-note">Names withheld unless a reviewer signs</div>
                 </div>
               </aside>
             </div>
@@ -352,6 +356,9 @@ footer .brand .word{font-size:18px}
             <div class="chart"></div>
             <div class="inprog"><b>Expert review in progress</b><small>2 of 3 reviews completed</small><span class="bar"><i></i></span></div>
             <div class="acts"><span class="h"><svg><use href="#i-heart"/></svg>86</span><span><svg><use href="#i-chat"/></svg>14</span><span><svg><use href="#i-share"/></svg>6</span></div>
+            <div class="post-h" style="border-top:1px solid var(--rule);padding-top:10px"><span class="av a6">SM</span><div><b>Sofia Mendes</b><small>PhD student · Neuroscience</small></div><span class="t">6h</span></div>
+            <div class="ptitle">Behind the paper: why our sleep study surprised us</div>
+            <div class="acts"><span class="h"><svg><use href="#i-heart"/></svg>41</span><span><svg><use href="#i-chat"/></svg>9</span><span><svg><use href="#i-share"/></svg>3</span></div>
             <div class="dock">
               <div class="on"><svg><use href="#i-home"/></svg>Home</div>
               <div><svg><use href="#i-search"/></svg>Explore</div>
@@ -378,13 +385,13 @@ footer .brand .word{font-size:18px}
       </div>
 
       <div class="feat" id="review">
-        <h3><span class="num">02</span>Deep Review</h3>
-        <p>Get transparent, human-led reviews from verified experts.</p>
+        <h3><span class="num">02</span>Verified Review</h3>
+        <p>Experts check each post against its source. Reviews are public; reviewers stay anonymous unless they sign.</p>
         <div class="card">
-          <h5>Expert review</h5>
-          <div class="rrow"><span class="st done"><svg><use href="#i-check"/></svg></span><div><b>Methodological assessment</b><small>Completed · Dr. Amira Khalil</small></div><span class="chev">›</span></div>
-          <div class="rrow"><span class="st done"><svg><use href="#i-check"/></svg></span><div><b>Statistical review</b><small>Completed · Dr. Marcus Lee</small></div><span class="chev">›</span></div>
-          <div class="rrow"><span class="st prog"></span><div><b class="prog-t">Clinical relevance</b><small>In progress · Dr. Rafael Gómez</small></div><span class="chev">›</span></div>
+          <h5>Verified review · identities protected</h5>
+          <div class="rrow"><span class="st done"><svg><use href="#i-check"/></svg></span><div><b>Methodological assessment</b><small>Completed · Anonymous, Internal medicine</small></div><span class="chev">›</span></div>
+          <div class="rrow"><span class="st done"><svg><use href="#i-check"/></svg></span><div><b>Statistical review</b><small>Completed · Anonymous, Biostatistics</small></div><span class="chev">›</span></div>
+          <div class="rrow"><span class="st prog"></span><div><b class="prog-t">Clinical relevance</b><small>In progress · Anonymous, Cardiology</small></div><span class="chev">›</span></div>
           <div class="rrow"><span class="st todo"></span><div><b>Summary and recommendation</b></div><span class="chev">›</span></div>
           <div class="rrow"><span class="st todo"></span><div><b>Author response</b></div><span class="chev">›</span></div>
         </div>
@@ -454,7 +461,15 @@ footer .brand .word{font-size:18px}
     var w=host.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);
     d.style.zoom=String(Math.min(1,w/820));
   }
-  fit(); window.addEventListener('resize',fit);
+  var lap=d.querySelector('.laptop'), ph=d.querySelector('.phone');
+  function phoneFit(){
+    if(!lap||!ph) return;
+    ph.style.zoom='1';
+    var z=0.2355*lap.getBoundingClientRect().width/ph.getBoundingClientRect().width;
+    ph.style.zoom=String(z);
+  }
+  function all(){fit();phoneFit();}
+  all(); window.addEventListener('resize',all); window.addEventListener('load',all);
 })();
 
 /* Set WAITLIST_ENDPOINT to a form backend URL (Formspree, Tally, Supabase function) when hosting on your own domain. */
