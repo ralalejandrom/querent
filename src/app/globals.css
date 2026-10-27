@@ -2,8 +2,8 @@
 @font-face{font-family:"DM Sans";src:url(/fonts/dm-sans-500.woff2) format("woff2");font-weight:500;font-display:swap}
 :root{
   --bg:#FFFFFF; --surface:#FFFFFF; --sunk:#F4F6F8; --ink:#0E1116; --ink-2:#374151; --muted:#6B7280; --rule:#E5E7EB;
-  --accent:#16141F; --accent-soft:#F3F1EE; --gold:#C8401F;
-  --green:#0E7A4E; --green-soft:#E7F5EE; --amber:#A15C07; --amber-soft:#FDF3E2; --red:#C0262D; --red-soft:#FDECEC; --blue:#16141F; --blue-soft:#F3F1EE;
+  --accent:#16141F; --accent-soft:#F2F4F6; --gold:#C8401F;
+  --green:#0E7A4E; --green-soft:#E7F5EE; --amber:#A15C07; --amber-soft:#FDF3E2; --red:#C0262D; --red-soft:#FDECEC; --blue:#16141F; --blue-soft:#F2F4F6;
   --serif:Georgia,"Iowan Old Style","Palatino Linotype","DejaVu Serif",serif;
   --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
   --mono:ui-monospace,"SFMono-Regular",Menlo,monospace;

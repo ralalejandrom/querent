@@ -27,8 +27,8 @@
 /* Layout: product-marketing page. Hero = serif thesis on the left, laptop + phone product shots on the right over a soft architectural backdrop; then four feature columns, each with a live-looking UI card; then founding-institutions band and footer. */
 :root{
   --bg:#FFFFFF; --surface:#FFFFFF; --ink:#0E1116; --ink-2:#374151; --muted:#6B7280; --rule:#E5E7EB;
-  --green:#0E7A4E; --green-soft:#E7F5EE; --amber:#A15C07; --amber-soft:#FDF3E2; --heart:#C0262D; --blue:#16141F; --gold:#C8401F; --accent-soft:#F3F1EE;
-  --sky-1:#F7F6F4; --sky-2:#F1EFEC; --stone:#E2DFDA;
+  --green:#0E7A4E; --green-soft:#E7F5EE; --amber:#A15C07; --amber-soft:#FDF3E2; --heart:#C0262D; --blue:#16141F; --gold:#C8401F; --accent-soft:#F2F4F6;
+  --sky-1:#F6F7F9; --sky-2:#F1F3F5; --stone:#E3E6EA;
   --serif:Georgia,"Iowan Old Style","Palatino Linotype","DejaVu Serif",serif;
   --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
 }
@@ -199,7 +199,7 @@ svg{display:block}
 .collab .chev{margin-left:auto;color:var(--muted)}
 
 /* ---------- explainer sections ---------- */
-.hero h1 em{font-style:italic;color:var(--gold)}
+.hero h1 em{font-style:italic;color:var(--ink)}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
 .planned{font-family:var(--sans);font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border:1px solid var(--rule);border-radius:3px;padding:2px 6px;margin-left:10px;align-self:center}
@@ -220,7 +220,7 @@ svg{display:block}
 .scope .q2{font-family:var(--serif);font-style:italic;font-size:19px;color:var(--ink);line-height:1.4}
 .chip{display:inline-block;font-size:12.5px;font-weight:600;padding:4px 10px;border-radius:3px;line-height:1.3}
 .chip.ok{background:var(--green-soft);color:var(--green)}
-.chip.info{background:var(--accent-soft,#F3F1EE);color:var(--blue)}
+.chip.info{background:var(--accent-soft,#F2F4F6);color:var(--blue)}
 .chip.plan{background:var(--sky-2);color:var(--muted);border:1px solid var(--rule)}
 .chip.prog{background:var(--amber-soft);color:var(--amber)}
 .banner{margin:24px 0 0;padding:18px 22px;border-left:4px solid var(--gold);background:var(--surface);border-radius:4px;color:var(--ink-2);line-height:1.5}
@@ -567,7 +567,7 @@ footer .brand .word{font-size:18px}
       <p class="sub">Checking that a post represents its source is not the same as reproducing the results or confirming the conclusion. Querent keeps those apart.</p>
       <div class="two">
         <article class="scope">
-          <svg class="ill" viewBox="0 0 120 80" aria-hidden="true"><rect x="8" y="8" width="44" height="60" rx="4" fill="#F3F1EE" stroke="#16141F" stroke-width="2.5"/><path d="M16 22h28M16 32h28M16 42h20" stroke="#16141F" stroke-width="2.5" stroke-linecap="round"/><rect x="68" y="12" width="44" height="60" rx="4" fill="#fff" stroke="#16141F" stroke-width="2.5"/><path d="M76 26h28M76 36h28M76 46h18" stroke="#16141F" stroke-width="2.5" stroke-linecap="round"/><path d="M54 40h12" stroke="#C8401F" stroke-width="2.5" stroke-dasharray="3 3"/><circle cx="104" cy="62" r="11" fill="#0E7A4E"/><path d="M99 62l4 4 7-8" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg class="ill" viewBox="0 0 120 80" aria-hidden="true"><rect x="8" y="8" width="44" height="60" rx="4" fill="#F2F4F6" stroke="#16141F" stroke-width="2.5"/><path d="M16 22h28M16 32h28M16 42h20" stroke="#16141F" stroke-width="2.5" stroke-linecap="round"/><rect x="68" y="12" width="44" height="60" rx="4" fill="#fff" stroke="#16141F" stroke-width="2.5"/><path d="M76 26h28M76 36h28M76 46h18" stroke="#16141F" stroke-width="2.5" stroke-linecap="round"/><path d="M54 40h12" stroke="#C8401F" stroke-width="2.5" stroke-dasharray="3 3"/><circle cx="104" cy="62" r="11" fill="#0E7A4E"/><path d="M99 62l4 4 7-8" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span class="chip ok">Source checked</span>
           <h3>Source fidelity</h3>
           <p class="q2">Does the post accurately represent the cited research?</p>
