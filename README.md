@@ -1,5 +1,7 @@
 # Querent
 
+**Live:** https://querent.science (demo data)
+
 **The social network where every post can be peer-reviewed.**
 Science, made social. Rigor, made visible. Scientists, made human.
 
