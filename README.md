@@ -15,7 +15,7 @@ This repository is the private-beta codebase described in the *Technical Build S
 | ORCID | Connect an ORCID iD via OAuth `/authenticate` scope (proves ownership only; never grants reviewer status) |
 | Posts | Video explainer, Visual, Thread, Behind the Paper and Open Question formats; DOI field with Crossref lookup; AI-assistance disclosure |
 | Rigor labels | Unreviewed · Source-linked · Source-checked · Expert-reviewed · Disputed · Source retracted, **derived** from sources, reviews and moderation (`src/lib/rigor.ts`), never from likes |
-| Open peer review | Verified reviewers submit source-fidelity, methodological, statistical or clinical-relevance reviews with checklist, required conflict declaration, optional signature and study-quality ratings; labels update automatically |
+| Transparent peer review | Verified reviewers (anonymous to readers by default; signing is opt-in) submit source-fidelity, methodological, statistical or clinical-relevance reviews with checklist, required conflict declaration, and study-quality ratings; labels update automatically |
 | Discussion | Typed contributions (question, evidence, objection, interpretation, correction); evidence requires a DOI; threaded replies |
 | Social | Feed (For you, Following, Reviewed, Open questions) with transparent ranking and a "Shown because…" line; likes and *insightful* reactions; saves; follows |
 | Questions | Persistent questions with follow, linked posts and an evidence summary |
@@ -24,7 +24,7 @@ This repository is the private-beta codebase described in the *Technical Build S
 | Integrity | Append-only `audit_events` table (UPDATE/DELETE blocked by trigger) for posts, reviews, labels, reports and roles |
 | Data rights | `GET /api/v1/me/export` downloads all of a user's data as JSON |
 | Jobs | `npm run jobs:sync-sources` re-checks DOIs against Crossref, resolves pending ones and records corrections and retractions |
-| API | `GET /api/v1/questions`, `GET /api/v1/posts/:id` (rigor + signed reviews), `GET /api/v1/me/export` |
+| API | `GET /api/v1/questions`, `GET /api/v1/posts/:id` (rigor + reviews; reviewer named only if signed), `GET /api/v1/me/export` |
 
 ## Stack
 
@@ -108,5 +108,5 @@ scripts/grant-role.ts
 
 - Reach never changes rigor: reactions live in their own table and are not inputs to `computeRigor`.
 - Unverified DOIs are labeled as such and can't be reviewed; metadata is never invented.
-- Reviews require a declared conflict of interest; unsigned reviews still count for the reviewer but never appear on their public profile.
+- Reviews require a declared conflict of interest; reviews are anonymous by default: Querent verifies the reviewer, readers see “Anonymous · verified reviewer”, and the review counts toward the reviewer's record without being listed publicly.
 - Moderation decisions require a rationale that the author can see, and nothing is silently deleted.

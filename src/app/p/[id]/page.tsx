@@ -58,7 +58,7 @@ export default async function PostPage({ params }: Params) {
         <PostCard p={post} full signedIn={!!user} />
 
         <div className="sec">
-          <h2>Open reviews ({reviews.length})</h2>
+          <h2>Reviews ({reviews.length})</h2>
           <div className="row">
             {canReview && <Link className="btn pri sm" href={`/p/${post.id}/review`}><Icon name="review" />Write a review</Link>}
           </div>
@@ -67,13 +67,13 @@ export default async function PostPage({ params }: Params) {
         {reviews.length ? reviews.map(({ review: r, reviewer }) => (
           <div className="review" key={r.id}>
             <div className="row">
-              {r.isSigned ? <><Avatar name={reviewer.displayName} handle={reviewer.handle} size="sm" /><div><Link href={`/u/${reviewer.handle}`}><b>{reviewer.displayName}</b></Link> <span className="hint">· {reviewer.field}</span></div></> : <b>Reviewer (name withheld)</b>}
+              {r.isSigned ? <><Avatar name={reviewer.displayName} handle={reviewer.handle} size="sm" /><div><Link href={`/u/${reviewer.handle}`}><b>{reviewer.displayName}</b></Link> <span className="hint">· {reviewer.field}</span></div></> : <div><b>Anonymous</b> <span className="hint">· verified reviewer</span></div>}
               <span style={{ marginLeft: "auto" }} className={`pillst ${r.status === "completed" ? "done" : ""}`}>{r.status === "completed" ? "Completed" : "In progress"}</span>
             </div>
             <div className="rtype" style={{ marginTop: 8 }}>{REVIEW_TYPE_LABELS[r.type as ReviewType]}{r.recommendation ? ` · ${r.recommendation}` : ""}</div>
             {r.summary ? <p>{r.summary}</p> : <p className="muted">Review underway.</p>}
             {Object.keys(r.checklist).length > 0 && <ul className="hint" style={{ margin: "8px 0 0", paddingLeft: 18 }}>{Object.keys(r.checklist).map((c) => <li key={c}>{c}</li>)}</ul>}
-            <div className="meta">{r.isSigned ? "Signed review" : "Unsigned review"} · Conflicts: {r.conflicts} · Reviewed version {r.postVersion}{r.completedAt ? ` · ${timeAgo(r.completedAt)} ago` : ""}</div>
+            <div className="meta">{r.isSigned ? "Signed review" : "Identity verified by Querent, withheld from readers"} · Conflicts: {r.conflicts} · Reviewed version {r.postVersion}{r.completedAt ? ` · ${timeAgo(r.completedAt)} ago` : ""}</div>
           </div>
         )) : <Empty title="No reviews yet">{!post.source ? "Posts need a source before they can be reviewed." : isReviewer(user) ? "Be the first to review this post." : "Verified reviewers in this field can review it."}</Empty>}
 

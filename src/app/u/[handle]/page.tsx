@@ -15,14 +15,17 @@ export default async function Profile({ params }: { params: Promise<{ handle: st
   const [u] = await db.select().from(schema.users).where(sql`lower(${schema.users.handle}) = ${handle.toLowerCase()}`).limit(1);
   if (!u || u.deletedAt) notFound();
   const isMe = viewer?.id === u.id;
-  const [roles, list, reviews, [{ n: followers }], following] = await Promise.all([
+  const [roles, list, reviews, [{ n: followers }], following, [{ n: reviewTotal }]] = await Promise.all([
     db.select().from(schema.userRoles).where(eq(schema.userRoles.userId, u.id)),
     loadPosts({ where: eq(schema.posts.authorId, u.id), viewerId: viewer?.id ?? null }),
     db.select({ r: schema.reviews, title: schema.posts.title }).from(schema.reviews).innerJoin(schema.posts, eq(schema.posts.id, schema.reviews.postId))
       .where(and(eq(schema.reviews.reviewerId, u.id), eq(schema.reviews.status, "completed"), isMeOrSigned(isMe))).orderBy(desc(schema.reviews.completedAt)),
     db.select({ n: count() }).from(schema.follows).where(and(eq(schema.follows.targetType, "user"), eq(schema.follows.targetId, u.id))),
     viewer && !isMe ? db.select().from(schema.follows).where(and(eq(schema.follows.userId, viewer.id), eq(schema.follows.targetType, "user"), eq(schema.follows.targetId, u.id))).then((r) => r.length > 0) : false,
+    db.select({ n: count() }).from(schema.reviews).where(and(eq(schema.reviews.reviewerId, u.id), eq(schema.reviews.status, "completed"))),
   ]);
+  const totalReviews = Number(reviewTotal);
+  const hiddenReviews = totalReviews - reviews.length;
   const reviewer = roles.find((r) => r.role === "reviewer");
   return (
     <>
@@ -44,23 +47,24 @@ export default async function Profile({ params }: { params: Promise<{ handle: st
         {u.currentWork && <p className="muted" style={{ margin: 0 }}><b style={{ color: "var(--ink)" }}>Working on:</b> {u.currentWork}</p>}
         <div className="stats">
           <div><b>{list.length}</b><span>Posts</span></div>
-          <div><b>{reviews.length}</b><span>Reviews written</span></div>
+          <div><b>{totalReviews}</b><span>Reviews written</span></div>
           <div><b>{Number(followers)}</b><span>Followers</span></div>
-          <div><b>{reviews.length * 3 + list.length}</b><span>Contribution credits</span></div>
+          <div><b>{totalReviews * 3 + list.length}</b><span>Contribution credits</span></div>
         </div>
         <div className="sec"><h2>Posts</h2></div>
         {list.length ? list.map((p) => <PostCard key={p.id} p={p} signedIn={!!viewer} />) : <Empty title="No posts yet">{isMe ? "Share your first post: a summary, a figure or an open question." : "Nothing posted yet."}</Empty>}
         <div className="sec"><h2>Reviews written</h2></div>
         {reviews.length ? reviews.map(({ r, title }) => (
-          <div className="card" key={r.id}><div className="rtype">{REVIEW_TYPE_LABELS[r.type as ReviewType]} · {r.recommendation}</div><h2 className="ptitle" style={{ fontSize: 17, marginTop: 4 }}><Link href={`/p/${r.postId}`}>{title}</Link></h2><p className="hint" style={{ margin: 0 }}>{r.isSigned ? "Signed" : "Unsigned (visible only to you)"} · Conflicts: {r.conflicts}</p></div>
-        )) : <p className="muted">{isMe ? "Reviews you write are credited here." : "No public reviews yet."}</p>}
+          <div className="card" key={r.id}><div className="rtype">{REVIEW_TYPE_LABELS[r.type as ReviewType]} · {r.recommendation}</div><h2 className="ptitle" style={{ fontSize: 17, marginTop: 4 }}><Link href={`/p/${r.postId}`}>{title}</Link></h2><p className="hint" style={{ margin: 0 }}>{r.isSigned ? "Signed" : "Anonymous (only you see it here)"} · Conflicts: {r.conflicts}</p></div>
+        )) : <p className="muted">{isMe ? "Reviews you write are credited here, including anonymous ones." : hiddenReviews > 0 ? "" : "No reviews yet."}</p>}
+        {hiddenReviews > 0 && <p className="muted">{hiddenReviews} anonymous {hiddenReviews === 1 ? "review" : "reviews"}, counted but not listed.</p>}
       </main>
       <Rail />
     </>
   );
 }
 
-/** Unsigned reviews count for the reviewer but never appear on their public profile. */
+/** Anonymous reviews count toward the reviewer's record but are never listed on their public profile. */
 function isMeOrSigned(isMe: boolean) {
   return isMe ? sql`true` : eq(schema.reviews.isSigned, true);
 }
