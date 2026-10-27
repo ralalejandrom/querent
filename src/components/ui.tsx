@@ -29,11 +29,13 @@ export function Icon({ name, className = "i" }: { name: keyof typeof PATHS | str
 }
 
 export function Mark({ size = 34 }: { size?: number }) {
+  // "Lens Eye": an eye inside a lens; reads as a Q, a magnifier and an eye.
   return (
-    <svg width={size} height={size} viewBox="0 0 40 40" aria-hidden="true">
-      <rect x="2" y="2" width="36" height="36" rx="1.5" fill="none" stroke="currentColor" strokeWidth="3" />
-      <path d="M11 10v20M29 10v20" stroke="currentColor" strokeWidth="3" fill="none" strokeLinecap="square" />
-      <path d="M11 13c5 0 7 3 9 7c2-4 4-7 9-7M11 27c5 0 7-3 9-7c2 4 4 7 9 7" stroke="currentColor" strokeWidth="2.6" fill="none" />
+    <svg width={size} height={size} viewBox="0 0 100 100" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="47" cy="47" r="30" />
+      <path d="M25 47c6-9 13-13 22-13s16 4 22 13c-6 9-13 13-22 13s-16-4-22-13z" />
+      <circle cx="47" cy="47" r="6" fill="currentColor" stroke="none" />
+      <path d="M68 68l16 16" stroke="var(--gold)" />
     </svg>
   );
 }

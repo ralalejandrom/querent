@@ -1,9 +1,8 @@
-/* Querent identity — white paper, cool neutrals, deep navy brand, gold secondary.
-   Georgia for headings and the wordmark; the platform's own sans for reading. */
+/* Querent identity — white paper, warm neutrals, ink brand, coral accent; Georgia headings, system sans body. */
 :root{
   --bg:#FFFFFF; --surface:#FFFFFF; --sunk:#F4F6F8; --ink:#0E1116; --ink-2:#374151; --muted:#6B7280; --rule:#E5E7EB;
-  --accent:#0F3D33; --accent-soft:#E7F0EC; --gold:#B7862F;
-  --green:#0E7A4E; --green-soft:#E7F5EE; --amber:#A15C07; --amber-soft:#FDF3E2; --red:#C0262D; --red-soft:#FDECEC; --blue:#0F3D33; --blue-soft:#E7F0EC;
+  --accent:#16141F; --accent-soft:#F3F1EE; --gold:#C8401F;
+  --green:#0E7A4E; --green-soft:#E7F5EE; --amber:#A15C07; --amber-soft:#FDF3E2; --red:#C0262D; --red-soft:#FDECEC; --blue:#16141F; --blue-soft:#F3F1EE;
   --serif:Georgia,"Iowan Old Style","Palatino Linotype","DejaVu Serif",serif;
   --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
   --mono:ui-monospace,"SFMono-Regular",Menlo,monospace;
@@ -11,8 +10,8 @@
 }
 @media (prefers-color-scheme: dark){:root{
   --bg:#0B0D10; --surface:#13161B; --sunk:#1A1E24; --ink:#F3F4F6; --ink-2:#CBD2DB; --muted:#8B95A3; --rule:#262B33;
-  --accent:#7FC4AC; --accent-soft:#102620; --gold:#D9AE5F;
-  --green:#4FC48D; --green-soft:#10251B; --amber:#E7A94A; --amber-soft:#2A1F10; --red:#F07A7F; --red-soft:#2C1416; --blue:#7FC4AC; --blue-soft:#102620; color-scheme:dark}}
+  --accent:#FF8A6B; --accent-soft:#2A1712; --gold:#FF8A6B;
+  --green:#4FC48D; --green-soft:#10251B; --amber:#E7A94A; --amber-soft:#2A1F10; --red:#F07A7F; --red-soft:#2C1416; --blue:#FF8A6B; --blue-soft:#2A1712; color-scheme:dark}}
 
 *{box-sizing:border-box}
 html,body{margin:0}
