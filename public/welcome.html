@@ -249,6 +249,33 @@ img.av{object-fit:cover;background:#E4E7EC}
 .status{margin-top:32px;border-top:1px solid var(--rule);padding-top:20px;display:grid;gap:10px}
 .status p{margin:0;color:var(--ink-2);display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
 .jcard .form{margin-top:16px}
+.rlead{color:var(--ink-2);line-height:1.6;font-size:17px;margin:0 0 24px;max-width:40em}
+.rgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.rb{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:22px;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.rb h4{font-family:var(--serif);font-weight:400;font-size:21px;margin:6px 0 0}
+.rb p{color:var(--ink-2);line-height:1.5;margin:0;font-size:15px}
+.rnote{color:var(--muted);font-size:15px;margin:20px 0 0}
+@media (max-width:1000px){.rgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.rgrid{grid-template-columns:minmax(0,1fr)}}
+
+.partners .lead{color:var(--ink-2);line-height:1.6;font-size:17px;margin:0}
+.partners .three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin:28px 0 32px}
+.pcard{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:26px;display:flex;flex-direction:column;gap:12px}
+.pcard .ic{width:40px;height:40px;border-radius:10px;background:var(--accent-soft);display:grid;place-items:center;color:var(--blue)}
+.pcard .ic svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8}
+.pcard h3{font-family:var(--serif);font-weight:400;font-size:24px;margin:4px 0 0}
+.pcard p{color:var(--ink-2);line-height:1.5;margin:0}
+.pcard ul{margin:4px 0 0;padding:0 0 0 18px;color:var(--ink-2);line-height:1.5;display:grid;gap:6px}
+.pform{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:28px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:28px;align-items:start}
+.pform h3{font-family:var(--serif);font-weight:400;font-size:26px;margin:0 0 8px}
+.pform p{color:var(--ink-2);line-height:1.5;margin:0}
+.pform .grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.pform label.f{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600;color:var(--ink-2)}
+.pform input,.pform select{font:inherit;font-size:15px;font-weight:400;padding:12px 14px;border:1px solid var(--rule);border-radius:8px;background:var(--bg);color:var(--ink);min-width:0}
+.pform .full{grid-column:1/-1}
+.jcard a.more{font-weight:600;color:var(--blue)}
+@media (max-width:860px){.partners .three,.pform,.pform .grid{grid-template-columns:minmax(0,1fr)}}
+
 .pill.ghost{background:var(--surface);color:var(--blue);box-shadow:inset 0 0 0 1.5px var(--blue)}
 .pill[disabled]{opacity:.6;cursor:progress}
 .pill:focus-visible,.form input:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
@@ -289,6 +316,9 @@ mark.good{background:#E7F5EE;color:#0B5E3C}
 .form{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
 .form input{flex:1 1 220px;min-width:0;font:inherit;padding:14px 16px;border-radius:3px;border:1px solid var(--rule);background:var(--bg);color:var(--ink)}
 .form input:focus{outline:none;border-color:var(--ink)}
+.pform .form{display:block;margin:0;width:100%}
+.pform .form input,.pform .form select{flex:none;width:100%;height:auto;padding:12px 14px;border-radius:8px}
+.pform .form select{appearance:auto}
 .note{font-size:14px;color:var(--muted);margin-top:10px;min-height:1.4em}
 .note.ok{color:var(--green)}.note.err{color:var(--heart)}
 
@@ -375,6 +405,7 @@ footer .brand .word{font-size:18px}
     <nav class="nav" aria-label="Main">
       <a href="#how">How review works</a>
       <a href="#example">Example</a>
+      <a href="#partners">Partners</a>
       <a href="#join">Join the beta</a>
     </nav>
     <div style="display:flex;gap:10px;align-items:center"><a href="/login" style="text-decoration:none;font-weight:600;font-size:15px">Sign in</a><a class="pill" href="/?tab=foryou">Explore the demo</a></div>
@@ -642,15 +673,58 @@ footer .brand .word{font-size:18px}
   <section class="sec" id="reviewers" aria-labelledby="why-h">
     <div class="wrap">
       <p class="eyebrow">For reviewers</p>
-      <h2 id="why-h">Why contribute a review?</h2>
-      <div class="three">
-        <div><h4>Improve how evidence is read</h4><p>Catch overstatements and missing caveats where people actually encounter research.</p></div>
-        <div><h4>Put your expertise to work</h4><p>Apply what you know about methods and your field to the claims that need it.</p></div>
-        <div><h4>Take part in useful discussion</h4><p>Reviews are scoped and structured, and authors can respond in the open.</p></div>
+      <h2 id="why-h">What you get as a reviewer</h2>
+      <p class="rlead">Peer review is skilled work that usually goes unseen and uncredited. On Lyncei, it counts.</p>
+      <div class="rgrid">
+        <div class="rb"><span class="chip ok">In the demo</span><h4>Credit you can show</h4><p>Every review you complete adds to the reviewer record on your profile, including the anonymous ones.</p></div>
+        <div class="rb"><span class="chip ok">In the demo</span><h4>Your choice of visibility</h4><p>Stay anonymous, or sign a review to put your name on it and build a reputation in your field.</p></div>
+        <div class="rb"><span class="chip ok">In the demo</span><h4>Reviews that fit your week</h4><p>Short, scoped reviews of a single post: one claim, one method or one source, not a full manuscript.</p></div>
+        <div class="rb"><span class="chip plan">Planned</span><h4>A record beyond Lyncei</h4><p>Export your review activity to ORCID, so it appears next to your publications.</p></div>
       </div>
-      <div class="status">
-        <p><span class="chip ok">In the demo</span> Write reviews anonymously or signed. Your profile keeps a record of the reviews you’ve written.</p>
-        <p><span class="chip plan">Planned</span> Exporting your review record to ORCID.</p>
+      <p class="rnote">Founding reviewers in the beta also help write the review guidelines and decide which features come next.</p>
+    </div>
+  </section>
+
+  <section class="sec partners" id="partners" aria-labelledby="partners-h">
+    <div class="wrap">
+      <p class="eyebrow">Partnerships</p>
+      <h2 id="partners-h">Build it with us</h2>
+      <p class="lead" style="max-width:720px">We’re looking for founding partners for the beta. These are pilots we want to design together, not finished products, and partners help decide what gets built first.</p>
+      <div class="three">
+        <div class="pcard">
+          <div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10l9-5 9 5-9 5-9-5z"/><path d="M7 12v4c0 1.5 2.2 3 5 3s5-1.5 5-3v-4"/></svg></div>
+          <h3>Universities and graduate programs</h3>
+          <p>A place for students and faculty to share research and learn to review it well.</p>
+          <ul><li>A beta cohort for your program</li><li>Visible credit for the reviews students write</li><li>Training in transparent review and science communication</li></ul>
+        </div>
+        <div class="pcard">
+          <div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3v6L4 18a2 2 0 0 0 1.7 3h12.6A2 2 0 0 0 20 18l-5-9V3"/><path d="M8 3h8"/></svg></div>
+          <h3>Research institutes and labs</h3>
+          <p>A public channel to explain your findings, with the evidence attached.</p>
+          <ul><li>Posts and short videos linked to your papers</li><li>Expert review of how your work is explained</li><li>Private spaces for internal review, explored with pilot partners</li></ul>
+        </div>
+        <div class="pcard">
+          <div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h12a4 4 0 0 1 4 4v12H8a4 4 0 0 1-4-4z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></div>
+          <h3>Journals and publishers</h3>
+          <p>Bring the conversation about your papers to where readers already are.</p>
+          <ul><li>Author explainers linked to the DOI</li><li>Expert discussion kept separate from your editorial decisions</li><li>Corrections and retractions shown on every linked post</li></ul>
+        </div>
+      </div>
+      <div class="pform">
+        <div>
+          <h3>Become a founding partner</h3>
+          <p>Tell us who you are and we’ll reach out to talk about a pilot. No commitment.</p>
+        </div>
+        <form class="form" data-interest="institutional" novalidate>
+          <div class="grid">
+            <label class="f" for="email-inst">Work email<input id="email-inst" type="email" name="email" placeholder="you@institution.edu" autocomplete="email" required aria-describedby="note-inst"></label>
+            <label class="f" for="org-inst">Organization<input id="org-inst" type="text" name="organization" placeholder="University, institute or journal" autocomplete="organization" maxlength="200"></label>
+            <label class="f full" for="type-inst">Type of organization<select id="type-inst" name="partnerType"><option value="university">University or graduate program</option><option value="institute">Research institute or lab</option><option value="publisher">Journal or publisher</option><option value="other">Other</option></select></label>
+          </div>
+          <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <button class="pill lg" type="submit" style="margin-top:14px">Request a partnership conversation</button>
+          <p class="note" id="note-inst" aria-live="polite"></p>
+        </form>
       </div>
     </div>
   </section>
@@ -672,18 +746,12 @@ footer .brand .word{font-size:18px}
           <p class="note" id="note-ind" aria-live="polite"></p>
         </div>
         <div class="jcard">
-          <h3>For labs and programs</h3>
-          <p>Explore a pilot for your research group or graduate program.</p>
-          <form class="form" data-interest="institutional" novalidate>
-            <label for="email-inst" class="sr">Work email address</label>
-            <input id="email-inst" type="email" name="email" placeholder="you@institution.edu" autocomplete="email" required aria-describedby="note-inst">
-            <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
-            <button class="pill lg ghost" type="submit">Express institutional interest</button>
-          </form>
-          <p class="note" id="note-inst" aria-live="polite"></p>
+          <h3>For universities, institutes and journals</h3>
+          <p>We’re looking for founding partners to design pilots with us.</p>
+          <a class="pill lg ghost" href="#partners" style="margin-top:16px">See partnerships <span aria-hidden="true">→</span></a>
         </div>
       </div>
-      <p class="small muted">We only ask for an email address, and we’ll use it only to contact you about the Lyncei beta.</p>
+      <p class="small muted">We only ask for what’s in these forms, and we’ll use it only to contact you about the Lyncei beta and partnerships.</p>
     </div>
   </section>
 </main>
@@ -726,7 +794,7 @@ footer .brand .word{font-size:18px}
 (function(){
   var MSG={
     individual:{added:"Thanks. You\u2019re on the waitlist; we\u2019ll email you when the beta opens.",exists:"This email is already on the waitlist."},
-    institutional:{added:"Thanks. We\u2019ll contact you about a pilot for your group or program.",exists:"We already have this email for institutional interest."}
+    institutional:{added:"Thanks. We\u2019ll reach out to talk about a partnership.",exists:"We already have this email for partnerships. We\u2019ll be in touch."}
   };
   document.querySelectorAll('form[data-interest]').forEach(function(form){
     var interest=form.getAttribute('data-interest');
@@ -745,7 +813,7 @@ footer .brand .word{font-size:18px}
       }
       btn.disabled=true; btn.textContent='Sending\u2026';
       try{
-        var res=await fetch('/api/waitlist',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,interest:interest,website:form.querySelector('.hp').value})});
+        var res=await fetch('/api/waitlist',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({email:email,interest:interest,website:form.querySelector('.hp').value},form.querySelector('[name=organization]')?{organization:form.querySelector('[name=organization]').value.trim(),partnerType:form.querySelector('[name=partnerType]').value}:{}))});
         var data=await res.json().catch(function(){return {};});
         if(res.status===201&&data.status==='added'){note.textContent=MSG[interest].added;note.classList.add('ok');form.reset();}
         else if(res.ok&&data.status==='exists'){note.textContent=MSG[interest].exists;note.classList.add('ok');}

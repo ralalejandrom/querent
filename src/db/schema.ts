@@ -224,9 +224,14 @@ export const notifications = pgTable("notifications", {
 export const waitlistInterestEnum = pgEnum("waitlist_interest", ["individual", "institutional"]);
 
 /** Beta waitlist sign-ups from the public landing page. One row per email and interest type. */
+export const partnerTypeEnum = pgEnum("partner_type", ["university", "institute", "publisher", "other"]);
+
 export const waitlist = pgTable("waitlist", {
   id: uuid("id").primaryKey().defaultRandom(),
   email: text("email").notNull(),
   interest: waitlistInterestEnum("interest").notNull(),
+  /** Institutional sign-ups only: the organization and what kind it is. */
+  organization: text("organization"),
+  partnerType: partnerTypeEnum("partner_type"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 }, (t) => [uniqueIndex("waitlist_email_interest_idx").on(sql`lower(${t.email})`, t.interest)]);

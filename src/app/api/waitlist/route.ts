@@ -4,13 +4,16 @@ import { db, schema } from "@/db";
 
 /**
  * Beta waitlist sign-up from the public landing page (/welcome).
- * Stores only an email address and the kind of interest (individual or institutional).
+ * Stores an email address and the kind of interest (individual or institutional);
+ * partnership requests also store the organization name and type.
  * Responds 201 when a new row was saved, 200 when the address was already on the list,
  * and an error status otherwise, so the page only reports success after a real write.
  */
 const Body = z.object({
   email: z.string().trim().toLowerCase().max(254).email(),
   interest: z.enum(["individual", "institutional"]),
+  organization: z.string().trim().max(200).optional(),
+  partnerType: z.enum(["university", "institute", "publisher", "other"]).optional(),
   website: z.string().max(500).optional(), // honeypot: real people leave it empty
 });
 
@@ -44,7 +47,12 @@ export async function POST(req: Request) {
 
   try {
     const rows = await db.insert(schema.waitlist)
-      .values({ email: parsed.data.email, interest: parsed.data.interest })
+      .values({
+        email: parsed.data.email,
+        interest: parsed.data.interest,
+        organization: parsed.data.interest === "institutional" ? parsed.data.organization || null : null,
+        partnerType: parsed.data.interest === "institutional" ? parsed.data.partnerType ?? null : null,
+      })
       .onConflictDoNothing()
       .returning({ id: schema.waitlist.id });
     return rows.length
