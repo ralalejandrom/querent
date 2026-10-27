@@ -52,7 +52,8 @@ svg{display:block}
 /* ---------- header ---------- */
 .site-header .wrap{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-block:22px}
 .brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink)}
-.brand .word{font-family:var(--serif);font-weight:400;font-size:28px;letter-spacing:.01em}
+@font-face{font-family:"DM Sans";src:url(/fonts/dm-sans-500.woff2) format("woff2");font-weight:500;font-display:swap}
+.brand .word{font-family:"DM Sans",var(--sans);font-weight:500;letter-spacing:-.02em;font-size:28px}
 .nav{display:flex;gap:28px;font-size:15px;color:var(--ink-2)}
 .nav a{text-decoration:none}
 .nav a:hover{color:var(--ink)}
@@ -88,7 +89,7 @@ svg{display:block}
 .laptop .base::after{content:"";display:block;width:16%;height:6px;margin:0 auto;background:#8A8F96;border-radius:0 0 8px 8px}
 .app{background:var(--surface);border-radius:8px;display:grid;grid-template-columns:150px minmax(0,1fr) 190px;flex:1;min-height:0;overflow:hidden;font-size:12px;color:var(--ink)}
 .app .side{border-right:1px solid var(--rule);padding:14px 10px;display:flex;flex-direction:column;gap:4px}
-.app .side .lg{font-family:var(--serif);font-weight:400;font-size:18px;padding:2px 8px 14px}
+.app .side .lg{font-family:"DM Sans",var(--sans);font-weight:500;letter-spacing:-.02em;font-size:18px;padding:2px 8px 14px}
 .app .side a{display:flex;gap:9px;align-items:center;padding:7px 8px;border-radius:7px;text-decoration:none;color:var(--ink-2)}
 .app .side a.on{background:color-mix(in srgb,var(--blue) 12%,transparent);color:var(--ink);font-weight:600}
 .app .side svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.7}
@@ -138,7 +139,7 @@ svg{display:block}
 .phone .scr{flex:1;display:flex;flex-direction:column;background:var(--surface);border-radius:36px;overflow:hidden;padding:12px 16px 10px;font-size:12px;position:relative}
 .phone .notch{width:34%;height:24px;background:#1C1F24;border-radius:14px;margin:0 auto 14px;flex:none}
 .phone .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.phone .top b{font-family:var(--serif);font-weight:400;font-size:17px}
+.phone .top b{font-family:"DM Sans",var(--sans);font-weight:500;letter-spacing:-.02em;font-size:17px}
 .phone .tabs{gap:10px;font-size:10px}
 .phone .ptitle{font-size:13.5px}
 .chart{height:64px;border:1px solid var(--rule);border-radius:7px;margin-bottom:8px;background:
