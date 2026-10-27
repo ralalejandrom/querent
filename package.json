@@ -2,7 +2,7 @@
   "name": "querent",
   "version": "0.1.0",
   "private": true,
-  "description": "Querent: the social network where every post can be peer-reviewed.",
+  "description": "Lyncei: the social network where every post can be peer-reviewed.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

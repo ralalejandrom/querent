@@ -23,7 +23,7 @@ async function main() {
   const T = Object.fromEntries(topics.map((t) => [t.label, t.id]));
 
   const people = [
-    ["admin", "Querent Admin", "Platform team", "Runs moderation and reviewer verification in development.", ""],
+    ["admin", "Lyncei Admin", "Platform team", "Runs moderation and reviewer verification in development.", ""],
     ["elenacastro", "Dr. Elena Castro", "Cardiology", "Clinician-scientist studying heart failure therapies.", "Trial follow-up in HFpEF."],
     ["marcuslee", "Dr. Marcus Lee", "Biostatistics", "Statistician. I review trial designs and meta-analyses.", "Methods for small-sample trials."],
     ["amirakhalil", "Dr. Amira Khalil", "Internal Medicine", "Internist and open reviewer.", "Evidence synthesis in metabolic disease."],

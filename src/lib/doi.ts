@@ -59,7 +59,7 @@ export async function fetchCrossref(doi: string, fetchImpl: typeof fetch = fetch
   const mailto = process.env.CROSSREF_MAILTO;
   try {
     const res = await fetchImpl(`https://api.crossref.org/works/${encodeURIComponent(doi)}`, {
-      headers: { "User-Agent": `Querent/0.1 (https://querent.app${mailto ? `; mailto:${mailto}` : ""})` },
+      headers: { "User-Agent": `Lyncei/0.1 (https://lyncei.com${mailto ? `; mailto:${mailto}` : ""})` },
       signal: AbortSignal.timeout(8000),
     });
     if (!res.ok) return null;

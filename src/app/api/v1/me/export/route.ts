@@ -16,6 +16,6 @@ export async function GET() {
     db.select().from(schema.saves).where(eq(schema.saves.userId, user.id)),
   ]);
   return new NextResponse(JSON.stringify({ exportedAt: new Date().toISOString(), profile: profile[0], posts, reviews, contributions, follows, saves }, null, 2), {
-    headers: { "Content-Type": "application/json", "Content-Disposition": `attachment; filename="querent-export-${user.handle}.json"` },
+    headers: { "Content-Type": "application/json", "Content-Disposition": `attachment; filename="lyncei-export-${user.handle}.json"` },
   });
 }

@@ -39,8 +39,8 @@ export async function sendLoginLink(email: string, next = "/"): Promise<void> {
   const link = `${appUrl()}/auth/verify?token=${encodeURIComponent(token)}&next=${encodeURIComponent(safeNext)}`;
   await sendEmail({
     to: email,
-    subject: "Your Querent sign-in link",
-    text: `Sign in to Querent:\n\n${link}\n\nThis link expires in ${LOGIN_TOKEN_MINUTES} minutes. If you didn't ask for it, you can ignore this email.`,
+    subject: "Your Lyncei sign-in link",
+    text: `Sign in to Lyncei:\n\n${link}\n\nThis link expires in ${LOGIN_TOKEN_MINUTES} minutes. If you didn't ask for it, you can ignore this email.`,
   });
 }
 

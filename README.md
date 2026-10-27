@@ -1,6 +1,6 @@
-# Querent
+# Lyncei
 
-**Live:** https://querent.science (demo data)
+**Live:** https://lyncei.com (demo data)
 
 **The social network where every post can be peer-reviewed.**
 Science, made social. Rigor, made visible. Scientists, made human.
@@ -120,5 +120,5 @@ scripts/grant-role.ts
 
 - Reach never changes rigor: reactions live in their own table and are not inputs to `computeRigor`.
 - Unverified DOIs are labeled as such and can't be reviewed; metadata is never invented.
-- Reviews require a declared conflict of interest; reviews are anonymous by default: Querent verifies the reviewer, readers see “Anonymous · verified reviewer”, and the review counts toward the reviewer's record without being listed publicly.
+- Reviews require a declared conflict of interest; reviews are anonymous by default: Lyncei verifies the reviewer, readers see “Anonymous · verified reviewer”, and the review counts toward the reviewer's record without being listed publicly.
 - Moderation decisions require a rationale that the author can see, and nothing is silently deleted.
