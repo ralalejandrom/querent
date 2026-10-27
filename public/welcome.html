@@ -140,6 +140,24 @@ img.av{object-fit:cover;background:#E4E7EC}
 
 .phone{position:absolute;right:0;bottom:0;width:300px;aspect-ratio:7.16/14.76;display:flex;background:#1C1F24;border-radius:46px;padding:11px;box-shadow:0 40px 60px -28px rgba(20,26,34,.55)}
 .phone .scr{flex:1;display:flex;flex-direction:column;background:var(--surface);border-radius:36px;overflow:hidden;padding:12px 16px 10px;font-size:12px;position:relative}
+.phone .feedwin{flex:1;min-height:0;overflow:hidden;position:relative;margin:0 -16px;padding:0 16px}
+.phone .feedtrack{will-change:transform}
+.mreel{position:relative;height:var(--reel-h,400px);border-radius:16px;overflow:hidden;background:#0F1020;margin:6px 0 10px;color:#fff}
+.mreel .art{position:absolute;inset:0;width:100%;height:100%}
+.mreel .mwho{position:absolute;top:12px;left:12px;display:flex;align-items:center;gap:7px;font-size:11px}
+.mreel .mwho .av{width:24px;height:24px}
+.mreel .mplay{position:absolute;left:50%;top:42%;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3)}
+.mreel .mplay::after{content:"";position:absolute;left:17px;top:13px;border-left:13px solid #fff;border-top:9px solid transparent;border-bottom:9px solid transparent}
+.mreel .mcap{position:absolute;left:12px;right:12px;bottom:12px;display:grid;gap:7px;justify-items:start}
+.mreel .mcap p{margin:0;font-family:var(--serif);font-size:14px;line-height:1.25;text-shadow:0 1px 6px rgba(0,0,0,.4)}
+.mreel .msrc{font-size:9.5px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:3px 8px}
+.mreel .mbar{width:100%;height:3px;border-radius:2px;background:rgba(255,255,255,.25);overflow:hidden}
+.mreel .mbar i{display:block;height:100%;width:0;background:#fff}
+.phone.live .feedtrack{animation:feedscroll 12s cubic-bezier(.65,0,.35,1) infinite}
+.phone.live .mreel .mbar i{animation:reelbar 12s linear infinite}
+@keyframes feedscroll{0%,22%{transform:translateY(0)}32%,80%{transform:translateY(calc(-1 * var(--shift,0px)))}90%,100%{transform:translateY(0)}}
+@keyframes reelbar{0%,32%{width:0}80%{width:100%}81%,100%{width:0}}
+@media (prefers-reduced-motion:reduce){.phone.live .feedtrack,.phone.live .mreel .mbar i{animation:none}}
 .phone .notch{width:34%;height:24px;background:#1C1F24;border-radius:14px;margin:0 auto 14px;flex:none}
 .phone .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
 .phone .top b{font-family:"DM Sans",var(--sans);font-weight:500;letter-spacing:-.02em;font-size:17px}
@@ -428,7 +446,6 @@ footer .brand .word{font-size:18px}
   <section class="hero">
     <div class="wrap">
       <div>
-        <p class="eyebrow">Social media for science, with peer review built in</p>
         <h1>The future of science, <em>reviewed in the open.</em></h1>
         <p class="lede">Share your work. Get it reviewed by experts in your field.</p>
         <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center"><a class="pill lg" href="/?tab=foryou">Explore the demo <span aria-hidden="true">→</span></a><a href="#join" style="font-weight:600;text-decoration:none;border-bottom:1px solid currentColor">Join the beta waitlist</a></div>
@@ -484,6 +501,7 @@ footer .brand .word{font-size:18px}
             <div class="notch"></div>
             <div class="top"><b>Lyncei</b><svg width="14" height="14" style="stroke:var(--ink);fill:none;stroke-width:2"><use href="#i-search"/></svg></div>
             <div class="tabs"><span class="on">For you</span><span>Following</span><span>Clinical</span></div>
+            <div class="feedwin"><div class="feedtrack">
             <div class="post-h"><img class="av" src="https://images.unsplash.com/photo-1544168190-79c17527004f?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><div><b>Dr. Jonah Park</b><small>Oncologist</small></div><span class="t">4h</span></div>
             <div class="ptitle">Updated meta-analysis on neoadjuvant immunotherapy in early-stage NSCLC</div>
             <div class="chart"></div>
@@ -492,6 +510,22 @@ footer .brand .word{font-size:18px}
             <div class="post-h" style="border-top:1px solid var(--rule);padding-top:10px"><img class="av" src="https://images.unsplash.com/photo-1765005204058-10418f5123c5?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><div><b>Sofia Mendes</b><small>PhD student · Neuroscience</small></div><span class="t">6h</span></div>
             <div class="ptitle">Behind the paper: why our sleep study surprised us</div>
             <div class="acts"><span class="h"><svg><use href="#i-heart"/></svg>41</span><span><svg><use href="#i-chat"/></svg>9</span><span><svg><use href="#i-share"/></svg>3</span></div>
+              <div class="mreel">
+                <svg class="art" viewBox="0 0 240 420" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                  <defs><radialGradient id="pg1" cx="50%" cy="40%" r="75%"><stop offset="0" stop-color="#2E3A6B"/><stop offset="1" stop-color="#0F1020"/></radialGradient></defs>
+                  <rect width="240" height="420" fill="url(#pg1)"/>
+                  <g fill="none" stroke="#9AA8FF" stroke-opacity=".6" stroke-width="1.3"><ellipse cx="120" cy="170" rx="70" ry="26"/><ellipse cx="120" cy="170" rx="70" ry="26" transform="rotate(60 120 170)"/><ellipse cx="120" cy="170" rx="70" ry="26" transform="rotate(120 120 170)"/></g>
+                  <circle cx="120" cy="170" r="9" fill="#DDE3FF"/>
+                </svg>
+                <div class="mwho"><img class="av" src="https://images.unsplash.com/photo-1618053448748-b7251851d014?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><b>Immunology postdoc</b></div>
+                <span class="mplay"></span>
+                <div class="mcap">
+                  <p>What our T-cell study does, and doesn’t, show</p>
+                  <span class="msrc">DOI linked · Source checked</span>
+                  <span class="mbar"><i></i></span>
+                </div>
+              </div>
+            </div></div>
             <div class="dock">
               <div class="on"><svg><use href="#i-home"/></svg>Home</div>
               <div><svg><use href="#i-search"/></svg>Explore</div>
@@ -817,6 +851,21 @@ footer .brand .word{font-size:18px}
   function all(){phoneFit();fit();}
   all(); window.addEventListener('resize',all); window.addEventListener('load',all);
   if(document.fonts&&document.fonts.ready) document.fonts.ready.then(all);
+})();
+
+
+/* Hero phone: size the in-feed reel to the visible window and scroll the feed to it in a loop (CSS animation). */
+(function(){
+  var ph=document.querySelector('.hero .phone'); if(!ph) return;
+  var win=ph.querySelector('.feedwin'), reel=ph.querySelector('.mreel'); if(!win||!reel) return;
+  function fit(){
+    var h=win.clientHeight; if(!h) return;
+    reel.style.setProperty('--reel-h',(h-16)+'px');
+    ph.style.setProperty('--shift',(reel.offsetTop-6)+'px');
+    ph.classList.add('live');
+  }
+  if(document.readyState==='complete') fit(); else window.addEventListener('load',fit);
+  window.addEventListener('resize',fit);
 })();
 
 /* Beta waitlist: posts to /api/waitlist (see src/app/api/waitlist/route.ts). Success is shown only after the server confirms the row was saved. */
