@@ -16,7 +16,7 @@ export default async function Reviews() {
       <>
         <main className="main" id="main">
           <h1 className="pg">Reviews</h1>
-          <p className="pgsub">Peer review happens here: verified, scoped and credited. Reviewers stay anonymous unless they choose to sign.</p>
+          <p className="pgsub">Verified, scoped and credited peer review. The review is public; the reviewer’s identity is protected.</p>
           <Empty title="Reviewer access needed">Verified reviewers see posts in their fields that are waiting for review. {user ? "An integrity admin grants reviewer status after checking your expertise." : <Link href="/login?next=/reviews">Sign in</Link>}</Empty>
         </main>
         <Rail />

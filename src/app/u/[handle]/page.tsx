@@ -55,9 +55,9 @@ export default async function Profile({ params }: { params: Promise<{ handle: st
         {list.length ? list.map((p) => <PostCard key={p.id} p={p} signedIn={!!viewer} />) : <Empty title="No posts yet">{isMe ? "Share your first post: a summary, a figure or an open question." : "Nothing posted yet."}</Empty>}
         <div className="sec"><h2>Reviews written</h2></div>
         {reviews.length ? reviews.map(({ r, title }) => (
-          <div className="card" key={r.id}><div className="rtype">{REVIEW_TYPE_LABELS[r.type as ReviewType]} · {r.recommendation}</div><h2 className="ptitle" style={{ fontSize: 17, marginTop: 4 }}><Link href={`/p/${r.postId}`}>{title}</Link></h2><p className="hint" style={{ margin: 0 }}>{r.isSigned ? "Signed" : "Anonymous (only you see it here)"} · Conflicts: {r.conflicts}</p></div>
-        )) : <p className="muted">{isMe ? "Reviews you write are credited here, including anonymous ones." : hiddenReviews > 0 ? "" : "No reviews yet."}</p>}
-        {hiddenReviews > 0 && <p className="muted">{hiddenReviews} anonymous {hiddenReviews === 1 ? "review" : "reviews"}, counted but not listed.</p>}
+          <div className="card" key={r.id}><div className="rtype">{REVIEW_TYPE_LABELS[r.type as ReviewType]} · {r.recommendation}</div><h2 className="ptitle" style={{ fontSize: 17, marginTop: 4 }}><Link href={`/p/${r.postId}`}>{title}</Link></h2><p className="hint" style={{ margin: 0 }}>{r.isSigned ? "Signed" : "Identity protected (only you see it here)"} · Conflicts: {r.conflicts}</p></div>
+        )) : <p className="muted">{isMe ? "Every review you write is credited here, including those with your identity protected." : hiddenReviews > 0 ? "" : "No reviews yet."}</p>}
+        {hiddenReviews > 0 && <p className="muted">{hiddenReviews} more {hiddenReviews === 1 ? "review" : "reviews"} with identity protected, credited but not listed.</p>}
       </main>
       <Rail />
     </>

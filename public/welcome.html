@@ -27,18 +27,18 @@
 /* Layout: product-marketing page. Hero = serif thesis on the left, laptop + phone product shots on the right over a soft architectural backdrop; then four feature columns, each with a live-looking UI card; then founding-institutions band and footer. */
 :root{
   --bg:#FFFFFF; --surface:#FFFFFF; --ink:#0E1116; --ink-2:#374151; --muted:#6B7280; --rule:#E5E7EB;
-  --green:#0E7A4E; --green-soft:#E7F5EE; --amber:#A15C07; --amber-soft:#FDF3E2; --heart:#C0262D; --blue:#0B3D91;
-  --sky-1:#F5F7FA; --sky-2:#EEF1F5; --stone:#DCE2EA;
+  --green:#0E7A4E; --green-soft:#E7F5EE; --amber:#A15C07; --amber-soft:#FDF3E2; --heart:#C0262D; --blue:#0F3D33;
+  --sky-1:#F4F7F5; --sky-2:#EDF2EF; --stone:#DAE3DE;
   --serif:Georgia,"Iowan Old Style","Palatino Linotype","DejaVu Serif",serif;
   --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#0B0D10; --surface:#13161B; --ink:#F3F4F6; --ink-2:#CBD2DB; --muted:#8B95A3; --rule:#262B33;
-  --green:#4FC48D; --green-soft:#10251B; --amber:#E7A94A; --amber-soft:#2A1F10; --heart:#F07A7F; --blue:#8FB2F5;
+  --green:#4FC48D; --green-soft:#10251B; --amber:#E7A94A; --amber-soft:#2A1F10; --heart:#F07A7F; --blue:#7FC4AC;
   --sky-1:#111419; --sky-2:#0E1115; --stone:#232932; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0B0D10; --surface:#13161B; --ink:#F3F4F6; --ink-2:#CBD2DB; --muted:#8B95A3; --rule:#262B33;
-  --green:#4FC48D; --green-soft:#10251B; --amber:#E7A94A; --amber-soft:#2A1F10; --heart:#F07A7F; --blue:#8FB2F5;
+  --green:#4FC48D; --green-soft:#10251B; --amber:#E7A94A; --amber-soft:#2A1F10; --heart:#F07A7F; --blue:#7FC4AC;
   --sky-1:#111419; --sky-2:#0E1115; --stone:#232932; color-scheme:dark}
 
 *{box-sizing:border-box}
@@ -224,8 +224,14 @@ footer .brand .word{font-size:18px}
   .nav{display:none}
 }
 @media (max-width:760px){
-  /* Narrow screens: keep the full Mac + iPhone composition at its desktop width; a script scales it down to fit. */
+  /* Narrow screens: keep the real-scale Mac + iPhone composition; a script enlarges it and lets the Mac bleed off the left edge so the iPhone stays legible. */
   .devices{width:820px;max-width:none}
+  .hero .wrap{padding-block:20px 8px;gap:28px}
+  .hero h1{font-size:44px;line-height:1.02}
+  .hero .lede{font-size:18px;margin:18px 0 24px}
+  .trust{display:grid;grid-template-columns:1fr;gap:12px;margin-top:28px}
+  .trust div{display:flex;align-items:center;gap:12px;max-width:none;font-size:15px}
+  .trust svg{width:22px;height:22px;flex:none}
   .inst .wrap{grid-template-columns:1fr;gap:28px}
   .inst .right{border-left:0;padding-left:0;border-top:1px solid var(--rule);padding-top:28px}
   .commit{grid-template-columns:1fr}
@@ -322,7 +328,7 @@ footer .brand .word{font-size:18px}
                 <div class="ptitle">Early results from a multicenter trial on SGLT2 inhibitors in heart failure with preserved ejection fraction</div>
                 <div class="pbody">The trial reports a reduction in the composite primary outcome. Here's a summary of the key findings, the limitations and what they could mean for practice.</div>
                 <div class="study"><span class="thumb"></span><div><b>Original study</b><span>DOI linked · Peer-reviewed article · 2026</span></div></div>
-                <div class="reviewed"><span class="check"><svg><use href="#i-check"/></svg></span><div><b>Verified review completed</b><span>3 anonymous experts · Methodology, Statistics, Clinical relevance</span></div><span class="vr">View review</span></div>
+                <div class="reviewed"><span class="check"><svg><use href="#i-check"/></svg></span><div><b>Verified review completed</b><span>3 verified experts · Methodology, Statistics, Clinical relevance</span></div><span class="vr">View review</span></div>
                 <div class="acts"><span class="h"><svg><use href="#i-heart"/></svg>142</span><span><svg><use href="#i-chat"/></svg>28</span><span><svg><use href="#i-share"/></svg>12</span></div>
               </div>
               <aside class="right">
@@ -338,7 +344,7 @@ footer .brand .word{font-size:18px}
                   <div class="rv"><span class="av anon">R1</span><div>Reviewer 1<span>Biostatistics · verified</span></div></div>
                   <div class="rv"><span class="av anon">R2</span><div>Reviewer 2<span>Internal medicine · verified</span></div></div>
                   <div class="rv"><span class="av anon">R3</span><div>Reviewer 3<span>Cardiology · verified</span></div></div>
-                  <div class="anon-note">Names withheld unless a reviewer signs</div>
+                  <div class="anon-note">Reviewer identities protected</div>
                 </div>
               </aside>
             </div>
@@ -386,12 +392,12 @@ footer .brand .word{font-size:18px}
 
       <div class="feat" id="review">
         <h3><span class="num">02</span>Verified Review</h3>
-        <p>Experts check each post against its source. Reviews are public; reviewers stay anonymous unless they sign.</p>
+        <p>Verified experts check each post against its source. The review is public. The reviewer’s identity is protected.</p>
         <div class="card">
           <h5>Verified review · identities protected</h5>
-          <div class="rrow"><span class="st done"><svg><use href="#i-check"/></svg></span><div><b>Methodological assessment</b><small>Completed · Anonymous, Internal medicine</small></div><span class="chev">›</span></div>
-          <div class="rrow"><span class="st done"><svg><use href="#i-check"/></svg></span><div><b>Statistical review</b><small>Completed · Anonymous, Biostatistics</small></div><span class="chev">›</span></div>
-          <div class="rrow"><span class="st prog"></span><div><b class="prog-t">Clinical relevance</b><small>In progress · Anonymous, Cardiology</small></div><span class="chev">›</span></div>
+          <div class="rrow"><span class="st done"><svg><use href="#i-check"/></svg></span><div><b>Methodological assessment</b><small>Completed · Verified expert, Internal medicine</small></div><span class="chev">›</span></div>
+          <div class="rrow"><span class="st done"><svg><use href="#i-check"/></svg></span><div><b>Statistical review</b><small>Completed · Verified expert, Biostatistics</small></div><span class="chev">›</span></div>
+          <div class="rrow"><span class="st prog"></span><div><b class="prog-t">Clinical relevance</b><small>In progress · Verified expert, Cardiology</small></div><span class="chev">›</span></div>
           <div class="rrow"><span class="st todo"></span><div><b>Summary and recommendation</b></div><span class="chev">›</span></div>
           <div class="rrow"><span class="st todo"></span><div><b>Author response</b></div><span class="chev">›</span></div>
         </div>
@@ -456,10 +462,12 @@ footer .brand .word{font-size:18px}
 (function(){
   var d=document.querySelector('.devices'); if(!d) return;
   function fit(){
-    if(window.innerWidth>760){d.style.zoom='';return;}
+    if(window.innerWidth>760){d.style.zoom='';d.style.marginLeft='';return;}
     var host=d.parentElement, cs=getComputedStyle(host);
     var w=host.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);
-    d.style.zoom=String(Math.min(1,w/820));
+    var z=Math.min(1,1.8*w/820);
+    d.style.zoom=String(z);
+    d.style.marginLeft=((w-820*z)/z)+'px';
   }
   var lap=d.querySelector('.laptop'), ph=d.querySelector('.phone');
   function phoneFit(){

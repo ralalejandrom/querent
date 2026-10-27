@@ -31,8 +31,8 @@ export default async function ReviewPage({ params }: { params: Promise<{ id: str
             <label className="f">Summary of your assessment<textarea name="summary" rows={5} placeholder="What did you check, what holds up, and what should readers keep in mind?" /></label>
             <label className="f">Recommendation<select name="recommendation"><option>Sound</option><option>Sound with caveats</option><option>Faithful to source</option><option>Major concerns</option><option>Not faithful to source</option></select></label>
             <label className="f">Conflicts of interest <small>Required. Write “None” if you have none.</small><input type="text" name="conflicts" placeholder="e.g. None, or: consulted for a company that makes this drug" /></label>
-            <div className="notice" style={{ margin: 0 }}><b>Anonymous by default.</b> Readers and the author see “Anonymous · verified reviewer”. Querent knows who you are, so your credentials and conflicts are checked, and the review still counts toward your reviewer record.</div>
-            <div className="checks"><label><input type="checkbox" name="signed" /> Sign this review with my name instead</label></div>
+            <div className="notice" style={{ margin: 0 }}><b>Your identity is protected.</b> Readers and the author see “Verified reviewer · identity protected”. Querent verifies your credentials and conflicts privately, and the review is credited to your reviewer record.</div>
+            <div className="checks"><label><input type="checkbox" name="signed" /> Publish this review under my name</label></div>
             <div className="row"><Submit>Publish review</Submit><Link className="btn" href={`/p/${id}`}>Cancel</Link></div>
           </ActionForm>
         )}

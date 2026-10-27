@@ -2,8 +2,8 @@
    Georgia for headings and the wordmark; the platform's own sans for reading. */
 :root{
   --bg:#FFFFFF; --surface:#FFFFFF; --sunk:#F4F6F8; --ink:#0E1116; --ink-2:#374151; --muted:#6B7280; --rule:#E5E7EB;
-  --accent:#0B3D91; --accent-soft:#EAF0FA; --gold:#B7862F;
-  --green:#0E7A4E; --green-soft:#E7F5EE; --amber:#A15C07; --amber-soft:#FDF3E2; --red:#C0262D; --red-soft:#FDECEC; --blue:#0B3D91; --blue-soft:#EAF0FA;
+  --accent:#0F3D33; --accent-soft:#E7F0EC; --gold:#B7862F;
+  --green:#0E7A4E; --green-soft:#E7F5EE; --amber:#A15C07; --amber-soft:#FDF3E2; --red:#C0262D; --red-soft:#FDECEC; --blue:#0F3D33; --blue-soft:#E7F0EC;
   --serif:Georgia,"Iowan Old Style","Palatino Linotype","DejaVu Serif",serif;
   --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
   --mono:ui-monospace,"SFMono-Regular",Menlo,monospace;
@@ -11,8 +11,8 @@
 }
 @media (prefers-color-scheme: dark){:root{
   --bg:#0B0D10; --surface:#13161B; --sunk:#1A1E24; --ink:#F3F4F6; --ink-2:#CBD2DB; --muted:#8B95A3; --rule:#262B33;
-  --accent:#8FB2F5; --accent-soft:#15223A; --gold:#D9AE5F;
-  --green:#4FC48D; --green-soft:#10251B; --amber:#E7A94A; --amber-soft:#2A1F10; --red:#F07A7F; --red-soft:#2C1416; --blue:#8FB2F5; --blue-soft:#15223A; color-scheme:dark}}
+  --accent:#7FC4AC; --accent-soft:#102620; --gold:#D9AE5F;
+  --green:#4FC48D; --green-soft:#10251B; --amber:#E7A94A; --amber-soft:#2A1F10; --red:#F07A7F; --red-soft:#2C1416; --blue:#7FC4AC; --blue-soft:#102620; color-scheme:dark}}
 
 *{box-sizing:border-box}
 html,body{margin:0}
@@ -45,7 +45,7 @@ svg.i{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.7;flex
 .tabs{display:flex;gap:22px;border-bottom:1px solid var(--rule);margin-bottom:16px;overflow-x:auto;scrollbar-width:none}
 .tabs a{padding:0 0 10px;color:var(--muted);white-space:nowrap;border-bottom:2px solid transparent;text-decoration:none}
 .tabs a.on{color:var(--accent);font-weight:700;border-color:var(--accent)}
-h1.pg{font-family:var(--serif);font-weight:700;font-size:31px;margin:4px 0 6px}
+h1.pg{font-family:var(--serif);font-weight:400;font-size:32px;letter-spacing:-.01em;margin:4px 0 6px}
 .pgsub{color:var(--muted);margin:0 0 18px}
 
 .card{background:var(--surface);border:1px solid var(--rule);border-radius:4px;padding:18px;margin-bottom:14px}
@@ -59,7 +59,7 @@ h1.pg{font-family:var(--serif);font-weight:700;font-size:31px;margin:4px 0 6px}
 .who small{color:var(--muted);font-size:12.5px}
 .ph .t{margin-left:auto;color:var(--muted);font-size:12.5px;white-space:nowrap}
 .kind{display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
-.ptitle{font-family:var(--serif);font-size:21px;line-height:1.3;font-weight:700;margin:0 0 6px}
+.ptitle{font-family:var(--serif);font-size:22px;line-height:1.28;font-weight:400;letter-spacing:-.005em;margin:0 0 6px}
 .ptitle a{text-decoration:none}
 .ptitle a:hover{text-decoration:underline}
 .pbody{color:var(--ink-2);margin:0 0 12px;white-space:pre-wrap}
@@ -165,10 +165,10 @@ label.f small{font-weight:400;color:var(--muted)}
 
 .qcard{display:flex;gap:14px;align-items:flex-start}
 .qmark{width:40px;height:40px;border-radius:3px;background:var(--accent-soft);color:var(--accent);font-weight:700;display:grid;place-items:center;font-family:var(--serif);font-size:22px;font-weight:600;flex:none}
-.qcard h2{font-family:var(--serif);font-weight:700;font-size:19px;margin:0 0 4px;line-height:1.3}
+.qcard h2{font-family:var(--serif);font-weight:400;font-size:20px;margin:0 0 4px;line-height:1.3}
 .qcard h2 a{text-decoration:none}
 .profile-h{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
-.profile-h h1{font-family:var(--serif);font-weight:700;font-size:28px;margin:0}
+.profile-h h1{font-family:var(--serif);font-weight:400;font-size:30px;margin:0}
 .stats{display:flex;gap:26px;margin:16px 0;flex-wrap:wrap}
 .stats b{display:block;font-size:22px;font-family:var(--serif);font-weight:500}
 .stats span{font-size:12.5px;color:var(--muted)}
@@ -190,6 +190,15 @@ label.f small{font-weight:400;color:var(--muted)}
   .dock a.on{color:var(--ink)}
   .dock .plus{background:var(--accent);color:var(--surface);border-radius:4px;padding:8px 14px}
   .grid2{grid-template-columns:1fr}
+  .mtop{border-bottom:1px solid var(--rule);padding:10px 16px;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+  .mtop .brand{font-size:20px;gap:8px}
+  .mtop .brand svg{width:24px;height:24px}
+  h1.pg{font-size:28px}
+  .ptitle{font-size:20px}
+  .tabs{gap:18px;-webkit-mask-image:linear-gradient(90deg,#000 85%,transparent);mask-image:linear-gradient(90deg,#000 85%,transparent);padding-right:24px}
+  .auth{margin:5vh auto}
+  .auth > .brand{display:none}
+  .card{padding:16px}
   .cmt .body{margin-left:0}.cmt.reply{margin-left:16px}
 }
 
