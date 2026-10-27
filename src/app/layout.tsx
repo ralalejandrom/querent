@@ -9,7 +9,7 @@ import { NavLink } from "@/components/client";
 import { signOutAction } from "./actions";
 
 const TAGLINE = "The future of science, reviewed in the open";
-const PITCH = "Share your research. Get it reviewed by people who know the field. See the whole conversation.";
+const PITCH = "The social network for science, with expert review built in. Share research, follow the questions you care about, and see what experts think.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.SITE_URL || process.env.APP_URL || "https://lyncei.com"),
