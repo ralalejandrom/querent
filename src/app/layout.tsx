@@ -34,7 +34,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <aside className="side" aria-label="Main navigation">
             <Link className="brand" href="/"><Mark /><span className="word">Querent</span></Link>
             <nav style={{ display: "grid", gap: 4 }}>
-              <NavLink href="/" exact><Icon name="home" />Home</NavLink>
+              <NavLink href="/?tab=foryou" exact><Icon name="home" />Home</NavLink>
               <NavLink href="/questions"><Icon name="q" />Questions</NavLink>
               <NavLink href="/reviews"><Icon name="review" />Reviews</NavLink>
               {user && <NavLink href="/library"><Icon name="book" />My Library</NavLink>}
@@ -60,7 +60,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           {children}
         </div>
         <nav className="dock" aria-label="Mobile navigation">
-          <NavLink href="/" exact className=""><Icon name="home" />Home</NavLink>
+          <NavLink href="/?tab=foryou" exact className=""><Icon name="home" />Home</NavLink>
           <NavLink href="/questions" className=""><Icon name="q" />Questions</NavLink>
           <Link className="plus" href="/new" aria-label="Create post"><Icon name="plus" /></Link>
           <NavLink href="/reviews" className=""><Icon name="review" />Reviews</NavLink>

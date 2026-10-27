@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { getFeed, type FeedTab } from "@/lib/queries";
 import { Empty, Icon, PostCard } from "@/components/ui";
@@ -10,6 +11,8 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ t
   const sp = await searchParams;
   const tab = (TABS.find(([k]) => k === sp.tab)?.[0] ?? "foryou") as FeedTab;
   const user = await getCurrentUser();
+  // First-time visitors see the product story; the feed is one click away.
+  if (!user && !sp.tab && !sp.q) redirect("/welcome");
   const list = await getFeed(user?.id ?? null, tab, sp.q);
   const href = (t: string) => `/?tab=${t}${sp.q ? `&q=${encodeURIComponent(sp.q)}` : ""}`;
   return (

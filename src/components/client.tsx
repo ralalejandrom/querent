@@ -36,7 +36,8 @@ export function ActionForm({ action, children, className = "form", resetOnOk = f
 
 export function NavLink({ href, children, className = "navb", exact = false }: { href: string; children: ReactNode; className?: string; exact?: boolean }) {
   const path = usePathname();
-  const on = exact ? path === href : path === href || path.startsWith(href + "/");
+  const base = href.split("?")[0];
+  const on = exact ? path === base : path === base || path.startsWith(base + "/");
   return <Link href={href} className={`${className} ${on ? "on" : ""}`} aria-current={on ? "page" : undefined}>{children}</Link>;
 }
 

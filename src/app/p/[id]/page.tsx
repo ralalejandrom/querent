@@ -54,7 +54,7 @@ export default async function PostPage({ params }: Params) {
   return (
     <>
       <main className="main" id="main">
-        <Link className="back" href="/"><Icon name="left" />Back to feed</Link>
+        <Link className="back" href="/?tab=foryou"><Icon name="left" />Back to feed</Link>
         <PostCard p={post} full signedIn={!!user} />
 
         <div className="sec">
