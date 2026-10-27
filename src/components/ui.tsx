@@ -1,0 +1,123 @@
+import Link from "next/link";
+import type { ReactNode } from "react";
+import type { PostView } from "@/lib/queries";
+import { compact, initials, timeAgo } from "@/lib/text";
+import { toggleReactionAction, toggleSaveAction } from "@/app/actions";
+
+const PATHS: Record<string, ReactNode> = {
+  home: <path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z" />,
+  q: <><circle cx="12" cy="12" r="8.5" /><path d="M9.6 9.5a2.5 2.5 0 1 1 3.4 2.3c-.7.3-1 .8-1 1.5v.4M12 16.6h.01" /></>,
+  review: <><circle cx="12" cy="12" r="8.5" /><path d="M8.5 12l2.5 2.5 4.5-5" /></>,
+  book: <path d="M4 5h6a2 2 0 0 1 2 2v12a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v12a2 2 0 0 1 2-2h6z" />,
+  user: <><circle cx="12" cy="9" r="4" /><path d="M5 20c1.5-3.5 4-5 7-5s5.5 1.5 7 5" /></>,
+  bell: <path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20h4" />,
+  search: <><circle cx="11" cy="11" r="6" /><path d="M20 20l-4.5-4.5" /></>,
+  plus: <path d="M12 5v14M5 12h14" />,
+  heart: <path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" />,
+  bulb: <path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z" />,
+  chat: <path d="M4 5h16v11H9l-5 4z" />,
+  bookmark: <path d="M6 4h12v16l-6-4-6 4z" />,
+  flag: <path d="M5 21V4M5 4h11l-2 4 2 4H5" />,
+  left: <path d="M15 5l-7 7 7 7" />,
+  shield: <path d="M12 3l7 3v5c0 5-3.2 8.3-7 10-3.8-1.7-7-5-7-10V6z" />,
+  check: <path d="M5 12.5l4.5 4.5L19 7.5" />,
+  settings: <><circle cx="12" cy="12" r="3" /><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1" /></>,
+};
+
+export function Icon({ name, className = "i" }: { name: keyof typeof PATHS | string; className?: string }) {
+  return <svg className={className} viewBox="0 0 24 24" aria-hidden="true">{PATHS[name]}</svg>;
+}
+
+export function Mark({ size = 34 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 40 40" aria-hidden="true">
+      <rect x="2" y="2" width="36" height="36" rx="1.5" fill="none" stroke="currentColor" strokeWidth="3" />
+      <path d="M11 10v20M29 10v20" stroke="currentColor" strokeWidth="3" fill="none" strokeLinecap="square" />
+      <path d="M11 13c5 0 7 3 9 7c2-4 4-7 9-7M11 27c5 0 7-3 9-7c2 4 4 7 9 7" stroke="currentColor" strokeWidth="2.6" fill="none" />
+    </svg>
+  );
+}
+
+const AV_COLORS = ["#B5654A", "#4C6E9E", "#6E8B5A", "#8A5A9E", "#4E8C8A", "#A2803C", "#5A6FB5", "#9E5A6E"];
+export function Avatar({ name, handle, size = "" }: { name: string; handle: string; size?: "" | "sm" | "lg" }) {
+  const color = AV_COLORS[[...handle].reduce((a, c) => a + c.charCodeAt(0), 0) % AV_COLORS.length];
+  return <Link href={`/u/${handle}`} className={`av ${size}`} style={{ background: color }} aria-label={name}>{initials(name)}</Link>;
+}
+
+export function RigorChip({ rigor }: { rigor: PostView["rigor"] }) {
+  return (
+    <details className="rigor">
+      <summary className={`state rigor-${rigor.key}`} title="What does this label mean?"><i />{rigor.label}</summary>
+      <div className="pop" role="note">{rigor.description} Reach (likes, shares) never changes this label.</div>
+    </details>
+  );
+}
+
+export const KIND_LABELS: Record<PostView["kind"], string> = {
+  video: "Video explainer", visual: "Visual", thread: "Thread", behind_the_paper: "Behind the Paper", open_question: "Open Question",
+};
+
+function ReviewStrip({ p }: { p: PostView }) {
+  if (p.rigor.key === "disputed" || p.rigor.key === "retracted") return <div className="disputed"><b>{p.rigor.label}</b> · {p.rigor.description}</div>;
+  if (!p.reviewTotal) return null;
+  if (p.rigor.key === "expert_reviewed")
+    return <div className="reviewed"><span className="chk"><Icon name="check" className="" /></span><div><b>Human expert review completed</b><span className="muted">{p.reviewCompleted} review{p.reviewCompleted > 1 ? "s" : ""}</span></div></div>;
+  if (p.reviewCompleted < p.reviewTotal)
+    return <div className="progress"><b>Expert review in progress</b><span className="muted">{p.reviewCompleted} of {p.reviewTotal}</span><span className="bar"><i style={{ width: `${Math.round((p.reviewCompleted / p.reviewTotal) * 100)}%` }} /></span></div>;
+  return null;
+}
+
+export function PostCard({ p, full = false, signedIn }: { p: PostView; full?: boolean; signedIn: boolean }) {
+  const body = full || p.body.length <= 220 ? p.body : p.body.slice(0, 220) + "…";
+  const like = toggleReactionAction.bind(null, p.id, "like");
+  const insight = toggleReactionAction.bind(null, p.id, "insightful");
+  const save = toggleSaveAction.bind(null, p.id);
+  const doiUrl = p.source?.doi ? `https://doi.org/${p.source.doi}` : null;
+  return (
+    <article className="card">
+      <div className="ph">
+        <Avatar name={p.author.displayName} handle={p.author.handle} />
+        <div className="who"><Link href={`/u/${p.author.handle}`}>{p.author.displayName}</Link><small>{p.author.field}</small></div>
+        <span className="t">{timeAgo(p.createdAt)}</span>
+      </div>
+      <span className="kind">{KIND_LABELS[p.kind]}{p.aiAssisted ? " · AI-assisted" : ""}</span>
+      <h2 className="ptitle">{full ? p.title : <Link href={`/p/${p.id}`}>{p.title}</Link>}</h2>
+      {body && <p className="pbody">{body}</p>}
+      {p.why && !full && <p className="why">{p.why}</p>}
+      {p.source ? (
+        <a className="study" href={doiUrl ?? "#"} target="_blank" rel="noopener noreferrer">
+          <span className="thumb" />
+          <div style={{ minWidth: 0 }}>
+            <b>{p.source.title}</b>
+            <span>{[p.source.venue, p.source.publishedYear].filter(Boolean).join(" · ") || "Source"}</span>
+            {p.source.doi && <span className="doi">doi:{p.source.doi}</span>}
+          </div>
+        </a>
+      ) : <div className="study missing">No source linked</div>}
+      {p.question && <Link className="qlink" href={`/q/${p.question.slug}`}><Icon name="q" />{p.question.text}</Link>}
+      <ReviewStrip p={p} />
+      <div className="signals">
+        <div className="acts" aria-label="Reach">
+          {signedIn ? (
+            <>
+              <form action={like}><button className={`act ${p.viewerLiked ? "on" : ""}`} aria-pressed={p.viewerLiked} aria-label="Like"><Icon name="heart" />{compact(p.likes)}</button></form>
+              <form action={insight}><button className={`act ${p.viewerInsightful ? "on" : ""}`} aria-pressed={p.viewerInsightful} aria-label="Insightful"><Icon name="bulb" />{compact(p.insightful)}</button></form>
+            </>
+          ) : (
+            <>
+              <span className="act"><Icon name="heart" />{compact(p.likes)}</span>
+              <span className="act"><Icon name="bulb" />{compact(p.insightful)}</span>
+            </>
+          )}
+          <Link className="act" href={`/p/${p.id}#discussion`}><Icon name="chat" />{p.commentCount}</Link>
+          {signedIn && <form action={save}><button className={`act ${p.saved ? "saved" : ""}`} aria-pressed={p.saved} aria-label="Save to library"><Icon name="bookmark" /></button></form>}
+        </div>
+        <div className="row"><span className="hint">Rigor</span><RigorChip rigor={p.rigor} /></div>
+      </div>
+    </article>
+  );
+}
+
+export function Empty({ title, children }: { title: string; children?: ReactNode }) {
+  return <div className="empty"><b>{title}</b>{children}</div>;
+}

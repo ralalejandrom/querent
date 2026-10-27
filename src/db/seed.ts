@@ -1,0 +1,93 @@
+/**
+ * Development seed. All people and studies are fictional and use example.com emails
+ * and the 10.5555 test DOI prefix. Never run against production.
+ */
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
+import { count } from "drizzle-orm";
+import * as schema from "./schema";
+
+const pool = new Pool({ connectionString: process.env.DATABASE_URL ?? "postgres://querent:querent@localhost:5432/querent" });
+const db = drizzle(pool, { schema });
+const ago = (h: number) => new Date(Date.now() - h * 3_600_000);
+
+async function main() {
+  if (process.env.NODE_ENV === "production") throw new Error("Refusing to seed production.");
+  const [{ n }] = await db.select({ n: count() }).from(schema.users);
+  if (Number(n) > 0) { console.log("Database already has users; skipping seed."); return; }
+
+  const topics = await db.insert(schema.topics).values(
+    ["Cardiology", "Oncology", "Neuroscience", "Metabolism", "Methodology", "Epidemiology"].map((label) => ({ label, slug: label.toLowerCase() })),
+  ).returning();
+  const T = Object.fromEntries(topics.map((t) => [t.label, t.id]));
+
+  const people = [
+    ["admin", "Querent Admin", "Platform team", "Runs moderation and reviewer verification in development.", ""],
+    ["elenacastro", "Dr. Elena Castro", "Cardiology", "Clinician-scientist studying heart failure therapies.", "Trial follow-up in HFpEF."],
+    ["marcuslee", "Dr. Marcus Lee", "Biostatistics", "Statistician. I review trial designs and meta-analyses.", "Methods for small-sample trials."],
+    ["amirakhalil", "Dr. Amira Khalil", "Internal Medicine", "Internist and open reviewer.", "Evidence synthesis in metabolic disease."],
+    ["jonahpark", "Dr. Jonah Park", "Oncology", "Thoracic oncologist posting about immunotherapy evidence.", "Neoadjuvant immunotherapy outcomes."],
+    ["priyashah", "Dr. Priya Shah", "Endocrinology", "Obesity, GLP-1 therapies and the questions they raise.", "Long-term GLP-1 adherence."],
+    ["sofiamendes", "Sofia Mendes", "Neuroscience · PhD student", "PhD student in neuroimmunology.", "Microglia and memory consolidation."],
+  ] as const;
+  const users = await db.insert(schema.users).values(people.map(([handle, displayName, field, bio, currentWork]) => ({
+    handle, displayName, field, bio, currentWork, email: `${handle}@example.com`, emailVerifiedAt: new Date(),
+  }))).returning();
+  const U = Object.fromEntries(users.map((u) => [u.handle, u.id]));
+  await db.insert(schema.userRoles).values([
+    ...users.map((u) => ({ userId: u.id, role: "member" as const })),
+    { userId: U.admin, role: "platform_admin" as const }, { userId: U.admin, role: "moderator" as const }, { userId: U.admin, role: "reviewer" as const, fields: ["Methodology"] },
+    ...(["elenacastro", "marcuslee", "amirakhalil", "jonahpark", "priyashah"] as const).map((h) => ({ userId: U[h], role: "reviewer" as const, fields: [people.find((p) => p[0] === h)![2]] })),
+  ]);
+
+  const questions = await db.insert(schema.questions).values([
+    { slug: "sglt2-hfpef", text: "Do SGLT2 inhibitors improve outcomes in heart failure with preserved ejection fraction?", topicId: T.Cardiology, createdBy: U.elenacastro },
+    { slug: "neoadjuvant-io-nsclc", text: "Does neoadjuvant immunotherapy improve survival in early-stage NSCLC?", topicId: T.Oncology, createdBy: U.jonahpark },
+    { slug: "sleep-memory", text: "Does sleep after learning improve long-term memory in adults?", topicId: T.Neuroscience, createdBy: U.sofiamendes },
+  ]).returning();
+  const Q = Object.fromEntries(questions.map((q) => [q.slug, q.id]));
+
+  const src = (doi: string, title: string, venue: string, year: number) =>
+    ({ doi, title: `[Demo] ${title}`, venue, publishedYear: year, sourceType: "journal-article", correctionStatus: "none_known" as const, provenance: { provider: "seed", fetchedAt: new Date().toISOString() } });
+  const sources = await db.insert(schema.sources).values([
+    src("10.5555/demo.hfpef.2026", "SGLT2 inhibition in heart failure with preserved ejection fraction: a multicenter trial", "Demo Journal of Cardiology", 2026),
+    src("10.5555/demo.nsclc.2026", "Neoadjuvant immunotherapy in resectable NSCLC: an updated meta-analysis", "Demo Oncology Reviews", 2026),
+    src("10.5555/demo.sleep.2026", "Sleep-dependent consolidation of declarative memory in adults", "Demo Preprints", 2026),
+  ]).returning();
+  const S = Object.fromEntries(sources.map((s) => [s.doi!, s.id]));
+
+  const posts = await db.insert(schema.posts).values([
+    { authorId: U.elenacastro, kind: "video", title: "Early results from a multicenter trial on SGLT2 inhibitors in heart failure with preserved ejection fraction", body: "The trial reports a reduction in the composite primary outcome. Here's what was measured, who was included, and the limits to keep in mind before changing practice.", topicId: T.Cardiology, questionId: Q["sglt2-hfpef"], sourceId: S["10.5555/demo.hfpef.2026"], createdAt: ago(3) },
+    { authorId: U.jonahpark, kind: "visual", title: "Updated meta-analysis on neoadjuvant immunotherapy in early-stage NSCLC", body: "Event-free survival improves across trials; overall survival data are still maturing.", topicId: T.Oncology, questionId: Q["neoadjuvant-io-nsclc"], sourceId: S["10.5555/demo.nsclc.2026"], createdAt: ago(6) },
+    { authorId: U.sofiamendes, kind: "behind_the_paper", title: "Why our sleep study surprised us", body: "We expected sleep to help every kind of memory. It didn't. Here's the story of the experiment and what we think is really going on.", topicId: T.Neuroscience, questionId: Q["sleep-memory"], sourceId: S["10.5555/demo.sleep.2026"], createdAt: ago(10) },
+    { authorId: U.priyashah, kind: "open_question", title: "Open question: how should we measure long-term adherence to GLP-1 therapy?", body: "Trials run for a few years, but patients may take these drugs for decades. What outcome measures would actually tell us about long-term adherence?", topicId: T.Metabolism, createdAt: ago(20) },
+  ]).returning();
+  const [p1, p2, p3] = posts;
+
+  await db.insert(schema.reviews).values([
+    { postId: p1.id, reviewerId: U.amirakhalil, type: "methodological", status: "completed", recommendation: "Sound", summary: "Randomized, double-blind design appropriate for the question. Primary outcome prespecified. Attrition balanced between arms.", checklist: { "Design is appropriate for the question": true, "Outcomes were prespecified": true }, ratings: { rigor: "High", bias: "Low", relevance: "Moderate", reproducibility: "Pending further evidence" }, conflicts: "None declared", postVersion: 1, completedAt: ago(2) },
+    { postId: p1.id, reviewerId: U.marcuslee, type: "statistical", status: "completed", recommendation: "Sound with caveats", summary: "Analysis follows the registered plan. The subgroup by ejection fraction should be read as exploratory; no multiplicity correction was applied.", checklist: { "Analysis matches the prespecified plan": true, "Effect sizes come with confidence intervals": true }, conflicts: "None declared", postVersion: 1, completedAt: ago(1.5) },
+    { postId: p2.id, reviewerId: U.marcuslee, type: "methodological", status: "completed", recommendation: "Sound", summary: "Search strategy is comprehensive and heterogeneity is explored appropriately.", checklist: { "Design is appropriate for the question": true, "Risk of bias is addressed": true }, ratings: { rigor: "High", bias: "Moderate", relevance: "High", reproducibility: "Data available" }, conflicts: "None declared", postVersion: 1, completedAt: ago(4) },
+    { postId: p2.id, reviewerId: U.amirakhalil, type: "statistical", status: "in_progress", conflicts: "None declared", postVersion: 1 },
+    { postId: p3.id, reviewerId: U.marcuslee, type: "source_fidelity", status: "completed", recommendation: "Faithful to source", summary: "The post represents the preprint accurately and states that it has not been peer-reviewed by a journal.", checklist: { "The post states the study's main finding accurately": true, "Limitations mentioned in the paper are not omitted": true }, conflicts: "None declared", postVersion: 1, completedAt: ago(8) },
+  ]);
+
+  const [c1] = await db.insert(schema.contributions).values({ postId: p1.id, authorId: U.priyashah, type: "interpretation", body: "These findings are consistent with previous studies, but heterogeneity across patient populations matters here.", createdAt: ago(2) }).returning();
+  await db.insert(schema.contributions).values([
+    { postId: p1.id, parentId: c1.id, authorId: U.sofiamendes, type: "question", body: "Is there any data on patients over 75?", createdAt: ago(1) },
+    { postId: p3.id, authorId: U.amirakhalil, type: "objection", body: "Effect sizes shrink in the two preregistered experiments. Worth separating those from the exploratory ones.", createdAt: ago(7) },
+  ]);
+  await db.insert(schema.reactions).values([
+    ...users.slice(1).map((u) => ({ userId: u.id, postId: p1.id, kind: "like" as const })),
+    { userId: U.marcuslee, postId: p3.id, kind: "insightful" as const }, { userId: U.priyashah, postId: p3.id, kind: "like" as const },
+  ]);
+  await db.insert(schema.follows).values([
+    { userId: U.sofiamendes, targetType: "question", targetId: Q["sleep-memory"] },
+    { userId: U.elenacastro, targetType: "question", targetId: Q["sglt2-hfpef"] },
+    { userId: U.priyashah, targetType: "question", targetId: Q["sglt2-hfpef"] },
+    { userId: U.sofiamendes, targetType: "user", targetId: U.amirakhalil },
+  ]);
+  console.log("Seeded demo data. Sign in as admin@example.com (moderator + reviewer) or any <handle>@example.com.");
+}
+
+main().then(() => pool.end()).catch((e) => { console.error(e); pool.end(); process.exit(1); });
