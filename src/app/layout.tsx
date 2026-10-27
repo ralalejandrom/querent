@@ -9,7 +9,7 @@ import { NavLink } from "@/components/client";
 import { signOutAction } from "./actions";
 
 const TAGLINE = "The future of science, reviewed in the open";
-const PITCH = "Researchers share what they’re discovering. Peers check it in public. Everyone can see what’s real.";
+const PITCH = "Researchers share what they’re discovering. Verified experts review it. Everyone can see what holds up.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.APP_URL || "https://querent.science"),
