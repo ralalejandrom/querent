@@ -238,6 +238,30 @@ svg{display:block}
 .pill[disabled]{opacity:.6;cursor:progress}
 .pill:focus-visible,.form input:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 
+/* ---------- reels + visuals ---------- */
+.reels{background:linear-gradient(180deg,var(--bg),var(--sky-1))}
+.phones{display:flex;justify-content:center;align-items:flex-end;gap:34px;margin:36px 0 18px}
+.reel{position:relative;width:250px;aspect-ratio:9/19;border-radius:38px;background:#16141F;padding:9px;box-shadow:0 40px 60px -30px rgba(22,20,31,.55);overflow:hidden;flex:none}
+.reel.mid{width:280px;transform:translateY(-18px)}
+.reel .art{position:absolute;inset:9px;width:calc(100% - 18px);height:calc(100% - 18px);border-radius:30px}
+.reel .who{position:absolute;top:30px;left:24px;display:flex;align-items:center;gap:8px;color:#fff;font-size:12.5px}
+.reel .who .av{width:28px;height:28px;font-size:10px}
+.reel .side{position:absolute;right:20px;bottom:150px;display:grid;gap:14px;color:#fff;font-size:18px;text-align:center}
+.reel .side small{display:block;font-size:10.5px;opacity:.85}
+.reel .cap{position:absolute;left:22px;right:22px;bottom:26px;color:#fff;display:grid;gap:8px;justify-items:start}
+.reel .cap p{margin:0;font-family:var(--serif);font-size:17px;line-height:1.3;text-shadow:0 1px 8px rgba(0,0,0,.4)}
+.reel .src{font-size:11.5px;background:rgba(255,255,255,.14);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:5px 10px}
+.reel .play{position:absolute;left:50%;top:44%;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;background:rgba(255,255,255,.16);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.3)}
+.reel .play::after{content:"";position:absolute;left:22px;top:17px;border-left:16px solid #fff;border-top:11px solid transparent;border-bottom:11px solid transparent}
+.center{text-align:center}
+.ill{width:120px;height:80px;display:block;margin-bottom:14px}
+mark{padding:0 3px;border-radius:3px}
+mark.bad{background:#FBE3DA;color:#9B2E14;text-decoration:line-through;text-decoration-color:#C8401F;text-decoration-thickness:2px}
+mark.hl{background:#FFF1C9;color:inherit}
+mark.good{background:#E7F5EE;color:#0B5E3C}
+.note-step{background:#FFFBF0;border-color:#F1E3B8}
+.steps .step{box-shadow:0 18px 30px -26px rgba(22,20,31,.35)}
+
 /* ---------- institutions ---------- */
 .inst{border-top:1px solid var(--rule);background:var(--surface)}
 .inst .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;padding-block:44px;align-items:center}
@@ -275,6 +299,8 @@ footer .brand .word{font-size:18px}
   .trust div{display:flex;align-items:center;gap:12px;max-width:none;font-size:15px}
   .trust svg{width:22px;height:22px;flex:none}
   .two,.three{grid-template-columns:1fr}
+  .phones{overflow-x:auto;justify-content:flex-start;scroll-snap-type:x mandatory;padding:10px 4px 24px;gap:18px;margin-inline:-20px;padding-inline:20px}
+  .reel,.reel.mid{width:230px;transform:none;scroll-snap-align:center}
   .steps{grid-template-columns:1fr}
   .sec .wrap{padding-block:44px}
   .scope,.jcard{padding:22px}
@@ -469,6 +495,70 @@ footer .brand .word{font-size:18px}
     </div>
   </section>
 
+  <section class="sec reels" id="reels" aria-labelledby="reels-h">
+    <div class="wrap">
+      <div class="reels-head">
+        <div>
+          <p class="eyebrow">Coming to the beta</p>
+          <h2 id="reels-h">Short science videos, with the evidence attached</h2>
+          <p class="sub">Researchers explain their work in under two minutes. Every video links to its source, and its review status travels with it wherever it’s shared.</p>
+        </div>
+      </div>
+      <div class="phones" role="img" aria-label="Illustrative preview of three short science videos, each showing its source and review status">
+        <div class="reel">
+          <svg class="art" viewBox="0 0 240 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <defs><radialGradient id="g1" cx="50%" cy="38%" r="70%"><stop offset="0" stop-color="#3B2A4F"/><stop offset="1" stop-color="#110F18"/></radialGradient></defs>
+            <rect width="240" height="520" fill="url(#g1)"/>
+            <g stroke="#FF8A6B" stroke-opacity=".55" stroke-width="1.4" fill="none"><path d="M40 150L95 120 150 165 205 130M95 120l20 85 55 25M150 165l-35 40M40 150l30 90 45-35M70 240l60 40 45-50M175 230l30-100"/></g>
+            <g fill="#FFD9CC"><circle cx="40" cy="150" r="5"/><circle cx="95" cy="120" r="7"/><circle cx="150" cy="165" r="5"/><circle cx="205" cy="130" r="6"/><circle cx="115" cy="205" r="8"/><circle cx="175" cy="230" r="5"/><circle cx="70" cy="240" r="6"/><circle cx="130" cy="280" r="5"/></g>
+          </svg>
+          <div class="who"><span class="av a2">LN</span><b>Neuroscience lab</b></div>
+          <div class="side"><span>♥<small>2.1k</small></span><span>💬<small>148</small></span></div>
+          <div class="cap">
+            <span class="chip ok">Source checked</span>
+            <p>How memories are replayed during sleep, in 90 seconds</p>
+            <span class="src">Source · cited study ↗</span>
+          </div>
+          <span class="play" aria-hidden="true"></span>
+        </div>
+        <div class="reel mid">
+          <svg class="art" viewBox="0 0 240 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <defs><radialGradient id="g2" cx="50%" cy="40%" r="75%"><stop offset="0" stop-color="#5A2B22"/><stop offset="1" stop-color="#140E10"/></radialGradient></defs>
+            <rect width="240" height="520" fill="url(#g2)"/>
+            <g fill="none" stroke="#FFB49E" stroke-opacity=".5"><circle cx="120" cy="190" r="70"/><circle cx="120" cy="190" r="46"/><circle cx="120" cy="190" r="22" fill="#FF8A6B" fill-opacity=".35"/></g>
+            <g fill="#FFD9CC" fill-opacity=".8"><circle cx="58" cy="120" r="10"/><circle cx="190" cy="140" r="7"/><circle cx="182" cy="265" r="12"/><circle cx="62" cy="272" r="6"/></g>
+          </svg>
+          <div class="who"><span class="av a1">IM</span><b>Immunology postdoc</b></div>
+          <div class="side"><span>♥<small>5.4k</small></span><span>💬<small>312</small></span></div>
+          <div class="cap">
+            <span class="chip info">Critical appraisal available</span>
+            <p>What our vaccine trial found, and what it didn’t</p>
+            <span class="src">Source · cited trial ↗</span>
+          </div>
+          <span class="play" aria-hidden="true"></span>
+        </div>
+        <div class="reel">
+          <svg class="art" viewBox="0 0 240 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <defs><linearGradient id="g3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#23303F"/><stop offset="1" stop-color="#0F1218"/></linearGradient></defs>
+            <rect width="240" height="520" fill="url(#g3)"/>
+            <g stroke="#3B4A5C" stroke-width="1"><path d="M30 290H210M30 240H210M30 190H210M30 140H210"/></g>
+            <g fill="#8FA6C4" fill-opacity=".55"><rect x="44" y="230" width="22" height="60" rx="3"/><rect x="80" y="200" width="22" height="90" rx="3"/><rect x="116" y="215" width="22" height="75" rx="3"/><rect x="152" y="170" width="22" height="120" rx="3"/></g>
+            <path d="M40 250C80 230 100 160 140 175s50-40 72-60" fill="none" stroke="#FF8A6B" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+          <div class="who"><span class="av a5">EP</span><b>Epidemiology PhD</b></div>
+          <div class="side"><span>♥<small>860</small></span><span>💬<small>57</small></span></div>
+          <div class="cap">
+            <span class="chip prog">Review in progress</span>
+            <p>Does more screen time mean worse sleep? Reading the data</p>
+            <span class="src">Source · cited cohort ↗</span>
+          </div>
+          <span class="play" aria-hidden="true"></span>
+        </div>
+      </div>
+      <p class="small muted center">Illustrative preview. Creators, topics and numbers are examples, not real accounts or studies.</p>
+    </div>
+  </section>
+
   <section class="sec" id="how" aria-labelledby="how-h">
     <div class="wrap">
       <p class="eyebrow">How review works</p>
@@ -476,12 +566,14 @@ footer .brand .word{font-size:18px}
       <p class="sub">Checking that a post represents its source is not the same as reproducing the results or confirming the conclusion. Querent keeps those apart.</p>
       <div class="two">
         <article class="scope">
+          <svg class="ill" viewBox="0 0 120 80" aria-hidden="true"><rect x="8" y="8" width="44" height="60" rx="4" fill="#F3F1EE" stroke="#16141F" stroke-width="2.5"/><path d="M16 22h28M16 32h28M16 42h20" stroke="#16141F" stroke-width="2.5" stroke-linecap="round"/><rect x="68" y="12" width="44" height="60" rx="4" fill="#fff" stroke="#16141F" stroke-width="2.5"/><path d="M76 26h28M76 36h28M76 46h18" stroke="#16141F" stroke-width="2.5" stroke-linecap="round"/><path d="M54 40h12" stroke="#C8401F" stroke-width="2.5" stroke-dasharray="3 3"/><circle cx="104" cy="62" r="11" fill="#0E7A4E"/><path d="M99 62l4 4 7-8" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span class="chip ok">Source checked</span>
           <h3>Source fidelity</h3>
           <p class="q2">Does the post accurately represent the cited research?</p>
           <p>A reviewer compares the post with the study it cites: the finding, the population, the design and the limitations the authors reported.</p>
         </article>
         <article class="scope">
+          <svg class="ill" viewBox="0 0 120 80" aria-hidden="true"><path d="M10 70h70" stroke="#16141F" stroke-width="2.5" stroke-linecap="round"/><rect x="16" y="44" width="10" height="26" rx="2" fill="#D6D3DC"/><rect x="32" y="30" width="10" height="40" rx="2" fill="#D6D3DC"/><rect x="48" y="38" width="10" height="32" rx="2" fill="#D6D3DC"/><rect x="64" y="20" width="10" height="50" rx="2" fill="#D6D3DC"/><path d="M69 14v12M64 14h10M64 26h10" stroke="#16141F" stroke-width="2"/><circle cx="88" cy="34" r="16" fill="#fff" fill-opacity=".6" stroke="#C8401F" stroke-width="3"/><path d="M100 46l12 12" stroke="#C8401F" stroke-width="4" stroke-linecap="round"/></svg>
           <span class="chip info">Critical appraisal available</span>
           <h3>Critical appraisal</h3>
           <p class="q2">What methodological or statistical limitations affect its interpretation?</p>
@@ -502,9 +594,9 @@ footer .brand .word{font-size:18px}
       <p class="eyebrow">Illustrative example</p>
       <h2 id="ex-h">See how a claim improves through review</h2>
       <ol class="steps">
-        <li class="step"><span class="n">1</span><h4>Original claim</h4><p class="claim">“Treatment X improves patient outcomes.”</p></li>
-        <li class="step"><span class="n">2</span><h4>Reviewer feedback</h4><p class="claim">“The study reports an association in an observational cohort; it does not establish a treatment effect.”</p></li>
-        <li class="step"><span class="n">3</span><h4>Revised claim</h4><p class="claim">“Treatment X was associated with better outcomes in this cohort, but causality remains uncertain.”</p></li>
+        <li class="step"><span class="n">1</span><h4>Original claim</h4><p class="claim">“Treatment X <mark class="bad">improves</mark> patient outcomes.”</p></li>
+        <li class="step note-step"><span class="n">2</span><h4>Reviewer feedback</h4><p class="claim">“The study reports an <mark class="hl">association</mark> in an <mark class="hl">observational cohort</mark>; it does not establish a treatment effect.”</p><p class="small muted">Anonymous reviewer · Epidemiology</p></li>
+        <li class="step"><span class="n">3</span><h4>Revised claim</h4><p class="claim">“Treatment X <mark class="good">was associated with</mark> better outcomes in this cohort, <mark class="good">but causality remains uncertain</mark>.”</p></li>
         <li class="step"><span class="n">4</span><h4>Visible outcome</h4><p><span class="chip ok">Claim revised</span></p><p class="small">Reviewer feedback and author response available.</p></li>
       </ol>
       <p class="small muted">Hypothetical example. “Treatment X” is not a real treatment, and no real study is described.</p>
