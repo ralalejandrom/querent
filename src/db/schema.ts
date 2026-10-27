@@ -219,3 +219,14 @@ export const notifications = pgTable("notifications", {
   readAt: timestamp("read_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 }, (t) => [index("notifications_recipient_idx").on(t.recipientId, t.createdAt)]);
+
+/* -------------------------------------------------------------- waitlist */
+export const waitlistInterestEnum = pgEnum("waitlist_interest", ["individual", "institutional"]);
+
+/** Beta waitlist sign-ups from the public landing page. One row per email and interest type. */
+export const waitlist = pgTable("waitlist", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  email: text("email").notNull(),
+  interest: waitlistInterestEnum("interest").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [uniqueIndex("waitlist_email_interest_idx").on(sql`lower(${t.email})`, t.interest)]);

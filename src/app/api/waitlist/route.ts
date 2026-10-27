@@ -1,0 +1,57 @@
+import { NextResponse } from "next/server";
+import { z } from "zod";
+import { db, schema } from "@/db";
+
+/**
+ * Beta waitlist sign-up from the public landing page (/welcome).
+ * Stores only an email address and the kind of interest (individual or institutional).
+ * Responds 201 when a new row was saved, 200 when the address was already on the list,
+ * and an error status otherwise, so the page only reports success after a real write.
+ */
+const Body = z.object({
+  email: z.string().trim().toLowerCase().max(254).email(),
+  interest: z.enum(["individual", "institutional"]),
+  website: z.string().max(500).optional(), // honeypot: real people leave it empty
+});
+
+// Best-effort throttle per IP within one server instance.
+const hits = new Map<string, number[]>();
+function throttled(ip: string) {
+  const now = Date.now();
+  const recent = (hits.get(ip) ?? []).filter((t) => now - t < 10 * 60_000);
+  recent.push(now);
+  hits.set(ip, recent);
+  return recent.length > 8;
+}
+
+export async function POST(req: Request) {
+  const origin = req.headers.get("origin");
+  const host = req.headers.get("host");
+  if (origin && host && new URL(origin).host !== host) {
+    return NextResponse.json({ error: "forbidden" }, { status: 403 });
+  }
+  const ip = (req.headers.get("x-forwarded-for") ?? "").split(",")[0].trim() || "unknown";
+  if (throttled(ip)) return NextResponse.json({ error: "too_many_requests" }, { status: 429 });
+
+  let parsed;
+  try {
+    parsed = Body.safeParse(await req.json());
+  } catch {
+    return NextResponse.json({ error: "invalid_json" }, { status: 400 });
+  }
+  if (!parsed.success) return NextResponse.json({ error: "invalid_input" }, { status: 400 });
+  if (parsed.data.website) return NextResponse.json({ status: "added" }, { status: 201 }); // drop bots quietly
+
+  try {
+    const rows = await db.insert(schema.waitlist)
+      .values({ email: parsed.data.email, interest: parsed.data.interest })
+      .onConflictDoNothing()
+      .returning({ id: schema.waitlist.id });
+    return rows.length
+      ? NextResponse.json({ status: "added" }, { status: 201 })
+      : NextResponse.json({ status: "exists" }, { status: 200 });
+  } catch (err) {
+    console.error("waitlist insert failed", err);
+    return NextResponse.json({ error: "server_error" }, { status: 500 });
+  }
+}

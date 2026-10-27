@@ -26,6 +26,18 @@ This repository is the private-beta codebase described in the *Technical Build S
 | Jobs | `npm run jobs:sync-sources` re-checks DOIs against Crossref, resolves pending ones and records corrections and retractions |
 | API | `GET /api/v1/questions`, `GET /api/v1/posts/:id` (rigor + reviews; reviewer named only if signed), `GET /api/v1/me/export` |
 
+## Landing page and beta waitlist
+
+`public/welcome.html` (served at `/welcome`) is the public landing page. Its two forms (researchers, labs and programs) post to `POST /api/waitlist`, which validates the email, rejects cross-origin posts, throttles repeated attempts, and stores `email` + `interest` (`individual` or `institutional`) in the `waitlist` table. The page shows success only after the API confirms the row was saved.
+
+Nothing else is needed beyond `DATABASE_URL`: the table is created by migration `0002_waitlist`, which the Vercel build applies. To read the list:
+
+```sql
+select email, interest, created_at from waitlist order by created_at desc;
+```
+
+Not built yet: confirmation emails to people who join, and an admin screen for the list.
+
 ## Stack
 
 Next.js 15 (App Router, server actions) · React 19 · TypeScript · PostgreSQL 16 · Drizzle ORM · Zod · Vitest. No client-side state library; almost everything renders on the server.
