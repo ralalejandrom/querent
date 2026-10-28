@@ -5,7 +5,7 @@ import { db, schema } from "@/db";
 import { getCurrentUser } from "@/lib/auth";
 import { loadPosts } from "@/lib/queries";
 import { REVIEW_TYPE_LABELS, type ReviewType } from "@/lib/rigor";
-import { Avatar, Empty, Icon, PostCard } from "@/components/ui";
+import { Avatar, Empty, Icon, PostCard, Name } from "@/components/ui";
 import { Rail } from "@/components/rail";
 import { toggleFollowAction } from "@/app/actions";
 
@@ -33,7 +33,7 @@ export default async function Profile({ params }: { params: Promise<{ handle: st
         <div className="profile-h">
           <Avatar name={u.displayName} handle={u.handle} size="lg" />
           <div style={{ flex: 1, minWidth: 0 }}>
-            <h1>{u.displayName}</h1>
+            <h1><Name name={u.displayName} verified={!!reviewer} /></h1>
             <div className="muted">@{u.handle}{u.field ? ` · ${u.field}` : ""}</div>
             <div className="row" style={{ marginTop: 8 }}>
               {reviewer && <span className="badge"><Icon name="check" className="i" />Verified reviewer{reviewer.fields.length ? ` · ${reviewer.fields.join(", ")}` : ""}</span>}

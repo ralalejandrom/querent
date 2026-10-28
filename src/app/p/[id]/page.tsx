@@ -5,7 +5,7 @@ import { getCurrentUser, isReviewer } from "@/lib/auth";
 import { getPostDetail } from "@/lib/queries";
 import { REVIEW_TYPE_LABELS, type ReviewType } from "@/lib/rigor";
 import { timeAgo } from "@/lib/text";
-import { Avatar, Empty, Icon, PostCard } from "@/components/ui";
+import { Avatar, Empty, Icon, PostCard, Name } from "@/components/ui";
 import { ActionForm, ComposerFields, ReplyToggle, Submit } from "@/components/client";
 import { Rail } from "@/components/rail";
 import { addContributionAction, reportPostAction, respondAction } from "@/app/actions";
@@ -67,7 +67,7 @@ export default async function PostPage({ params }: Params) {
         {reviews.length ? reviews.map(({ review: r, reviewer }) => (
           <div className="review" key={r.id}>
             <div className="row">
-              {r.isSigned ? <><Avatar name={reviewer.displayName} handle={reviewer.handle} size="sm" /><div><Link href={`/u/${reviewer.handle}`}><b>{reviewer.displayName}</b></Link> <span className="hint">· {reviewer.field}</span></div></> : <div><b>Verified reviewer</b> <span className="hint">· identity protected</span></div>}
+              {r.isSigned ? <><Avatar name={reviewer.displayName} handle={reviewer.handle} size="sm" /><div><Link href={`/u/${reviewer.handle}`}><b><Name name={reviewer.displayName} verified /></b></Link> <span className="hint">· {reviewer.field}</span></div></> : <div><b>Verified reviewer</b> <span className="hint">· identity protected</span></div>}
               <span style={{ marginLeft: "auto" }} className={`pillst ${r.status === "completed" ? "done" : ""}`}>{r.status === "completed" ? "Completed" : "In progress"}</span>
             </div>
             <div className="rtype" style={{ marginTop: 8 }}>{REVIEW_TYPE_LABELS[r.type as ReviewType]}{r.recommendation ? ` · ${r.recommendation}` : ""}</div>

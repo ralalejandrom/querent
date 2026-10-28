@@ -68,6 +68,24 @@ export function Avatar({ name, handle, size = "" }: { name: string; handle: stri
   return <Link href={`/u/${handle}`} className={`av ${size}`} style={{ background: color }} aria-label={name}>{initials(name)}</Link>;
 }
 
+/** Blue seal shown next to the names of verified reviewers (users with the reviewer role). */
+export function Verified() {
+  return (
+    <svg className="vf" viewBox="0 0 24 24" role="img" aria-label="Verified reviewer">
+      <title>Verified reviewer</title>
+      <path d="M12.00 1.00 L14.38 3.11 L17.50 2.47 L18.51 5.49 L21.53 6.50 L20.89 9.62 L23.00 12.00 L20.89 14.38 L21.53 17.50 L18.51 18.51 L17.50 21.53 L14.38 20.89 L12.00 23.00 L9.62 20.89 L6.50 21.53 L5.49 18.51 L2.47 17.50 L3.11 14.38 L1.00 12.00 L3.11 9.62 L2.47 6.50 L5.49 5.49 L6.50 2.47 L9.62 3.11Z" fill="#2B3FD8" stroke="#2B3FD8" strokeWidth="1.6" strokeLinejoin="round" />
+      <path d="M8 12.4l2.7 2.7 5.4-5.6" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+/** A name with the verified seal kept on the same line as its last word. */
+export function Name({ name, verified }: { name: string; verified: boolean }) {
+  if (!verified) return <>{name}</>;
+  const i = name.lastIndexOf(" ");
+  return <>{i > 0 ? name.slice(0, i + 1) : ""}<span className="nw">{name.slice(i + 1)}<Verified /></span></>;
+}
+
 export function RigorChip({ rigor }: { rigor: PostView["rigor"] }) {
   return (
     <details className="rigor">
@@ -101,7 +119,7 @@ export function PostCard({ p, full = false, signedIn }: { p: PostView; full?: bo
     <article className="card">
       <div className="ph">
         <Avatar name={p.author.displayName} handle={p.author.handle} />
-        <div className="who"><Link href={`/u/${p.author.handle}`}>{p.author.displayName}</Link><small>{p.author.field}</small></div>
+        <div className="who"><Link href={`/u/${p.author.handle}`}><Name name={p.author.displayName} verified={p.author.verified} /></Link><small>{p.author.field}</small></div>
         <span className="t">{timeAgo(p.createdAt)}</span>
       </div>
       <span className="kind">{KIND_LABELS[p.kind]}{p.aiAssisted ? " · AI-assisted" : ""}</span>

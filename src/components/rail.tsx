@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { and, count, desc, eq, gt, sql } from "drizzle-orm";
 import { db, schema } from "@/db";
-import { Avatar } from "./ui";
+import { Avatar, Name } from "./ui";
 import { compact } from "@/lib/text";
 
 export async function Rail({ children }: { children?: ReactNode }) {
@@ -28,7 +28,7 @@ export async function Rail({ children }: { children?: ReactNode }) {
       {reviewers.length > 0 && (
         <div className="box"><h3>Top reviewers this month</h3>
           {reviewers.map((r) => (
-            <div className="li" key={r.handle}><Avatar name={r.name} handle={r.handle} size="sm" /><div><Link href={`/u/${r.handle}`}>{r.name}</Link><small>{r.field}</small></div><span className="x muted">{Number(r.n)} review{Number(r.n) > 1 ? "s" : ""}</span></div>
+            <div className="li" key={r.handle}><Avatar name={r.name} handle={r.handle} size="sm" /><div><Link href={`/u/${r.handle}`}><Name name={r.name} verified /></Link><small>{r.field}</small></div><span className="x muted">{Number(r.n)} review{Number(r.n) > 1 ? "s" : ""}</span></div>
           ))}
         </div>
       )}

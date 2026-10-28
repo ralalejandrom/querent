@@ -3,7 +3,7 @@ import { and, count, desc, eq, inArray, ne, sql, type SQL } from "drizzle-orm";
 import { db, schema } from "@/db";
 import { computeRigor, type Rigor, type ReviewType } from "./rigor";
 
-const { posts, users, sources, questions, topics, reactions, saves, contributions, reviews, follows } = schema;
+const { posts, users, sources, questions, topics, reactions, saves, contributions, reviews, follows, userRoles } = schema;
 
 export interface PostView {
   id: string;
@@ -15,7 +15,7 @@ export interface PostView {
   disputedReason: string | null;
   authorResponse: string | null;
   version: number;
-  author: { id: string; handle: string; displayName: string; field: string };
+  author: { id: string; handle: string; displayName: string; field: string; verified: boolean };
   source: { doi: string | null; title: string; venue: string | null; publishedYear: number | null; correctionStatus: string } | null;
   question: { id: string; slug: string; text: string } | null;
   topic: string | null;
@@ -54,13 +54,16 @@ export async function loadPosts(opts: { where?: SQL; viewerId?: string | null; l
   if (!rows.length) return [];
   const ids = rows.map((r) => r.post.id);
 
-  const [reactRows, viewerReacts, viewerSaves, commentRows, reviewRows] = await Promise.all([
+  const authorIds = [...new Set(rows.map((r) => r.author.id))];
+  const [reactRows, viewerReacts, viewerSaves, commentRows, reviewRows, reviewerRows] = await Promise.all([
     db.select({ postId: reactions.postId, kind: reactions.kind, n: count() }).from(reactions).where(inArray(reactions.postId, ids)).groupBy(reactions.postId, reactions.kind),
     opts.viewerId ? db.select({ postId: reactions.postId, kind: reactions.kind }).from(reactions).where(and(inArray(reactions.postId, ids), eq(reactions.userId, opts.viewerId))) : Promise.resolve([]),
     opts.viewerId ? db.select({ postId: saves.postId }).from(saves).where(and(inArray(saves.postId, ids), eq(saves.userId, opts.viewerId))) : Promise.resolve([]),
     db.select({ postId: contributions.postId, n: count() }).from(contributions).where(and(inArray(contributions.postId, ids), eq(contributions.status, "visible"))).groupBy(contributions.postId),
     db.select({ postId: reviews.postId, type: reviews.type, status: reviews.status }).from(reviews).where(inArray(reviews.postId, ids)),
+    db.select({ userId: userRoles.userId }).from(userRoles).where(and(inArray(userRoles.userId, authorIds), eq(userRoles.role, "reviewer"))),
   ]);
+  const verified = new Set(reviewerRows.map((r) => r.userId));
 
   const key = (a: string, b: string) => `${a}:${b}`;
   const reactMap = new Map(reactRows.map((r) => [key(r.postId, r.kind), Number(r.n)]));
@@ -74,7 +77,7 @@ export async function loadPosts(opts: { where?: SQL; viewerId?: string | null; l
     return {
       id: post.id, kind: post.kind, title: post.title, body: post.body, createdAt: post.createdAt,
       aiAssisted: post.aiAssisted, disputedReason: post.disputedReason, authorResponse: post.authorResponse, version: post.version,
-      author: { id: author.id, handle: author.handle, displayName: author.displayName, field: author.field },
+      author: { id: author.id, handle: author.handle, displayName: author.displayName, field: author.field, verified: verified.has(author.id) },
       source: source ? { doi: source.doi, title: source.title, venue: source.venue, publishedYear: source.publishedYear, correctionStatus: source.correctionStatus } : null,
       question: question ? { id: question.id, slug: question.slug, text: question.text } : null,
       topic: topic?.label ?? null, topicId: topic?.id ?? null,

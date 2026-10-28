@@ -4,7 +4,7 @@ import { db, schema } from "@/db";
 import { getCurrentUser, isReviewer } from "@/lib/auth";
 import { getReviewQueue } from "@/lib/queries";
 import { REVIEW_TYPE_LABELS, type ReviewType } from "@/lib/rigor";
-import { Avatar, Empty, RigorChip } from "@/components/ui";
+import { Avatar, Empty, RigorChip, Name } from "@/components/ui";
 import { Rail } from "@/components/rail";
 
 export const metadata = { title: "Reviews" };
@@ -35,7 +35,7 @@ export default async function Reviews() {
         <div className="sec"><h2>Waiting for review ({queue.length})</h2></div>
         {queue.length ? queue.map((p) => (
           <div className="card" key={p.id}>
-            <div className="ph"><Avatar name={p.author.displayName} handle={p.author.handle} size="sm" /><div className="who"><Link href={`/u/${p.author.handle}`}>{p.author.displayName}</Link><small>{p.topic ?? "General"}</small></div><span className="t"><RigorChip rigor={p.rigor} /></span></div>
+            <div className="ph"><Avatar name={p.author.displayName} handle={p.author.handle} size="sm" /><div className="who"><Link href={`/u/${p.author.handle}`}><Name name={p.author.displayName} verified={p.author.verified} /></Link><small>{p.topic ?? "General"}</small></div><span className="t"><RigorChip rigor={p.rigor} /></span></div>
             <h2 className="ptitle" style={{ fontSize: 18 }}><Link href={`/p/${p.id}`}>{p.title}</Link></h2>
             <div className="row"><Link className="btn pri sm" href={`/p/${p.id}/review`}>Write a review</Link><Link className="btn sm" href={`/p/${p.id}`}>Open post</Link></div>
           </div>

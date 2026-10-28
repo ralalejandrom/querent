@@ -206,3 +206,8 @@ label.f small{font-weight:400;color:var(--muted)}
 /* journal identity refinements */
 .search input[type=text]{border:0;padding:0;background:none;border-radius:0}
 .state,.pillst,.badge{border-radius:3px}
+
+/* Verified reviewer seal next to names */
+.vf{display:inline-block;width:14px;height:14px;vertical-align:-2px;margin-left:4px;flex:none}
+h1 .vf{width:22px;height:22px;vertical-align:-1px;margin-left:8px}
+.nw{white-space:nowrap}
