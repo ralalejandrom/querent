@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
+import Script from "next/script";
 import { and, count, eq, isNull } from "drizzle-orm";
 import "./globals.css";
 import { db, schema } from "@/db";
@@ -72,6 +73,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <NavLink href="/reviews" className=""><Icon name="review" />Reviews</NavLink>
           <NavLink href={user ? `/u/${user.handle}` : "/login"} className=""><Icon name="user" />{user ? "Profile" : "Sign in"}</NavLink>
         </nav>
+        {/* Vercel Web Analytics: cookie-free, aggregate page views. Active once enabled in the Vercel project. */}
+        <Script src="/_vercel/insights/script.js" strategy="afterInteractive" />
       </body>
     </html>
   );
