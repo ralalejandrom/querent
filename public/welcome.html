@@ -698,7 +698,6 @@ footer .brand .word{font-size:18px}
 .reel .live{position:absolute;top:70px;left:24px;z-index:2;display:inline-flex;align-items:center;gap:6px;font-size:10.5px;font-weight:700;color:#fff;background:rgba(0,0,0,.35);border-radius:999px;padding:3px 9px}
 .reel .live i{width:6px;height:6px;border-radius:50%;background:#FF4D5E}
 @media (prefers-reduced-motion:no-preference){
-  .reel .selfie .sf-img{animation:handheld 3.4s ease-in-out infinite,talkzoom 9s ease-in-out infinite alternate}
   .reel .live i{animation:blink 1.2s steps(2,start) infinite}
   @keyframes handheld{0%,100%{translate:0 0;rotate:0deg}20%{translate:-3px 2px;rotate:-.5deg}45%{translate:2px -2px;rotate:.4deg}70%{translate:3px 1px;rotate:-.3deg}85%{translate:-1px -1px;rotate:.2deg}}
   @keyframes talkzoom{from{scale:1}to{scale:1.07}}
@@ -708,9 +707,8 @@ footer .brand .word{font-size:18px}
 .reel .side{bottom:auto;top:30%}
 .reel .sub{position:relative;translate:none}
 /* selfie reel: medium shot, gentle handheld motion */
-.reel .selfie .sf-img{inset:0;background-position:50% 30%}
+.reel .selfie .sf-img{inset:0;background-position:50% 30%;animation:none;scale:none;translate:none;rotate:none}
 @media (prefers-reduced-motion:no-preference){
-  .reel .selfie .sf-img{animation:handheld2 4s ease-in-out infinite,talkzoom2 10s ease-in-out infinite alternate}
   @keyframes handheld2{0%,100%{translate:0 0}30%{translate:-1.5px 1px}60%{translate:1px -1.5px}80%{translate:1.5px .5px}}
   @keyframes talkzoom2{from{scale:1.02}to{scale:1.06}}
 }
