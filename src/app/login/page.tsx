@@ -27,7 +27,7 @@ export default async function Login({ searchParams }: { searchParams: Promise<{ 
             <h3>Try a demo account</h3>
             <p className="hint" style={{ marginTop: 0 }}>Fictional people with sample data. Anyone can use these, so don't post anything private.</p>
             <div className="checks">
-              {[["admin", "Moderator + reviewer", "Lyncei Admin"], ["priyashah", "Verified reviewer", "Dr. Priya Shah"], ["sofiamendes", "Member · PhD student", "Sofia Mendes"]].map(([h, role, name]) => (
+              {[["admin", "Moderator + reviewer", "Lyncei Admin"], ["emilycarter", "Verified reviewer", "Dr. Emily Carter"], ["sofiamendes", "Member · PhD student", "Sofia Mendes"]].map(([h, role, name]) => (
                 <form key={h} action={demoLoginAction.bind(null, h)}><button className="btn" style={{ width: "100%", justifyContent: "space-between" }}><span>{name}</span><span className="hint">{role}</span></button></form>
               ))}
             </div>

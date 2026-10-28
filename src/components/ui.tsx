@@ -42,11 +42,11 @@ export function Mark({ size = 34 }: { size?: number }) {
 const AV_COLORS = ["#B5654A", "#4C6E9E", "#6E8B5A", "#8A5A9E", "#4E8C8A", "#A2803C", "#5A6FB5", "#9E5A6E"];
 // Portrait photos for the fictional demo accounts only (Unsplash license). Real accounts keep initials.
 const DEMO_PHOTOS: Record<string, string> = {
-  elenacastro: "photo-1573497019940-1c28c88b4f3e",
-  marcuslee: "photo-1560250097-0b93528c311a",
-  amirakhalil: "photo-1594824476967-48c8b964273f",
-  jonahpark: "photo-1544168190-79c17527004f",
-  priyashah: "photo-1770134223774-13b735e29201",
+  sarahwhitfield: "photo-1758691737587-7630b4d31d16",
+  michaelbrennan: "photo-1560250097-0b93528c311a",
+  rafaelgomez: "photo-1686063165043-45243dab25ab",
+  danielhoffman: "photo-1771904866914-93f97b30db88",
+  emilycarter: "photo-1679560307941-3a8af87a5c16",
   sofiamendes: "photo-1765005204058-10418f5123c5",
 };
 const demoPhoto = (handle: string) =>

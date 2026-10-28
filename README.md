@@ -57,7 +57,7 @@ npm run dev                     # http://localhost:3000
 
 **Signing in during development:** without `RESEND_API_KEY`, the sign-in link is printed in the terminal running `npm run dev`. Open it in the browser.
 
-Demo accounts (all fictional): `admin@example.com` (moderator + reviewer), `marcuslee@example.com`, `priyashah@example.com` (reviewers), `sofiamendes@example.com` (member).
+Demo accounts (all fictional): `admin@example.com` (moderator + reviewer), `michaelbrennan@example.com`, `emilycarter@example.com` (reviewers), `sofiamendes@example.com` (member).
 
 **Granting roles:** a person signs in once, then:
 
