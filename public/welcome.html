@@ -588,7 +588,7 @@ footer .brand .word{font-size:18px}
 .reel .rbar{position:absolute;top:20px;left:24px;right:24px;height:3px;border-radius:2px;background:rgba(255,255,255,.22);overflow:hidden;z-index:2}
 .reel .rbar i{display:block;height:100%;width:62%;background:#fff;border-radius:2px}
 .reel .who{top:34px}
-.reel .subs{position:absolute;left:18px;right:58px;top:47%;height:3.4em;z-index:2;display:grid;justify-items:center}.reel .sub{grid-area:1/1;align-self:start;max-width:92%;text-align:center;font-size:12.5px;font-weight:600;color:#fff;background:rgba(10,8,16,.72);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);border-radius:6px;padding:6px 10px;line-height:1.35;z-index:2}
+.reel .subs{position:relative;width:100%;height:3.1em;display:grid;justify-items:start;align-items:end}.reel .sub{grid-area:1/1;align-self:end;max-width:100%;text-align:left;text-align:center;font-size:12.5px;font-weight:600;color:#fff;background:rgba(10,8,16,.72);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);border-radius:6px;padding:6px 10px;line-height:1.35;z-index:2}
 @media (prefers-reduced-motion:no-preference){
   .reel .art{animation:kb2 9s ease-in-out infinite alternate;transform-origin:50% 40%}
   .reel .rbar i{width:0;animation:rbar 9s linear infinite}
@@ -654,10 +654,10 @@ footer .brand .word{font-size:18px}
 /* Short videos: rotating subtitles, sound bars, floating hearts */
 .reel .snd{position:absolute;top:40px;right:24px;display:flex;align-items:flex-end;gap:2px;height:14px;z-index:2}
 .reel .snd i{display:block;width:3px;height:100%;border-radius:2px;background:#fff;opacity:.9;transform-origin:50% 100%;scale:1 .35}
-.reel .fh{position:absolute;right:22px;bottom:265px;width:24px;height:120px;pointer-events:none;z-index:2}
+.reel .fh{position:absolute;right:22px;top:calc(30% - 110px);width:24px;height:120px;pointer-events:none;z-index:2}
 .reel .fh i{position:absolute;bottom:0;left:4px;font-style:normal;color:#FF6B81;font-size:16px;opacity:0}
 @media (prefers-reduced-motion:reduce){.reel .sub:not(:first-child){display:none}}
-@media (max-width:560px){.reel .snd{display:none}.reel .fh{bottom:250px}}
+@media (max-width:560px){.reel .snd{display:none}}
 @media (prefers-reduced-motion:no-preference){
   .reel .sub{opacity:0;animation:subcycle 9s ease-in-out infinite}
   .reel .sub:nth-child(2){animation-delay:3s}.reel .sub:nth-child(3){animation-delay:6s}
@@ -695,7 +695,6 @@ footer .brand .word{font-size:18px}
 .reel .selfie{position:absolute;inset:9px;border-radius:30px;overflow:hidden;background:#1B1712}
 .reel .selfie .sf-img{position:absolute;inset:-4%;background-size:cover;background-position:50% 28%}
 .reel .selfie::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35) 0,transparent 22%,transparent 50%,rgba(0,0,0,.72) 100%)}
-.reel:first-child .subs{top:60%}
 .reel .live{position:absolute;top:70px;left:24px;z-index:2;display:inline-flex;align-items:center;gap:6px;font-size:10.5px;font-weight:700;color:#fff;background:rgba(0,0,0,.35);border-radius:999px;padding:3px 9px}
 .reel .live i{width:6px;height:6px;border-radius:50%;background:#FF4D5E}
 @media (prefers-reduced-motion:no-preference){
@@ -704,6 +703,16 @@ footer .brand .word{font-size:18px}
   @keyframes handheld{0%,100%{translate:0 0;rotate:0deg}20%{translate:-3px 2px;rotate:-.5deg}45%{translate:2px -2px;rotate:.4deg}70%{translate:3px 1px;rotate:-.3deg}85%{translate:-1px -1px;rotate:.2deg}}
   @keyframes talkzoom{from{scale:1}to{scale:1.07}}
   @keyframes blink{to{visibility:hidden}}
+}
+
+.reel .side{bottom:auto;top:30%}
+.reel .sub{position:relative;translate:none}
+/* selfie reel: medium shot, gentle handheld motion */
+.reel .selfie .sf-img{inset:0;background-position:50% 30%}
+@media (prefers-reduced-motion:no-preference){
+  .reel .selfie .sf-img{animation:handheld2 4s ease-in-out infinite,talkzoom2 10s ease-in-out infinite alternate}
+  @keyframes handheld2{0%,100%{translate:0 0}30%{translate:-1.5px 1px}60%{translate:1px -1.5px}80%{translate:1.5px .5px}}
+  @keyframes talkzoom2{from{scale:1.02}to{scale:1.06}}
 }
 </style>
 
@@ -965,15 +974,16 @@ footer .brand .word{font-size:18px}
       </div>
       <div class="phones" role="img" aria-label="Illustrative preview of three short science videos, each showing its source and review status">
         <div class="reel">
-          <div class="selfie" role="img" aria-label="A researcher filming himself to explain his study"><div class="sf-img" style="background-image:url('https://images.unsplash.com/photo-1626740069669-05cf8725e7e7?w=640&h=1350&fit=crop&crop=faces&q=78&fm=jpg')"></div></div>
-          <div class="who"><img class="av" src="https://images.unsplash.com/photo-1626740069669-05cf8725e7e7?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><b>Dr. Liam <span class="nw">O’Connor<svg class="vf" role="img" aria-label="Verified"><use href="#i-verified"/></svg></span></b></div>
+          <div class="selfie" role="img" aria-label="A researcher talking to the camera to explain his study"><div class="sf-img" style="background-image:url('https://images.unsplash.com/photo-1790596685106-3438e61c59df?w=640&h=1350&fit=crop&crop=faces,center&q=78&fm=jpg')"></div></div>
+          <div class="who"><img class="av" src="https://images.unsplash.com/photo-1790596685106-3438e61c59df?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><b>Dr. Richard <span class="nw">Hale<svg class="vf" role="img" aria-label="Verified"><use href="#i-verified"/></svg></span></b></div>
           <div class="side"><span>♥<small>2.1k</small></span><span>💬<small>148</small></span></div>
           <div class="cap">
+            <span class="subs" aria-hidden="true"><span class="sub">So here’s what we found…</span><span class="sub">During sleep, the brain replays the day</span><span class="sub">But we only studied 24 people</span></span>
             <span class="chip ok">Source checked</span>
             <p>How memories are replayed during sleep, in 90 seconds</p>
             <span class="src">Source · cited study ↗</span>
           </div>
-          <span class="rbar" aria-hidden="true"><i></i></span><span class="subs" aria-hidden="true"><span class="sub">So here’s what we found…</span><span class="sub">During sleep, the brain replays the day</span><span class="sub">But we only studied 24 people</span></span><span class="snd" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="fh" aria-hidden="true"><i>♥</i><i>♥</i><i>♥</i></span>
+          <span class="rbar" aria-hidden="true"><i></i></span><span class="snd" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="fh" aria-hidden="true"><i>♥</i><i>♥</i><i>♥</i></span>
         </div>
         <div class="reel mid">
           <svg class="art" viewBox="0 0 240 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
@@ -985,11 +995,12 @@ footer .brand .word{font-size:18px}
           <div class="who"><img class="av" src="https://images.unsplash.com/photo-1778110827669-4f16d6d91e8f?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><b>Dr. Hannah <span class="nw">Becker<svg class="vf" role="img" aria-label="Verified"><use href="#i-verified"/></svg></span></b></div>
           <div class="side"><span>♥<small>5.4k</small></span><span>💬<small>312</small></span></div>
           <div class="cap">
+            <span class="subs" aria-hidden="true"><span class="sub">Where the sensors were</span><span class="sub">…and where they weren’t</span><span class="sub">What it can’t tell us yet</span></span>
             <span class="chip info">Critical appraisal available</span>
             <p>What our ocean-warming data shows, and what it doesn’t</p>
             <span class="src">Source · cited dataset ↗</span>
           </div>
-          <span class="rbar" aria-hidden="true"><i></i></span><span class="subs" aria-hidden="true"><span class="sub">Where the sensors were</span><span class="sub">…and where they weren’t</span><span class="sub">What it can’t tell us yet</span></span><span class="snd" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="fh" aria-hidden="true"><i>♥</i><i>♥</i><i>♥</i></span>
+          <span class="rbar" aria-hidden="true"><i></i></span><span class="snd" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="fh" aria-hidden="true"><i>♥</i><i>♥</i><i>♥</i></span>
         </div>
         <div class="reel">
           <svg class="art" viewBox="0 0 240 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
@@ -1002,11 +1013,12 @@ footer .brand .word{font-size:18px}
           <div class="who"><img class="av" src="https://images.unsplash.com/photo-1766036387944-cc85412b18a2?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><b>Ethan Miller</b></div>
           <div class="side"><span>♥<small>860</small></span><span>💬<small>57</small></span></div>
           <div class="cap">
+            <span class="subs" aria-hidden="true"><span class="sub">More screen time, less sleep</span><span class="sub">But which came first?</span><span class="sub">A cohort alone can’t say</span></span>
             <span class="chip prog">Review in progress</span>
             <p>Does more screen time mean worse sleep? Reading the data</p>
             <span class="src">Source · cited cohort ↗</span>
           </div>
-          <span class="rbar" aria-hidden="true"><i></i></span><span class="subs" aria-hidden="true"><span class="sub">More screen time, less sleep</span><span class="sub">But which came first?</span><span class="sub">A cohort alone can’t say</span></span><span class="snd" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="fh" aria-hidden="true"><i>♥</i><i>♥</i><i>♥</i></span>
+          <span class="rbar" aria-hidden="true"><i></i></span><span class="snd" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="fh" aria-hidden="true"><i>♥</i><i>♥</i><i>♥</i></span>
         </div>
       </div>
       <p class="small muted center">Illustrative preview. Creators, topics and numbers are examples, not real accounts or studies.</p>
