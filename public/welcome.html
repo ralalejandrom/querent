@@ -401,6 +401,21 @@ footer .brand .word{font-size:18px}
   .phone{animation:up .8s .15s cubic-bezier(.2,.7,.2,1) both}
   @keyframes up{from{transform:translateY(16px)}to{transform:none}}
 }
+
+/* Section rhythm: each section reads as its own scene (more air, alternating tones, no hairlines). */
+.sec,.features{border-top:0}
+.sec .wrap{padding-block:104px}
+#how,#example,#partners{background:var(--bg)}
+#fair,#reviewers,#join{background:var(--sky-1)}
+.features{background:var(--bg)}
+@media (max-width:860px){.sec .wrap{padding-block:68px}}
+/* Scroll transitions: content rises in as each section enters the viewport. JS adds .rv-on only when it can run them. */
+@media (prefers-reduced-motion:no-preference){
+  /* 'translate' (not 'transform') so elements that already use transform, like the raised middle reel, keep it. */
+  .rv-on .reveal{opacity:0;translate:0 32px;transition:opacity .9s cubic-bezier(.2,.7,.2,1),translate .9s cubic-bezier(.2,.7,.2,1);transition-delay:calc(var(--d,0) * 110ms)}
+  .rv-on .reveal.in{opacity:1;translate:none}
+}
+@media print{.reveal{opacity:1!important;translate:none!important}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -519,7 +534,7 @@ footer .brand .word{font-size:18px}
                   <g fill="none" stroke="#9AA8FF" stroke-opacity=".6" stroke-width="1.3"><ellipse cx="120" cy="170" rx="70" ry="26"/><ellipse cx="120" cy="170" rx="70" ry="26" transform="rotate(60 120 170)"/><ellipse cx="120" cy="170" rx="70" ry="26" transform="rotate(120 120 170)"/></g>
                   <circle cx="120" cy="170" r="9" fill="#DDE3FF"/>
                 </svg>
-                <div class="mwho"><img class="av" src="https://images.unsplash.com/photo-1778110827669-4f16d6d91e8f?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><b>Immunology postdoc</b></div>
+                <div class="mwho"><img class="av" src="https://images.unsplash.com/photo-1778110827669-4f16d6d91e8f?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><b>Dr. Hannah Becker</b></div>
                 <span class="mplay"></span>
                 <div class="mcap">
                   <p>What our T-cell study does, and doesn’t, show</p>
@@ -623,7 +638,7 @@ footer .brand .word{font-size:18px}
             <g stroke="#FF8A6B" stroke-opacity=".55" stroke-width="1.4" fill="none"><path d="M40 150L95 120 150 165 205 130M95 120l20 85 55 25M150 165l-35 40M40 150l30 90 45-35M70 240l60 40 45-50M175 230l30-100"/></g>
             <g fill="#FFD9CC"><circle cx="40" cy="150" r="5"/><circle cx="95" cy="120" r="7"/><circle cx="150" cy="165" r="5"/><circle cx="205" cy="130" r="6"/><circle cx="115" cy="205" r="8"/><circle cx="175" cy="230" r="5"/><circle cx="70" cy="240" r="6"/><circle cx="130" cy="280" r="5"/></g>
           </svg>
-          <div class="who"><img class="av" src="https://images.unsplash.com/photo-1626740069669-05cf8725e7e7?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><b>Neuroscience lab</b></div>
+          <div class="who"><img class="av" src="https://images.unsplash.com/photo-1626740069669-05cf8725e7e7?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><b>Dr. Liam O’Connor</b></div>
           <div class="side"><span>♥<small>2.1k</small></span><span>💬<small>148</small></span></div>
           <div class="cap">
             <span class="chip ok">Source checked</span>
@@ -639,7 +654,7 @@ footer .brand .word{font-size:18px}
             <g fill="none" stroke="#FFB49E" stroke-opacity=".5"><circle cx="120" cy="190" r="70"/><circle cx="120" cy="190" r="46"/><circle cx="120" cy="190" r="22" fill="#FF8A6B" fill-opacity=".35"/></g>
             <g fill="#FFD9CC" fill-opacity=".8"><circle cx="58" cy="120" r="10"/><circle cx="190" cy="140" r="7"/><circle cx="182" cy="265" r="12"/><circle cx="62" cy="272" r="6"/></g>
           </svg>
-          <div class="who"><img class="av" src="https://images.unsplash.com/photo-1778110827669-4f16d6d91e8f?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><b>Immunology postdoc</b></div>
+          <div class="who"><img class="av" src="https://images.unsplash.com/photo-1778110827669-4f16d6d91e8f?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><b>Dr. Hannah Becker</b></div>
           <div class="side"><span>♥<small>5.4k</small></span><span>💬<small>312</small></span></div>
           <div class="cap">
             <span class="chip info">Critical appraisal available</span>
@@ -656,7 +671,7 @@ footer .brand .word{font-size:18px}
             <g fill="#8FA6C4" fill-opacity=".55"><rect x="44" y="230" width="22" height="60" rx="3"/><rect x="80" y="200" width="22" height="90" rx="3"/><rect x="116" y="215" width="22" height="75" rx="3"/><rect x="152" y="170" width="22" height="120" rx="3"/></g>
             <path d="M40 250C80 230 100 160 140 175s50-40 72-60" fill="none" stroke="#FF8A6B" stroke-width="3" stroke-linecap="round"/>
           </svg>
-          <div class="who"><img class="av" src="https://images.unsplash.com/photo-1766036387944-cc85412b18a2?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><b>Epidemiology PhD</b></div>
+          <div class="who"><img class="av" src="https://images.unsplash.com/photo-1766036387944-cc85412b18a2?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><b>Ethan Miller</b></div>
           <div class="side"><span>♥<small>860</small></span><span>💬<small>57</small></span></div>
           <div class="cap">
             <span class="chip prog">Review in progress</span>
@@ -868,6 +883,33 @@ footer .brand .word{font-size:18px}
   }
   if(document.readyState==='complete') fit(); else window.addEventListener('load',fit);
   window.addEventListener('resize',fit);
+})();
+
+/* Scroll transitions: mark each section's blocks (grid items one by one) and reveal them as they enter the viewport. */
+(function(){
+  if(!('IntersectionObserver' in window)) return;
+  if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var GROUP='.two,.three,.modes,.rules,.steps,.rgrid,ul,ol'+(window.innerWidth>760?',.phones':'');
+  var items=[];
+  function mark(el){
+    if(el.matches(GROUP)){ for(var i=0;i<el.children.length;i++) items.push(el.children[i]); }
+    else if(el.tagName==='DIV'&&!el.className&&el.children.length){ for(var j=0;j<el.children.length;j++) mark(el.children[j]); }
+    else items.push(el);
+  }
+  document.querySelectorAll('main > .sec > .wrap, main > .features > .wrap').forEach(function(w){
+    for(var i=0;i<w.children.length;i++) mark(w.children[i]);
+  });
+  items.forEach(function(el){el.classList.add('reveal');});
+  document.documentElement.classList.add('rv-on');
+  var io=new IntersectionObserver(function(entries){
+    var n=0;
+    entries.forEach(function(e){
+      if(!e.isIntersecting) return;
+      e.target.style.setProperty('--d',Math.min(n++,6));
+      e.target.classList.add('in'); io.unobserve(e.target);
+    });
+  },{rootMargin:'0px 0px -8% 0px',threshold:0.1});
+  items.forEach(function(el){io.observe(el);});
 })();
 
 /* Beta waitlist: posts to /api/waitlist (see src/app/api/waitlist/route.ts). Success is shown only after the server confirms the row was saved. */
