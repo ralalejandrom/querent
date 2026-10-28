@@ -186,7 +186,7 @@ img.av{object-fit:cover;background:#E4E7EC}
 .feat:first-child{border-left:0;padding-left:0}
 .feat:last-child{padding-right:0}
 .feat .num{font-size:20px;color:var(--muted);font-weight:400;margin-right:14px}
-.feat h3{font-family:var(--serif);font-weight:500;font-size:clamp(22px,1.9vw,27px);display:flex;align-items:baseline}
+.feat h3{font-family:var(--serif);font-weight:500;font-size:clamp(21px,1.75vw,25px);line-height:1.2;display:flex;align-items:baseline;flex-wrap:wrap;row-gap:6px}
 .feat p{color:var(--ink-2);margin:0 0 18px 36px;font-size:16px;line-height:1.4}
 .card{background:var(--surface);border:1px solid var(--rule);border-radius:4px;padding:14px;font-size:12px;box-shadow:0 18px 30px -24px rgba(20,26,34,.35);align-self:start}
 .card h5{margin:0 0 10px;font-size:13px}
@@ -248,7 +248,7 @@ img.av{object-fit:cover;background:#E4E7EC}
 .three h4{font-size:16px;margin:0 0 6px}
 .three p{margin:0;color:var(--ink-2);line-height:1.5}
 .scope,.jcard{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:28px}
-.scope h3,.jcard h3{font-family:var(--serif);font-weight:400;font-size:26px;margin:14px 0 8px}
+.scope h3,.jcard h3{font-family:var(--serif);font-weight:400;font-size:26px;line-height:1.2;margin:14px 0 8px}
 .jcard h3{margin-top:0}
 .scope p,.jcard p{color:var(--ink-2);line-height:1.5;margin:0 0 10px}
 .scope .q2{font-family:var(--serif);font-style:italic;font-size:19px;color:var(--ink);line-height:1.4}
@@ -295,15 +295,15 @@ img.av{object-fit:cover;background:#E4E7EC}
 .pcard{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:26px;display:flex;flex-direction:column;gap:12px}
 .pcard .ic{width:44px;height:44px;border-radius:12px;background:var(--lav-soft);display:grid;place-items:center;color:var(--ultra)}
 .pcard .ic svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8}
-.pcard h3{font-family:var(--serif);font-weight:400;font-size:24px;margin:4px 0 0}
+.pcard h3{font-family:var(--serif);font-weight:400;font-size:24px;line-height:1.2;margin:4px 0 0}
 .pcard p{color:var(--ink-2);line-height:1.5;margin:0}
 .pcard ul{margin:4px 0 0;padding:0 0 0 18px;color:var(--ink-2);line-height:1.5;display:grid;gap:6px}
 .pform{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:28px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:28px;align-items:start}
-.pform h3{font-family:var(--serif);font-weight:400;font-size:26px;margin:0 0 8px}
+.pform h3{font-family:var(--serif);font-weight:400;font-size:26px;line-height:1.2;margin:0 0 8px}
 .pform p{color:var(--ink-2);line-height:1.5;margin:0}
 .pform .grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
 .pform label.f{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600;color:var(--ink-2)}
-.pform input,.pform select{font:inherit;font-size:15px;font-weight:400;padding:12px 14px;border:1px solid var(--rule);border-radius:8px;background:var(--bg);color:var(--ink);min-width:0}
+.pform input,.pform select{font:inherit;font-size:15px;font-weight:400;padding:12px 14px;border:1px solid var(--rule);border-radius:10px;background:var(--bg);color:var(--ink);min-width:0}
 .pform .full{grid-column:1/-1}
 .jcard a.more{font-weight:600;color:var(--blue)}
 @media (max-width:860px){.partners .three,.pform,.pform .grid{grid-template-columns:minmax(0,1fr)}}
@@ -346,15 +346,16 @@ mark.good{background:#E7F5EE;color:#0B5E3C}
 .commit div{display:flex;gap:12px;align-items:flex-start;font-size:15px;line-height:1.35;color:var(--ink-2)}
 .commit svg{width:28px;height:28px;flex:none;stroke:var(--ink);fill:none;stroke-width:1.5}
 .form{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
-.form input{flex:1 1 220px;min-width:0;font:inherit;padding:14px 16px;border-radius:3px;border:1px solid var(--rule);background:var(--bg);color:var(--ink)}
+.form input{flex:1 1 220px;min-width:0;font:inherit;padding:14px 16px;border-radius:10px;border:1px solid var(--rule);background:var(--bg);color:var(--ink)}
 .form input:focus{outline:none;border-color:var(--ink)}
 .pform .form{display:block;margin:0;width:100%}
-.pform .form input,.pform .form select{flex:none;width:100%;height:auto;padding:12px 14px;border-radius:8px}
+.pform .form input,.pform .form select{flex:none;width:100%;height:auto;padding:12px 14px;border-radius:10px}
 .pform .form select{appearance:auto}
 .note{font-size:14px;color:var(--muted);margin-top:10px;min-height:1.4em}
 .note.ok{color:var(--green)}.note.err{color:var(--heart)}
 
-footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding-block:26px;color:var(--muted);font-size:14px;border-top:1px solid var(--rule)}
+footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding-block:26px;color:var(--muted);font-size:14px}
+footer{border-top:1px solid var(--rule)}
 footer .brand .word{font-size:18px}
 
 /* ---------- responsive ---------- */
@@ -370,8 +371,10 @@ footer .brand .word{font-size:18px}
   .nav{display:none}
 }
 @media (max-width:760px){
-  /* Narrow screens: keep the real-scale Mac + iPhone composition; a script enlarges it and lets the Mac bleed off the left edge so the iPhone stays legible. */
-  .devices{width:820px;max-width:none}
+  /* Narrow screens: the iPhone alone, centered at full size (the cropped Mac read as a layout error). */
+  .devices{width:auto;max-width:none;display:flex;justify-content:center;padding-bottom:8px}
+  .devices .laptop{display:none}
+  .devices .phone{position:relative;right:auto;bottom:auto;width:300px;max-width:82vw}
   .hero .wrap{padding-block:20px 8px;gap:28px}
   .hero h1{font-size:44px;line-height:1.02}
   .hero .lede{font-size:18px;margin:18px 0 24px}
@@ -465,7 +468,7 @@ footer .brand .word{font-size:18px}
 .qsteps{list-style:none;padding:0;margin:26px 0 22px;display:grid;gap:18px}
 .qsteps li{display:flex;gap:14px;align-items:flex-start}
 .qn{flex:none;width:30px;height:30px;border-radius:50%;background:var(--ultra);color:#fff;display:grid;place-items:center;font-weight:700;font-size:14px;margin-top:2px}
-.qsteps h3{font-family:var(--serif);font-weight:400;font-size:23px;margin:0 0 3px}
+.qsteps h3{font-family:var(--serif);font-weight:400;font-size:23px;line-height:1.2;margin:0 0 3px}
 .qsteps p{margin:0;color:var(--muted);font-size:16px}
 .how-copy .banner{margin-top:0}
 .pillrow{list-style:none;margin:22px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:10px}
@@ -473,6 +476,7 @@ footer .brand .word{font-size:18px}
 .pillrow svg{width:17px;height:17px;stroke:var(--ultra);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .pillrow .chip{padding:2px 7px;font-size:11px}
 .pillrow.bp{margin-top:34px;justify-content:center}
+@media (max-width:560px){.pillrow.bp{justify-content:flex-start}}
 .howdemo{border-radius:24px;padding:40px;background:radial-gradient(120% 90% at 20% 0%,var(--lav-soft),transparent 70%),var(--sky-1);border:1px solid var(--rule)}
 .hd-card{background:var(--surface);border:1px solid var(--rule);border-radius:16px;padding:22px;box-shadow:0 30px 60px -32px rgba(22,20,31,.4);display:grid;gap:14px;max-width:460px;margin:0 auto}
 .hd-h{display:flex;gap:10px;align-items:center}
@@ -481,7 +485,7 @@ footer .brand .word{font-size:18px}
 .hd-t{margin:0;font-family:var(--serif);font-size:19px;line-height:1.3}
 .hd-src{position:relative;overflow:hidden;display:flex;gap:12px;align-items:center;border:1px solid var(--rule);border-radius:10px;padding:12px;background:var(--sky-1)}
 .hd-src .doc{width:26px;height:32px;border-radius:3px;background:repeating-linear-gradient(180deg,var(--surface) 0 5px,var(--stone) 5px 6px);border:1px solid var(--rule);flex:none}
-.hd-src b{font-size:13.5px;display:block}.hd-src small{color:var(--muted);font-size:12px}
+.hd-src b{font-size:13.5px;display:block;line-height:1.3}.hd-src small{color:var(--muted);font-size:12px}
 .hd-src .tick{margin-left:auto;width:24px;height:24px;border-radius:50%;background:var(--green);display:grid;place-items:center;flex:none}
 .hd-src .tick svg{width:13px;height:13px;stroke:#fff;fill:none;stroke-width:3}
 .hd-src .scan{position:absolute;top:0;bottom:0;left:0;width:30%;background:linear-gradient(90deg,transparent,rgba(43,63,216,.18),transparent);opacity:0;pointer-events:none}
@@ -523,10 +527,10 @@ footer .brand .word{font-size:18px}
 .fair .mode p{color:#B9B4C4;margin:0}
 .mill{width:100%;max-width:240px;height:auto;color:#9AA8FF;margin-bottom:6px}
 .mhead{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%}
-.fair .mode h3{color:#F5F7FB;margin:0;font-size:24px}
-.st{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;white-space:nowrap;color:#B9B4C4}
-.st::before{content:"";width:7px;height:7px;border-radius:50%;background:#6B6678}
-.st.ok{color:#4FC48D}.st.ok::before{background:#4FC48D;box-shadow:0 0 0 3px rgba(79,196,141,.18)}
+.fair .mode h3{color:#F5F7FB;margin:0;font-size:24px;line-height:1.2}
+.stat{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;white-space:nowrap;color:#B9B4C4}
+.stat::before{content:"";width:7px;height:7px;border-radius:50%;background:#6B6678}
+.stat.ok{color:#4FC48D}.stat.ok::before{background:#4FC48D;box-shadow:0 0 0 3px rgba(79,196,141,.18)}
 .fair .tiles{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
 .fair .tiles li{background:var(--fair-bg);border:1px solid #2E2B3A;border-radius:14px;padding:20px;gap:12px;transition:transform .25s,border-color .25s}
 .fair .tiles li:hover{transform:translateY(-3px);border-color:#4A4660}
@@ -563,7 +567,7 @@ footer .brand .word{font-size:18px}
 .ai-body .a{font-size:12.5px;color:var(--muted)}
 .ai-body ul{margin:6px 0 4px;padding:0 0 0 16px;font-size:13.5px;line-height:1.45;color:var(--ink-2);display:grid;gap:3px}
 .ai-body .doi{font-size:12px;color:var(--ultra);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;text-decoration:none;word-break:break-all}
-.aiprev .ai-note{margin:10px 0 0;font-size:11.5px;color:var(--muted);line-height:1.4}
+.aiprev .ai-note{margin:10px 0 0;font-size:11.5px;color:var(--muted);line-height:1.6}.aiprev .ai-note .chip{font-size:10.5px;padding:1px 6px;margin-right:4px}
 .ai-skel{display:none}
 .rv-on .ai-skel{display:grid;align-content:start;gap:9px;padding-top:2px}
 .ai-skel i{display:block;height:10px;border-radius:5px;background:linear-gradient(90deg,var(--stone),var(--sky-1),var(--stone));background-size:200% 100%}
@@ -668,6 +672,24 @@ footer .brand .word{font-size:18px}
   @keyframes floatup{0%{opacity:0;translate:0 0;scale:.6}15%{opacity:1}100%{opacity:0;translate:-6px -110px;scale:1.2}}
   @keyframes kb2{from{scale:1;translate:0 0}to{scale:1.14;translate:-8px -10px}}
 }
+
+/* ===== Fields strip: every discipline, medicine first ===== */
+.fields{background:var(--bg);padding:8px 0 36px;overflow:hidden}
+.fields-head p{margin:0 0 16px;color:var(--muted);font-size:15px}.fields-head b{color:var(--ink)}
+.marquee{overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.mtrack{display:flex;gap:10px;width:max-content}
+.mtrack .dup{display:flex;gap:10px}
+.fchip{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;border:1px solid var(--rule);border-radius:999px;padding:8px 14px;font-size:14px;font-weight:600;color:var(--ink-2);background:var(--surface)}
+.fchip i{width:7px;height:7px;border-radius:50%;background:var(--ultra);opacity:.55}
+.fchip.lead{border-color:color-mix(in srgb,var(--ultra) 45%,var(--rule));background:var(--lav-soft);color:var(--ultra)}
+.fchip.lead i{opacity:1}
+.fchip small{font-size:11px;font-weight:700;color:var(--surface);background:var(--ultra);border-radius:999px;padding:2px 7px}
+@media (prefers-reduced-motion:no-preference){
+  .mtrack{animation:marq 48s linear infinite}
+  .marquee:hover .mtrack{animation-play-state:paused}
+  @keyframes marq{to{transform:translateX(calc(-50% - 5px))}}
+}
+@media (prefers-reduced-motion:reduce){.mtrack{flex-wrap:wrap;width:auto;padding-inline:20px}.mtrack .dup{display:none}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -821,20 +843,25 @@ footer .brand .word{font-size:18px}
     </div>
   </section>
 
+  <section class="fields" aria-label="Research fields">
+    <div class="wrap fields-head"><p><b>Built for every field.</b> Starting with medicine and clinical research.</p></div>
+    <div class="marquee"><div class="mtrack"><span class="fchip lead"><i></i>Medicine <small>Launching first</small></span><span class="fchip"><i></i>Clinical research</span><span class="fchip"><i></i>Neuroscience</span><span class="fchip"><i></i>Public health</span><span class="fchip"><i></i>Physics</span><span class="fchip"><i></i>Climate science</span><span class="fchip"><i></i>Biology</span><span class="fchip"><i></i>Psychology</span><span class="fchip"><i></i>Economics</span><span class="fchip"><i></i>Chemistry</span><span class="fchip"><i></i>Computer science</span><span class="fchip"><i></i>Astronomy</span><span class="fchip"><i></i>Ecology</span><span class="fchip"><i></i>Engineering</span><span class="fchip"><i></i>Mathematics</span><span class="fchip"><i></i>Social sciences</span><span class="fchip"><i></i>Earth science</span><span class="dup" aria-hidden="true"><span class="fchip lead"><i></i>Medicine <small>Launching first</small></span><span class="fchip"><i></i>Clinical research</span><span class="fchip"><i></i>Neuroscience</span><span class="fchip"><i></i>Public health</span><span class="fchip"><i></i>Physics</span><span class="fchip"><i></i>Climate science</span><span class="fchip"><i></i>Biology</span><span class="fchip"><i></i>Psychology</span><span class="fchip"><i></i>Economics</span><span class="fchip"><i></i>Chemistry</span><span class="fchip"><i></i>Computer science</span><span class="fchip"><i></i>Astronomy</span><span class="fchip"><i></i>Ecology</span><span class="fchip"><i></i>Engineering</span><span class="fchip"><i></i>Mathematics</span><span class="fchip"><i></i>Social sciences</span><span class="fchip"><i></i>Earth science</span></span></div></div>
+  </section>
+
   <section class="features" aria-label="How Lyncei works">
     <div class="wrap">
       <div class="feat" id="discover">
         <h3><span class="num">01</span>Discover</h3>
         <p>Posts, videos and threads, each linked to its source.</p>
         <div class="card">
-          <div class="dtabs"><span class="on">Latest research</span><span>Clinical practice</span><span>Methodology</span></div>
-          <div class="mini"><span class="th"></span><div><b>Semaglutide and cardiovascular outcomes in patients with obesity</b><small>Original article · 2025</small><div class="acts"><span class="h"><svg><use href="#i-heart"/></svg>1.2k</span><span><svg><use href="#i-chat"/></svg>124</span><span><svg><use href="#i-share"/></svg>98</span></div></div></div>
-          <div class="mini"><span class="th dark"></span><div><b>The role of inflammation in Alzheimer's disease: new mechanistic insights</b><small>Video explainer · 2025</small><div class="acts"><span class="h"><svg><use href="#i-heart"/></svg>842</span><span><svg><use href="#i-chat"/></svg>67</span><span><svg><use href="#i-share"/></svg>54</span></div></div></div>
+          <div class="dtabs"><span class="on">Latest research</span><span>Medicine</span><span>Physics</span></div>
+          <div class="mini"><span class="th"></span><div><b>Semaglutide and cardiovascular outcomes in patients with obesity</b><small>Original article · Medicine · 2025</small><div class="acts"><span class="h"><svg><use href="#i-heart"/></svg>1.2k</span><span><svg><use href="#i-chat"/></svg>124</span><span><svg><use href="#i-share"/></svg>98</span></div></div></div>
+          <div class="mini"><span class="th dark"></span><div><b>Why the universe’s expansion rate is so hard to pin down</b><small>Video explainer · Physics · 2025</small><div class="acts"><span class="h"><svg><use href="#i-heart"/></svg>842</span><span><svg><use href="#i-chat"/></svg>67</span><span><svg><use href="#i-share"/></svg>54</span></div></div></div>
         </div>
       </div>
 
       <div class="feat" id="review-feature">
-        <h3><span class="num">02</span>Scoped Review</h3>
+        <h3><span class="num">02</span>Scoped review</h3>
         <p>Every review says exactly what was checked.</p>
         <div class="card">
           <h5>Review status on one post</h5>
@@ -857,7 +884,7 @@ footer .brand .word{font-size:18px}
       </div>
 
       <div class="feat">
-        <h3><span class="num">04</span>Build What's Next <span class="planned">Planned</span></h3>
+        <h3><span class="num">04</span>Build what’s next <span class="planned">Planned</span></h3>
         <p>Find collaborators through shared questions.</p>
         <div class="card">
           <h5>Start a new collaboration</h5>
@@ -949,10 +976,10 @@ footer .brand .word{font-size:18px}
           <div class="side"><span>♥<small>5.4k</small></span><span>💬<small>312</small></span></div>
           <div class="cap">
             <span class="chip info">Critical appraisal available</span>
-            <p>What our vaccine trial found, and what it didn’t</p>
-            <span class="src">Source · cited trial ↗</span>
+            <p>What our ocean-warming data shows, and what it doesn’t</p>
+            <span class="src">Source · cited dataset ↗</span>
           </div>
-          <span class="rbar" aria-hidden="true"><i></i></span><span class="subs" aria-hidden="true"><span class="sub">Who was in the trial</span><span class="sub">…and who wasn’t</span><span class="sub">What it can’t tell us yet</span></span><span class="snd" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="fh" aria-hidden="true"><i>♥</i><i>♥</i><i>♥</i></span>
+          <span class="rbar" aria-hidden="true"><i></i></span><span class="subs" aria-hidden="true"><span class="sub">Where the sensors were</span><span class="sub">…and where they weren’t</span><span class="sub">What it can’t tell us yet</span></span><span class="snd" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="fh" aria-hidden="true"><i>♥</i><i>♥</i><i>♥</i></span>
         </div>
         <div class="reel">
           <svg class="art" viewBox="0 0 240 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
@@ -1014,16 +1041,16 @@ footer .brand .word{font-size:18px}
       <p class="eyebrow">Fair by design</p>
       <h2 id="fair-h">Reviews judge the work, <em>not the person</em></h2>
       <div class="modes">
-        <div class="mode"><svg class="mill" viewBox="0 0 220 90" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="34" cy="34" r="14"/><path d="M14 74c3-13 11-20 20-20s17 7 20 20"/><path d="M22 33h24" stroke-width="7" stroke-opacity=".9"/><circle cx="186" cy="34" r="14"/><path d="M166 74c3-13 11-20 20-20s17 7 20 20"/><path d="M174 33h24" stroke-width="7" stroke-opacity=".9"/><rect x="92" y="18" width="36" height="48" rx="4"/><path d="M100 32h20M100 42h20M100 52h12"/><path d="M58 44h26M136 44h26" stroke-dasharray="3 5"/></g></svg><div class="mhead"><h3>Before you publish</h3><span class="st plan">Planned</span></div><p>Double-anonymous. Private until you choose.</p></div>
-        <div class="mode"><svg class="mill" viewBox="0 0 220 90" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="20" y="8" width="44" height="76" rx="9"/><path d="M38 38v16l13-8z" fill="currentColor"/><rect x="150" y="18" width="40" height="52" rx="4"/><path d="M158 32h24M158 42h24M158 52h14"/><path d="M76 46h62" stroke-dasharray="3 5"/><circle cx="107" cy="46" r="11" fill="var(--fair-bg)"/><path d="M102 46.5l3.5 3.5 6.5-7"/></g></svg><div class="mhead"><h3>After it’s out</h3><span class="st ok">In the demo</span></div><p>The video is checked against its source.</p></div>
+        <div class="mode"><svg class="mill" viewBox="0 0 220 90" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="34" cy="34" r="14"/><path d="M14 74c3-13 11-20 20-20s17 7 20 20"/><path d="M22 33h24" stroke-width="7" stroke-opacity=".9"/><circle cx="186" cy="34" r="14"/><path d="M166 74c3-13 11-20 20-20s17 7 20 20"/><path d="M174 33h24" stroke-width="7" stroke-opacity=".9"/><rect x="92" y="18" width="36" height="48" rx="4"/><path d="M100 32h20M100 42h20M100 52h12"/><path d="M58 44h26M136 44h26" stroke-dasharray="3 5"/></g></svg><div class="mhead"><h3>Before you publish</h3><span class="stat plan">Planned</span></div><p>Double-anonymous. Private until you choose.</p></div>
+        <div class="mode"><svg class="mill" viewBox="0 0 220 90" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="20" y="8" width="44" height="76" rx="9"/><path d="M38 38v16l13-8z" fill="currentColor"/><rect x="150" y="18" width="40" height="52" rx="4"/><path d="M158 32h24M158 42h24M158 52h14"/><path d="M76 46h62" stroke-dasharray="3 5"/><circle cx="107" cy="46" r="11" fill="var(--fair-bg)"/><path d="M102 46.5l3.5 3.5 6.5-7"/></g></svg><div class="mhead"><h3>After it’s out</h3><span class="stat ok">In the demo</span></div><p>The video is checked against its source.</p></div>
       </div>
       <ul class="tiles">
-        <li><span class="ico"><svg><use href="#i-eyeoff"/></svg></span><b>Likes hidden while reviewing</b><span class="st ok">In the demo</span></li>
-        <li><span class="ico"><svg><use href="#i-list"/></svg></span><b>Scoped, structured reviews</b><span class="st ok">In the demo</span></li>
-        <li><span class="ico"><svg><use href="#i-scale"/></svg></span><b>Conflicts declared first</b><span class="st ok">In the demo</span></li>
-        <li><span class="ico"><svg><use href="#i-shuffle"/></svg></span><b>Reviewers assigned, not chosen</b><span class="st plan">Planned</span></li>
-        <li><span class="ico"><svg><use href="#i-people"/></svg></span><b>More reach, more reviewers</b><span class="st plan">Planned</span></li>
-        <li><span class="ico"><svg><use href="#i-shield"/></svg></span><b>Reviewer identity protected</b><span class="st ok">In the demo</span></li>
+        <li><span class="ico"><svg><use href="#i-eyeoff"/></svg></span><b>Likes hidden while reviewing</b><span class="stat ok">In the demo</span></li>
+        <li><span class="ico"><svg><use href="#i-list"/></svg></span><b>Scoped, structured reviews</b><span class="stat ok">In the demo</span></li>
+        <li><span class="ico"><svg><use href="#i-scale"/></svg></span><b>Conflicts declared first</b><span class="stat ok">In the demo</span></li>
+        <li><span class="ico"><svg><use href="#i-shuffle"/></svg></span><b>Reviewers assigned, not chosen</b><span class="stat plan">Planned</span></li>
+        <li><span class="ico"><svg><use href="#i-people"/></svg></span><b>More reach, more reviewers</b><span class="stat plan">Planned</span></li>
+        <li><span class="ico"><svg><use href="#i-shield"/></svg></span><b>Reviewer identity protected</b><span class="stat ok">In the demo</span></li>
       </ul>
     </div>
   </section>
@@ -1063,7 +1090,7 @@ footer .brand .word{font-size:18px}
               <div class="cm-h"><b>Dr. Michael <span class="nw">Brennan<svg class="vf" role="img" aria-label="Verified"><use href="#i-verified"/></svg></span></b><small>Biostatistics · 1h</small></div>
               <p>Worth reading next to the DELIVER kidney analysis: <a class="ref" href="https://doi.org/10.1001/jamacardio.2022.4210" target="_blank" rel="noopener noreferrer">Mc Causland et al., JAMA Cardiology 2023</a>.</p>
               <div class="aiprev">
-                <div class="ai-h"><span class="spark" aria-hidden="true">✦</span>Reference preview<span class="ai-tag">AI-assisted</span><span class="chip plan">Planned</span></div>
+                <div class="ai-h"><span class="spark" aria-hidden="true">✦</span>Reference preview<span class="ai-tag">AI-assisted</span></div>
                 <div class="ai-stack">
                   <div class="ai-body">
                     <small class="j">JAMA Cardiology · 2023 · Randomized clinical trial</small>
@@ -1078,7 +1105,7 @@ footer .brand .word{font-size:18px}
                   </div>
                   <div class="ai-skel" aria-hidden="true"><i style="width:45%"></i><i></i><i style="width:85%"></i><i style="width:60%"></i><span>Reading the paper…</span></div>
                 </div>
-                <p class="ai-note">AI summary of the cited paper. Always check the source.</p>
+                <p class="ai-note"><span class="chip plan">Planned</span> AI summary of the cited paper. Always check the source.</p>
               </div>
             </div>
           </div>
@@ -1179,6 +1206,7 @@ footer .brand .word{font-size:18px}
   var lap=d.querySelector('.laptop'), ph=d.querySelector('.phone');
   function phoneFit(){
     if(!lap||!ph) return;
+    if(window.innerWidth<=760){ ph.style.scale=''; return; }
     /* Real proportions: an iPhone body is 23.55% of a 13.6" MacBook Air lid width. */
     var s=0.2355*lap.offsetWidth/ph.offsetWidth;
     ph.style.transformOrigin='100% 100%';
@@ -1187,6 +1215,7 @@ footer .brand .word{font-size:18px}
   function fit(){
     d.style.transform='';d.style.marginBottom='';
     if(window.innerWidth>760) return;
+    return; /* phones: CSS shows the iPhone alone, no scaling needed */
     var host=d.parentElement, cs=getComputedStyle(host);
     var w=host.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);
     var z=Math.min(1,1.8*w/820);
