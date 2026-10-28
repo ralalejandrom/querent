@@ -406,7 +406,7 @@ footer .brand .word{font-size:18px}
 .sec,.features{border-top:0}
 .sec .wrap{padding-block:104px}
 #how,#example,#partners{background:var(--bg)}
-#fair,#reviewers,#join{background:var(--sky-1)}
+#reviewers,#join{background:var(--sky-1)}
 .features{background:var(--bg)}
 @media (max-width:860px){.sec .wrap{padding-block:68px}}
 /* Scroll transitions: content rises in as each section enters the viewport. JS adds .rv-on only when it can run them. */
@@ -419,7 +419,8 @@ footer .brand .word{font-size:18px}
 @media print{.reveal{opacity:1!important;translate:none!important}}
 
 /* Icon tiles, verified badge, reviewer profile mock */
-.vf{width:14px;height:14px;flex:none;vertical-align:-2px;margin-left:4px;display:inline-block}
+.vf{width:1.05em;height:1.05em;flex:none;vertical-align:-.16em;margin-left:.28em;display:inline-block}
+.nw{white-space:nowrap}
 .post-h b,.mwho b,.reel .who b,.cmt b{white-space:nowrap}
 .ico{width:44px;height:44px;border-radius:12px;background:var(--lav-soft);color:var(--ultra);display:grid;place-items:center;flex:none}
 .ico svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
@@ -437,7 +438,7 @@ footer .brand .word{font-size:18px}
 .pmock{background:var(--surface);border:1px solid var(--rule);border-radius:16px;padding:26px;box-shadow:0 30px 60px -30px rgba(22,20,31,.35);display:flex;flex-direction:column;gap:16px;max-width:440px}
 .pm-h{display:flex;gap:14px;align-items:center}
 .pm-h .av{width:56px;height:56px;border-radius:50%;object-fit:cover;background:var(--sky-2)}
-.pm-h b{font-size:18px;display:flex;align-items:center}
+.pm-h b{font-size:18px;display:block}
 .pm-h small{display:block;color:var(--muted);font-size:13.5px;margin-top:2px}
 .vbadge{align-self:flex-start;display:inline-flex;gap:7px;align-items:center;font-size:13px;font-weight:600;color:var(--ultra);background:var(--lav-soft);border-radius:999px;padding:6px 12px 6px 8px}
 .vbadge svg{width:16px;height:16px}
@@ -458,6 +459,195 @@ footer .brand .word{font-size:18px}
 .pcard li::before{content:"";position:absolute;left:0;top:4px;width:14px;height:14px;border-radius:50%;background:var(--green-soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4L18 8.5' fill='none' stroke='%23157F3C' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/10px no-repeat}
 @media (max-width:860px){.iconrow,.tiles{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.rvwrap{grid-template-columns:minmax(0,1fr);gap:36px}.pmock{max-width:none}}
 @media (max-width:560px){.iconrow,.tiles{grid-template-columns:minmax(0,1fr)}.tiles li{flex-direction:row;align-items:center;flex-wrap:wrap;padding:16px}.tiles b{flex:1;min-width:0}}
+
+/* ===== How review works: copy + animated review demo ===== */
+.how-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:64px;align-items:center}
+.qsteps{list-style:none;padding:0;margin:26px 0 22px;display:grid;gap:18px}
+.qsteps li{display:flex;gap:14px;align-items:flex-start}
+.qn{flex:none;width:30px;height:30px;border-radius:50%;background:var(--ultra);color:#fff;display:grid;place-items:center;font-weight:700;font-size:14px;margin-top:2px}
+.qsteps h3{font-family:var(--serif);font-weight:400;font-size:23px;margin:0 0 3px}
+.qsteps p{margin:0;color:var(--muted);font-size:16px}
+.how-copy .banner{margin-top:0}
+.pillrow{list-style:none;margin:22px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:10px}
+.pillrow li{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--rule);background:var(--surface);border-radius:999px;padding:8px 14px;font-size:14px;font-weight:600}
+.pillrow svg{width:17px;height:17px;stroke:var(--ultra);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.pillrow .chip{padding:2px 7px;font-size:11px}
+.pillrow.bp{margin-top:34px;justify-content:center}
+.howdemo{border-radius:24px;padding:40px;background:radial-gradient(120% 90% at 20% 0%,var(--lav-soft),transparent 70%),var(--sky-1);border:1px solid var(--rule)}
+.hd-card{background:var(--surface);border:1px solid var(--rule);border-radius:16px;padding:22px;box-shadow:0 30px 60px -32px rgba(22,20,31,.4);display:grid;gap:14px;max-width:460px;margin:0 auto}
+.hd-h{display:flex;gap:10px;align-items:center}
+.hd-h .av{width:38px;height:38px;border-radius:50%;object-fit:cover;background:var(--sky-2)}
+.hd-h b{font-size:14.5px;white-space:nowrap}.hd-h small{display:block;color:var(--muted);font-size:12.5px}
+.hd-t{margin:0;font-family:var(--serif);font-size:19px;line-height:1.3}
+.hd-src{position:relative;overflow:hidden;display:flex;gap:12px;align-items:center;border:1px solid var(--rule);border-radius:10px;padding:12px;background:var(--sky-1)}
+.hd-src .doc{width:26px;height:32px;border-radius:3px;background:repeating-linear-gradient(180deg,var(--surface) 0 5px,var(--stone) 5px 6px);border:1px solid var(--rule);flex:none}
+.hd-src b{font-size:13.5px;display:block}.hd-src small{color:var(--muted);font-size:12px}
+.hd-src .tick{margin-left:auto;width:24px;height:24px;border-radius:50%;background:var(--green);display:grid;place-items:center;flex:none}
+.hd-src .tick svg{width:13px;height:13px;stroke:#fff;fill:none;stroke-width:3}
+.hd-src .scan{position:absolute;top:0;bottom:0;left:0;width:30%;background:linear-gradient(90deg,transparent,rgba(43,63,216,.18),transparent);opacity:0;pointer-events:none}
+.hd-labels{display:flex;gap:8px;flex-wrap:wrap}
+.hd-notes{list-style:none;margin:0;padding:0;display:grid;gap:7px;font-size:14px;color:var(--ink-2)}
+.hd-notes li{display:flex;gap:9px;align-items:center}
+.hd-notes i{width:8px;height:8px;border-radius:50%;flex:none}.hd-notes i.ok{background:var(--green)}.hd-notes i.warn{background:var(--amber)}
+.hd-foot{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--rule);padding-top:12px;font-size:12.5px;color:var(--muted)}
+.rig{display:inline-grid}.rig > span{grid-area:1/1;font-size:12.5px;font-weight:700;border-radius:4px;padding:5px 10px;text-align:center}
+.rig .r0{background:var(--ink);color:var(--bg);opacity:0}.rig .r1{background:var(--green);color:#fff}
+@media (prefers-reduced-motion:no-preference){
+  .rv-on .howdemo.in .scan{animation:hd-scan 10s ease-in-out infinite}
+  .rv-on .howdemo.in .tick{animation:hd-tick 10s infinite both}
+  .rv-on .howdemo.in .l1{animation:hd-l1 10s infinite both}
+  .rv-on .howdemo.in .l2{animation:hd-l2 10s infinite both}
+  .rv-on .howdemo.in .n1{animation:hd-n1 10s infinite both}
+  .rv-on .howdemo.in .n2{animation:hd-n2 10s infinite both}
+  .rv-on .howdemo.in .n3{animation:hd-n3 10s infinite both}
+  .rv-on .howdemo.in .r1{animation:hd-r1 10s infinite both}
+  .rv-on .howdemo.in .r0{animation:hd-r0 10s infinite both}
+  @keyframes hd-l1{0%,14%{opacity:0;scale:.86}18%,90%{opacity:1;scale:1}95%,100%{opacity:0;scale:1}}
+  @keyframes hd-tick{0%,12%{opacity:0;scale:.86}16%,90%{opacity:1;scale:1}95%,100%{opacity:0;scale:1}}
+  @keyframes hd-l2{0%,30%{opacity:0;scale:.86}34%,90%{opacity:1;scale:1}95%,100%{opacity:0;scale:1}}
+  @keyframes hd-n1{0%,34%{opacity:0;scale:.86}38%,90%{opacity:1;scale:1}95%,100%{opacity:0;scale:1}}
+  @keyframes hd-n2{0%,39%{opacity:0;scale:.86}43%,90%{opacity:1;scale:1}95%,100%{opacity:0;scale:1}}
+  @keyframes hd-n3{0%,44%{opacity:0;scale:.86}48%,90%{opacity:1;scale:1}95%,100%{opacity:0;scale:1}}
+  @keyframes hd-r1{0%,54%{opacity:0;scale:.86}58%,90%{opacity:1;scale:1}95%,100%{opacity:0;scale:1}}
+  @keyframes hd-r0{0%,54%{opacity:1}58%,92%{opacity:0}96%,100%{opacity:1}}
+  @keyframes hd-scan{0%{transform:translateX(-120%);opacity:0}2%{opacity:1}13%{transform:translateX(380%);opacity:1}14%,100%{opacity:0;transform:translateX(380%)}}
+}
+@media (max-width:860px){.how-grid{grid-template-columns:minmax(0,1fr);gap:36px}.howdemo{padding:18px;border-radius:18px}.hd-card{padding:18px}}
+
+/* ===== Fair by design: dark band ===== */
+.sec.fair{background:#16141F;color:#F5F7FB;--fair-bg:#1F1C2B}
+.fair .eyebrow{color:#FF8A6B}
+.fair h2{color:#F5F7FB}.fair h2 em{font-style:italic;color:#9AA8FF}
+.fair .modes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:30px 0 18px}
+.fair .mode{background:var(--fair-bg);border:1px solid #2E2B3A;border-radius:16px;padding:24px;gap:10px}
+.fair .mode p{color:#B9B4C4;margin:0}
+.mill{width:100%;max-width:240px;height:auto;color:#9AA8FF;margin-bottom:6px}
+.mhead{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%}
+.fair .mode h3{color:#F5F7FB;margin:0;font-size:24px}
+.st{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;white-space:nowrap;color:#B9B4C4}
+.st::before{content:"";width:7px;height:7px;border-radius:50%;background:#6B6678}
+.st.ok{color:#4FC48D}.st.ok::before{background:#4FC48D;box-shadow:0 0 0 3px rgba(79,196,141,.18)}
+.fair .tiles{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.fair .tiles li{background:var(--fair-bg);border:1px solid #2E2B3A;border-radius:14px;padding:20px;gap:12px;transition:transform .25s,border-color .25s}
+.fair .tiles li:hover{transform:translateY(-3px);border-color:#4A4660}
+.fair .tiles b{color:#F5F7FB}
+.fair .ico{background:rgba(154,168,255,.13);color:#9AA8FF}
+@media (prefers-reduced-motion:no-preference){
+  .rv-on .fair .tiles li.in .ico{animation:icopop .7s cubic-bezier(.3,1.6,.5,1) both;animation-delay:calc(var(--d,0) * 110ms + .15s)}
+  @keyframes icopop{0%{scale:.4;opacity:0}100%{scale:1;opacity:1}}
+}
+@media (max-width:860px){.fair .modes{grid-template-columns:minmax(0,1fr)}.fair .tiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}}
+@media (max-width:560px){.fair .tiles li{flex-direction:column;align-items:flex-start;padding:16px;gap:10px}.fair .tiles b{font-size:14.5px;flex:none}.fair .tiles .ico{width:38px;height:38px}.fair .mode{padding:20px}.mill{max-width:200px}}
+
+/* ===== Reviewers: comment thread with AI reference preview ===== */
+.rvwrap{align-items:start}
+.thread{background:var(--surface);border:1px solid var(--rule);border-radius:16px;padding:22px;box-shadow:0 30px 60px -34px rgba(22,20,31,.35);display:grid;gap:16px}
+.th-on{margin:0;font-size:12.5px;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:12px}
+.th-on b{color:var(--ink-2);font-weight:600}
+.cm{display:flex;gap:12px;align-items:flex-start}
+.cm .av{width:36px;height:36px;border-radius:50%;object-fit:cover;flex:none;background:var(--sky-2)}
+.cm-b{min-width:0;flex:1}
+.cm-h b{font-size:14.5px}.cm-h small{color:var(--muted);font-size:12.5px;margin-left:6px}
+.cm p{margin:4px 0 0;font-size:15px;line-height:1.5;color:var(--ink-2)}
+.cm a.ref{color:var(--ultra);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.cm.reply{margin-left:48px}
+.aiprev{margin-top:12px;border:1px solid color-mix(in srgb,var(--ultra) 28%,var(--rule));border-radius:12px;padding:14px;background:linear-gradient(180deg,var(--lav-soft),var(--surface) 75%)}
+.ai-h{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;color:var(--ultra);margin-bottom:10px}
+.ai-h .spark{font-size:14px}
+.ai-tag{font-weight:600;font-size:11px;border:1px solid color-mix(in srgb,var(--ultra) 35%,transparent);border-radius:999px;padding:1px 7px}
+.ai-h .chip{margin-left:auto;font-size:11px;padding:2px 7px}
+.ai-stack{display:grid}.ai-stack > *{grid-area:1/1}
+.ai-body{display:grid;gap:5px}
+.ai-body .j{font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.ai-body .t{font-family:var(--serif);font-weight:400;font-size:16.5px;line-height:1.3;color:var(--ink)}
+.ai-body .a{font-size:12.5px;color:var(--muted)}
+.ai-body ul{margin:6px 0 4px;padding:0 0 0 16px;font-size:13.5px;line-height:1.45;color:var(--ink-2);display:grid;gap:3px}
+.ai-body .doi{font-size:12px;color:var(--ultra);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;text-decoration:none;word-break:break-all}
+.aiprev .ai-note{margin:10px 0 0;font-size:11.5px;color:var(--muted);line-height:1.4}
+.ai-skel{display:none}
+.rv-on .ai-skel{display:grid;align-content:start;gap:9px;padding-top:2px}
+.ai-skel i{display:block;height:10px;border-radius:5px;background:linear-gradient(90deg,var(--stone),var(--sky-1),var(--stone));background-size:200% 100%}
+.ai-skel span{font-size:12px;color:var(--ultra);font-weight:600}
+@media (prefers-reduced-motion:no-preference){
+  .rv-on .thread .ai-body{opacity:0}
+  .rv-on .thread.in .ai-body{animation:aiin .6s 2s both}
+  .rv-on .thread.in .ai-skel{animation:skelout .35s 1.8s both}
+  .rv-on .ai-skel i{animation:shimmer 1.2s linear infinite}
+  @keyframes aiin{from{opacity:0;translate:0 6px}to{opacity:1;translate:none}}
+  @keyframes skelout{to{opacity:0;visibility:hidden}}
+  @keyframes shimmer{to{background-position:-200% 0}}
+}
+.ai-h{flex-wrap:wrap;row-gap:6px}.ai-h > *{white-space:nowrap}
+@media (max-width:560px){.cm.reply{margin-left:24px}.thread{padding:16px}.aiprev{padding:12px}.pillrow{gap:8px}.pillrow li{font-size:13px;padding:6px 11px;gap:6px}.pillrow svg{width:15px;height:15px}.cm-h small{display:block;margin:0}}
+
+/* ===== Short videos: playing state ===== */
+.reel .rbar{position:absolute;top:20px;left:24px;right:24px;height:3px;border-radius:2px;background:rgba(255,255,255,.22);overflow:hidden;z-index:2}
+.reel .rbar i{display:block;height:100%;width:62%;background:#fff;border-radius:2px}
+.reel .who{top:34px}
+.reel .sub{position:absolute;left:50%;top:47%;translate:-50% 0;max-width:80%;text-align:center;font-size:12.5px;font-weight:600;color:#fff;background:rgba(10,8,16,.72);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);border-radius:6px;padding:6px 10px;line-height:1.35;z-index:2}
+@media (prefers-reduced-motion:no-preference){
+  .reel .art{animation:kb 16s ease-in-out infinite alternate;transform-origin:50% 40%}
+  .reel .rbar i{width:0;animation:rbar 9s linear infinite}
+  .reel.mid .rbar i{animation-duration:12s;animation-delay:-4s}
+  .reel:last-child .rbar i{animation-duration:7s;animation-delay:-2s}
+  .reel .sub{animation:subfade 4.5s ease-in-out infinite}
+  .reel.mid .sub{animation-delay:-1.5s}.reel:last-child .sub{animation-delay:-3s}
+  .reel .side span:first-child{animation:beat 3.2s ease-in-out infinite;display:block}
+  .reel.mid .side span:first-child{animation-delay:-1.1s}.reel:last-child .side span:first-child{animation-delay:-2.2s}
+  .a-net path{stroke-dasharray:6 9;animation:dash 2.6s linear infinite}
+  .a-nodes circle{transform-box:fill-box;transform-origin:center;animation:pulse 2.4s ease-in-out infinite}
+  .a-nodes circle:nth-child(2n){animation-delay:-.8s}.a-nodes circle:nth-child(3n){animation-delay:-1.6s}
+  .a-rings circle{transform-box:fill-box;transform-origin:center;animation:breathe 3.2s ease-in-out infinite}
+  .a-rings circle:nth-child(2){animation-delay:-1s}.a-rings circle:nth-child(3){animation-delay:-2s}
+  .a-orbit{transform-box:view-box;transform-origin:120px 190px;animation:spin 22s linear infinite}
+  .a-bars rect{transform-box:fill-box;transform-origin:50% 100%;animation:grow 3.4s ease-in-out infinite alternate}
+  .a-bars rect:nth-child(2){animation-delay:-.9s}.a-bars rect:nth-child(3){animation-delay:-1.8s}.a-bars rect:nth-child(4){animation-delay:-2.6s}
+  .a-line{stroke-dasharray:1;animation:draw 5s ease-in-out infinite}
+  @keyframes kb{from{scale:1}to{scale:1.08}}
+  @keyframes rbar{from{width:0}to{width:100%}}
+  @keyframes subfade{0%,8%{opacity:0;translate:-50% 6px}18%,78%{opacity:1;translate:-50% 0}90%,100%{opacity:0;translate:-50% -4px}}
+  @keyframes beat{0%,70%,100%{scale:1}78%{scale:1.35}86%{scale:.95}}
+  @keyframes dash{to{stroke-dashoffset:-30}}
+  @keyframes pulse{0%,100%{scale:.75;opacity:.55}50%{scale:1.25;opacity:1}}
+  @keyframes breathe{0%,100%{scale:.9}50%{scale:1.08}}
+  @keyframes spin{to{rotate:360deg}}
+  @keyframes grow{from{scale:1 .45}to{scale:1 1.1}}
+  @keyframes draw{0%{stroke-dashoffset:1}55%,85%{stroke-dashoffset:0}100%{stroke-dashoffset:-1}}
+}
+
+/* ===== Why now: same video, two feeds ===== */
+.why .wrap{align-items:center}
+.why .lead{font-size:19px;margin:0 0 22px}
+.natcard{display:flex;gap:16px;align-items:center;max-width:460px;background:#1F1C2B;border:1px solid #2E2B3A;border-radius:14px;padding:16px 18px;text-decoration:none;color:#F5F7FB;transition:border-color .2s,transform .2s}
+.natcard:hover{border-color:#5A5670;transform:translateY(-2px)}
+.nat-logo{flex:none;width:56px;height:56px;border-radius:12px;background:rgba(154,168,255,.14);color:#9AA8FF;display:grid;place-items:center}.nat-logo svg{width:28px;height:28px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.nat-t small i{text-transform:none;font-style:italic;letter-spacing:0;color:#F5F7FB}
+.nat-t{display:grid;gap:3px}.nat-t small{color:#A7A2B0;font-size:12px;text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+.nat-t b{font-family:var(--serif);font-weight:400;font-size:17px;line-height:1.3}
+.nat-go{color:#9AA8FF;font-size:13px;font-weight:600}
+.vs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;max-width:520px;justify-self:center;width:100%}
+.vcol{display:grid;gap:12px;justify-items:center}
+.vlab{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 12px;border-radius:999px}
+.vlab.bad{background:rgba(255,107,107,.14);color:#FF8F8F}.vlab.good{background:rgba(79,196,141,.15);color:#4FC48D}
+.mphone{position:relative;width:100%;max-width:230px;aspect-ratio:9/17;border-radius:28px;background:#0B0A10;border:6px solid #2A2736;overflow:hidden;box-shadow:0 30px 50px -25px rgba(0,0,0,.7)}
+.mp-art{position:absolute;inset:0}
+.mp-art.a1{background:radial-gradient(60% 40% at 50% 34%,#FFB347 0,#E2562F 45%,transparent 70%),linear-gradient(180deg,#3A1410,#100708)}
+.mp-art.a2{background:radial-gradient(55% 35% at 50% 34%,#9AA8FF 0,#3B47B8 50%,transparent 72%),linear-gradient(180deg,#191C3A,#0B0B14)}
+.mp-art::after{content:"";position:absolute;left:50%;top:34%;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35)}
+.mp-views{position:absolute;top:14px;left:14px;font-size:11px;font-weight:700;color:#fff;background:rgba(0,0,0,.45);border-radius:999px;padding:3px 8px}
+.mp-cap{position:absolute;left:14px;right:14px;top:52%;margin:0;color:#fff;font-family:var(--serif);font-size:16px;line-height:1.25;text-shadow:0 1px 8px rgba(0,0,0,.5)}
+.mp-tags{position:absolute;left:12px;right:12px;bottom:12px;list-style:none;margin:0;padding:0;display:grid;gap:5px}
+.why .mp-tags{display:grid;gap:5px}.why .mp-tags li{display:block;border-top:0;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11.5px;font-weight:700;border-radius:6px;padding:5px 8px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.mp-tags li.bad{background:rgba(255,107,107,.18);color:#FFB0B0;border:1px solid rgba(255,107,107,.35)}
+.mp-tags li.good{background:rgba(79,196,141,.18);color:#8BE3B7;border:1px solid rgba(79,196,141,.4)}
+@media (prefers-reduced-motion:no-preference){
+  .rv-on .vs.in .mp-tags li{animation:tagin .5s cubic-bezier(.3,1.4,.5,1) both}
+  .rv-on .vs.in .vcol:first-child .mp-tags li:nth-child(1){animation-delay:.5s}.rv-on .vs.in .vcol:first-child .mp-tags li:nth-child(2){animation-delay:.7s}.rv-on .vs.in .vcol:first-child .mp-tags li:nth-child(3){animation-delay:.9s}
+  .rv-on .vs.in .vcol:last-child .mp-tags li:nth-child(1){animation-delay:1.3s}.rv-on .vs.in .vcol:last-child .mp-tags li:nth-child(2){animation-delay:1.5s}.rv-on .vs.in .vcol:last-child .mp-tags li:nth-child(3){animation-delay:1.7s}
+  .mp-art{animation:kb 14s ease-in-out infinite alternate}
+  @keyframes tagin{from{opacity:0;translate:-10px 0}to{opacity:1;translate:none}}
+}
+@media (max-width:860px){.vs{max-width:none;gap:12px}}
+@media (max-width:560px){.mphone{border-width:5px;border-radius:22px}.mp-cap{font-size:13.5px;left:10px;right:10px}.mp-tags{left:8px;right:8px;bottom:8px;gap:4px}.why .mp-tags li{font-size:10px;padding:4px 6px}.mp-cap{top:48%}.mp-views{font-size:10px;top:10px;left:10px}.natcard{padding:14px}.nat-logo{width:52px;height:52px;font-size:14px}.nat-t b{font-size:15.5px}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -540,7 +730,7 @@ footer .brand .word{font-size:18px}
               <div class="main">
                 <div class="search"><svg><use href="#i-search"/></svg>Search studies, topics, people…</div>
                 <div class="tabs"><span class="on">For you</span><span>Latest research</span><span>Clinical practice</span><span>Methodology</span><span>Your network</span></div>
-                <div class="post-h"><img class="av" src="https://images.unsplash.com/photo-1758691737587-7630b4d31d16?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><div><b>Dr. Sarah Whitfield<svg class="vf" role="img" aria-label="Verified"><use href="#i-verified"/></svg></b><small>Cardiologist</small></div><span class="t">2h</span></div>
+                <div class="post-h"><img class="av" src="https://images.unsplash.com/photo-1758691737587-7630b4d31d16?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><div><b>Dr. Sarah <span class="nw">Whitfield<svg class="vf" role="img" aria-label="Verified"><use href="#i-verified"/></svg></span></b><small>Cardiologist</small></div><span class="t">2h</span></div>
                 <div class="ptitle">Early results from a multicenter trial on SGLT2 inhibitors in heart failure with preserved ejection fraction</div>
                 <div class="pbody">The trial reports a reduction in the composite primary outcome. Here's a summary of the key findings, the limitations and what they could mean for practice.</div>
                 <div class="study"><span class="thumb"></span><div><b>Original study</b><span>DOI linked · Peer-reviewed article · 2026</span></div></div>
@@ -559,7 +749,7 @@ footer .brand .word{font-size:18px}
                   <h4>Reviewers</h4>
                   <div class="rv"><span class="av anon">R1</span><div>Reviewer 1<span>Biostatistics · anonymous</span></div></div>
                   <div class="rv"><span class="av anon">R2</span><div>Reviewer 2<span>Internal medicine · anonymous</span></div></div>
-                  <div class="rv"><img class="av" src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><div>Dr. Michael Brennan<svg class="vf" role="img" aria-label="Verified"><use href="#i-verified"/></svg><span>Biostatistics · signed</span></div></div>
+                  <div class="rv"><img class="av" src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><div>Dr. Michael <span class="nw">Brennan<svg class="vf" role="img" aria-label="Verified"><use href="#i-verified"/></svg></span><span>Biostatistics · signed</span></div></div>
                   <div class="anon-note">Each reviewer chooses: anonymous or signed</div>
                 </div>
               </aside>
@@ -574,7 +764,7 @@ footer .brand .word{font-size:18px}
             <div class="top"><b>Lyncei</b><svg width="14" height="14" style="stroke:var(--ink);fill:none;stroke-width:2"><use href="#i-search"/></svg></div>
             <div class="tabs"><span class="on">For you</span><span>Following</span><span>Clinical</span></div>
             <div class="feedwin"><div class="feedtrack">
-            <div class="post-h"><img class="av" src="https://images.unsplash.com/photo-1771904866914-93f97b30db88?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><div><b>Dr. Daniel Hoffman<svg class="vf" role="img" aria-label="Verified"><use href="#i-verified"/></svg></b><small>Oncologist</small></div><span class="t">4h</span></div>
+            <div class="post-h"><img class="av" src="https://images.unsplash.com/photo-1771904866914-93f97b30db88?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><div><b>Dr. Daniel <span class="nw">Hoffman<svg class="vf" role="img" aria-label="Verified"><use href="#i-verified"/></svg></span></b><small>Oncologist</small></div><span class="t">4h</span></div>
             <div class="ptitle">Updated meta-analysis on neoadjuvant immunotherapy in early-stage NSCLC</div>
             <div class="chart"></div>
             <div class="inprog"><b>Review in progress</b><small>Source checked · appraisal underway</small><span class="bar"><i></i></span></div>
@@ -589,7 +779,7 @@ footer .brand .word{font-size:18px}
                   <g fill="none" stroke="#9AA8FF" stroke-opacity=".6" stroke-width="1.3"><ellipse cx="120" cy="170" rx="70" ry="26"/><ellipse cx="120" cy="170" rx="70" ry="26" transform="rotate(60 120 170)"/><ellipse cx="120" cy="170" rx="70" ry="26" transform="rotate(120 120 170)"/></g>
                   <circle cx="120" cy="170" r="9" fill="#DDE3FF"/>
                 </svg>
-                <div class="mwho"><img class="av" src="https://images.unsplash.com/photo-1778110827669-4f16d6d91e8f?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><b>Dr. Hannah Becker<svg class="vf" role="img" aria-label="Verified"><use href="#i-verified"/></svg></b></div>
+                <div class="mwho"><img class="av" src="https://images.unsplash.com/photo-1778110827669-4f16d6d91e8f?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><b>Dr. Hannah <span class="nw">Becker<svg class="vf" role="img" aria-label="Verified"><use href="#i-verified"/></svg></span></b></div>
                 <span class="mplay"></span>
                 <div class="mcap">
                   <p>What our T-cell study does, and doesn’t, show</p>
@@ -640,8 +830,8 @@ footer .brand .word{font-size:18px}
         <p>Ask, add evidence or object.</p>
         <div class="card">
           <div class="dtabs"><span class="on">Discussion (28)</span><span>Expert insights (7)</span><span>Related</span></div>
-          <div class="cmt"><div class="post-h"><img class="av" src="https://images.unsplash.com/photo-1679560307941-3a8af87a5c16?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><div><b>Dr. Emily Carter<svg class="vf" role="img" aria-label="Verified"><use href="#i-verified"/></svg></b><small>Endocrinology · 2h</small></div></div><p>These findings match previous studies, but the heterogeneity across patient populations matters here.</p><div class="acts"><span><svg><use href="#i-heart"/></svg>24</span><span><svg><use href="#i-chat"/></svg>Reply</span></div></div>
-          <div class="cmt reply"><div class="post-h"><img class="av" src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><div><b>Dr. Lucas Ferreira<svg class="vf" role="img" aria-label="Verified"><use href="#i-verified"/></svg></b><small>Epidemiology · 1h</small></div></div><p>Agreed. The subgroup analysis in older adults is especially interesting.</p></div>
+          <div class="cmt"><div class="post-h"><img class="av" src="https://images.unsplash.com/photo-1679560307941-3a8af87a5c16?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><div><b>Dr. Emily <span class="nw">Carter<svg class="vf" role="img" aria-label="Verified"><use href="#i-verified"/></svg></span></b><small>Endocrinology · 2h</small></div></div><p>These findings match previous studies, but the heterogeneity across patient populations matters here.</p><div class="acts"><span><svg><use href="#i-heart"/></svg>24</span><span><svg><use href="#i-chat"/></svg>Reply</span></div></div>
+          <div class="cmt reply"><div class="post-h"><img class="av" src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><div><b>Dr. Lucas <span class="nw">Ferreira<svg class="vf" role="img" aria-label="Verified"><use href="#i-verified"/></svg></span></b><small>Epidemiology · 1h</small></div></div><p>Agreed. The subgroup analysis in older adults is especially interesting.</p></div>
           <span class="more">View 4 more replies</span>
         </div>
       </div>
@@ -662,17 +852,43 @@ footer .brand .word{font-size:18px}
 
   <section class="sec why" id="why-now" aria-labelledby="whynow-h">
     <div class="wrap">
-      <div>
+      <div class="why-copy">
         <p class="eyebrow">Why now</p>
         <h2 id="whynow-h">Science has moved to the feed. <em>Its rigor hasn’t.</em></h2>
-        <p class="lead"><i>Nature</i>’s editors, June 2026: science now spreads through video feeds, often with no source and no check. Lyncei is built for that gap.</p>
-        <a class="src" href="https://www.nature.com/articles/d41586-026-01723-1" target="_blank" rel="noopener noreferrer">Read the Nature editorial</a>
+        <p class="lead">Same video, two feeds.</p>
+        <a class="natcard" href="https://www.nature.com/articles/d41586-026-01723-1" target="_blank" rel="noopener noreferrer">
+          <span class="nat-logo" aria-hidden="true"><svg><use href="#i-doc"/></svg></span>
+          <span class="nat-t"><small><i>Nature</i> · Editorial · June 2026</small><b>The future of science communication is not an article like this</b><span class="nat-go">Read the editorial ↗</span></span>
+        </a>
       </div>
-      <ul aria-label="What Nature calls for and what Lyncei does">
-        <li><span>Science videos rarely credit their sources</span><span>Every reviewable post links its source</span></li>
-        <li><span>Creators with undisclosed financial interests</span><span>Conflicts declared before any review</span></li>
-        <li><span>Unverified claims look like verified ones</span><span>Review labels on every post, never set by likes</span></li>
-      </ul>
+      <div class="vs" role="img" aria-label="Comparison: the same science video elsewhere has no source, undisclosed interests and no review; on Lyncei it links its source, declares conflicts and shows its review label">
+        <div class="vcol">
+          <span class="vlab bad">Elsewhere</span>
+          <div class="mphone">
+            <div class="mp-art a1"></div>
+            <span class="mp-views">1.2M views</span>
+            <p class="mp-cap">This supplement reverses aging</p>
+            <ul class="mp-tags">
+              <li class="bad">✕ No source</li>
+              <li class="bad">✕ Sponsor hidden</li>
+              <li class="bad">✕ Unchecked</li>
+            </ul>
+          </div>
+        </div>
+        <div class="vcol">
+          <span class="vlab good">On Lyncei</span>
+          <div class="mphone">
+            <div class="mp-art a2"></div>
+            <span class="mp-views">12k views</span>
+            <p class="mp-cap">What the supplement trial found, and didn’t</p>
+            <ul class="mp-tags">
+              <li class="good">↗ Source linked</li>
+              <li class="good">✓ Conflicts declared</li>
+              <li class="good">✓ Source checked</li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -690,41 +906,41 @@ footer .brand .word{font-size:18px}
           <svg class="art" viewBox="0 0 240 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
             <defs><radialGradient id="g1" cx="50%" cy="38%" r="70%"><stop offset="0" stop-color="#3B2A4F"/><stop offset="1" stop-color="#110F18"/></radialGradient></defs>
             <rect width="240" height="520" fill="url(#g1)"/>
-            <g stroke="#FF8A6B" stroke-opacity=".55" stroke-width="1.4" fill="none"><path d="M40 150L95 120 150 165 205 130M95 120l20 85 55 25M150 165l-35 40M40 150l30 90 45-35M70 240l60 40 45-50M175 230l30-100"/></g>
-            <g fill="#FFD9CC"><circle cx="40" cy="150" r="5"/><circle cx="95" cy="120" r="7"/><circle cx="150" cy="165" r="5"/><circle cx="205" cy="130" r="6"/><circle cx="115" cy="205" r="8"/><circle cx="175" cy="230" r="5"/><circle cx="70" cy="240" r="6"/><circle cx="130" cy="280" r="5"/></g>
+            <g class="a-net" stroke="#FF8A6B" stroke-opacity=".55" stroke-width="1.4" fill="none"><path d="M40 150L95 120 150 165 205 130M95 120l20 85 55 25M150 165l-35 40M40 150l30 90 45-35M70 240l60 40 45-50M175 230l30-100"/></g>
+            <g class="a-nodes" fill="#FFD9CC"><circle cx="40" cy="150" r="5"/><circle cx="95" cy="120" r="7"/><circle cx="150" cy="165" r="5"/><circle cx="205" cy="130" r="6"/><circle cx="115" cy="205" r="8"/><circle cx="175" cy="230" r="5"/><circle cx="70" cy="240" r="6"/><circle cx="130" cy="280" r="5"/></g>
           </svg>
-          <div class="who"><img class="av" src="https://images.unsplash.com/photo-1626740069669-05cf8725e7e7?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><b>Dr. Liam O’Connor<svg class="vf" role="img" aria-label="Verified"><use href="#i-verified"/></svg></b></div>
+          <div class="who"><img class="av" src="https://images.unsplash.com/photo-1626740069669-05cf8725e7e7?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><b>Dr. Liam <span class="nw">O’Connor<svg class="vf" role="img" aria-label="Verified"><use href="#i-verified"/></svg></span></b></div>
           <div class="side"><span>♥<small>2.1k</small></span><span>💬<small>148</small></span></div>
           <div class="cap">
             <span class="chip ok">Source checked</span>
             <p>How memories are replayed during sleep, in 90 seconds</p>
             <span class="src">Source · cited study ↗</span>
           </div>
-          <span class="play" aria-hidden="true"></span>
+          <span class="rbar" aria-hidden="true"><i></i></span><span class="sub" aria-hidden="true">The brain replays the day’s patterns</span>
         </div>
         <div class="reel mid">
           <svg class="art" viewBox="0 0 240 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
             <defs><radialGradient id="g2" cx="50%" cy="40%" r="75%"><stop offset="0" stop-color="#5A2B22"/><stop offset="1" stop-color="#140E10"/></radialGradient></defs>
             <rect width="240" height="520" fill="url(#g2)"/>
-            <g fill="none" stroke="#FFB49E" stroke-opacity=".5"><circle cx="120" cy="190" r="70"/><circle cx="120" cy="190" r="46"/><circle cx="120" cy="190" r="22" fill="#FF8A6B" fill-opacity=".35"/></g>
-            <g fill="#FFD9CC" fill-opacity=".8"><circle cx="58" cy="120" r="10"/><circle cx="190" cy="140" r="7"/><circle cx="182" cy="265" r="12"/><circle cx="62" cy="272" r="6"/></g>
+            <g class="a-rings" fill="none" stroke="#FFB49E" stroke-opacity=".5"><circle cx="120" cy="190" r="70"/><circle cx="120" cy="190" r="46"/><circle cx="120" cy="190" r="22" fill="#FF8A6B" fill-opacity=".35"/></g>
+            <g class="a-orbit" fill="#FFD9CC" fill-opacity=".8"><circle cx="58" cy="120" r="10"/><circle cx="190" cy="140" r="7"/><circle cx="182" cy="265" r="12"/><circle cx="62" cy="272" r="6"/></g>
           </svg>
-          <div class="who"><img class="av" src="https://images.unsplash.com/photo-1778110827669-4f16d6d91e8f?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><b>Dr. Hannah Becker<svg class="vf" role="img" aria-label="Verified"><use href="#i-verified"/></svg></b></div>
+          <div class="who"><img class="av" src="https://images.unsplash.com/photo-1778110827669-4f16d6d91e8f?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><b>Dr. Hannah <span class="nw">Becker<svg class="vf" role="img" aria-label="Verified"><use href="#i-verified"/></svg></span></b></div>
           <div class="side"><span>♥<small>5.4k</small></span><span>💬<small>312</small></span></div>
           <div class="cap">
             <span class="chip info">Critical appraisal available</span>
             <p>What our vaccine trial found, and what it didn’t</p>
             <span class="src">Source · cited trial ↗</span>
           </div>
-          <span class="play" aria-hidden="true"></span>
+          <span class="rbar" aria-hidden="true"><i></i></span><span class="sub" aria-hidden="true">Who was in the trial, and who wasn’t</span>
         </div>
         <div class="reel">
           <svg class="art" viewBox="0 0 240 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
             <defs><linearGradient id="g3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#23303F"/><stop offset="1" stop-color="#0F1218"/></linearGradient></defs>
             <rect width="240" height="520" fill="url(#g3)"/>
             <g stroke="#3B4A5C" stroke-width="1"><path d="M30 290H210M30 240H210M30 190H210M30 140H210"/></g>
-            <g fill="#8FA6C4" fill-opacity=".55"><rect x="44" y="230" width="22" height="60" rx="3"/><rect x="80" y="200" width="22" height="90" rx="3"/><rect x="116" y="215" width="22" height="75" rx="3"/><rect x="152" y="170" width="22" height="120" rx="3"/></g>
-            <path d="M40 250C80 230 100 160 140 175s50-40 72-60" fill="none" stroke="#FF8A6B" stroke-width="3" stroke-linecap="round"/>
+            <g class="a-bars" fill="#8FA6C4" fill-opacity=".55"><rect x="44" y="230" width="22" height="60" rx="3"/><rect x="80" y="200" width="22" height="90" rx="3"/><rect x="116" y="215" width="22" height="75" rx="3"/><rect x="152" y="170" width="22" height="120" rx="3"/></g>
+            <path class="a-line" pathLength="1" d="M40 250C80 230 100 160 140 175s50-40 72-60" fill="none" stroke="#FF8A6B" stroke-width="3" stroke-linecap="round"/>
           </svg>
           <div class="who"><img class="av" src="https://images.unsplash.com/photo-1766036387944-cc85412b18a2?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><b>Ethan Miller</b></div>
           <div class="side"><span>♥<small>860</small></span><span>💬<small>57</small></span></div>
@@ -733,7 +949,7 @@ footer .brand .word{font-size:18px}
             <p>Does more screen time mean worse sleep? Reading the data</p>
             <span class="src">Source · cited cohort ↗</span>
           </div>
-          <span class="play" aria-hidden="true"></span>
+          <span class="rbar" aria-hidden="true"><i></i></span><span class="sub" aria-hidden="true">More screen time, or less sleep first?</span>
         </div>
       </div>
       <p class="small muted center">Illustrative preview. Creators, topics and numbers are examples, not real accounts or studies.</p>
@@ -741,49 +957,53 @@ footer .brand .word{font-size:18px}
   </section>
 
   <section class="sec" id="how" aria-labelledby="how-h">
-    <div class="wrap">
-      <p class="eyebrow">How review works</p>
-      <h2 id="how-h">Two different questions, labeled separately</h2>
-      <div class="two">
-        <article class="scope">
-          <svg class="ill" viewBox="0 0 120 80" aria-hidden="true"><rect x="8" y="8" width="44" height="60" rx="4" fill="#F2F4F6" stroke="#16141F" stroke-width="2.5"/><path d="M16 22h28M16 32h28M16 42h20" stroke="#16141F" stroke-width="2.5" stroke-linecap="round"/><rect x="68" y="12" width="44" height="60" rx="4" fill="#fff" stroke="#16141F" stroke-width="2.5"/><path d="M76 26h28M76 36h28M76 46h18" stroke="#16141F" stroke-width="2.5" stroke-linecap="round"/><path d="M54 40h12" stroke="#C8401F" stroke-width="2.5" stroke-dasharray="3 3"/><circle cx="104" cy="62" r="11" fill="#0E7A4E"/><path d="M99 62l4 4 7-8" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span class="chip ok">Source checked</span>
-          <h3>Source fidelity</h3>
-          <p class="q2">Does the post accurately represent the cited research?</p>
-        </article>
-        <article class="scope">
-          <svg class="ill" viewBox="0 0 120 80" aria-hidden="true"><path d="M10 70h70" stroke="#16141F" stroke-width="2.5" stroke-linecap="round"/><rect x="16" y="44" width="10" height="26" rx="2" fill="#D6D3DC"/><rect x="32" y="30" width="10" height="40" rx="2" fill="#D6D3DC"/><rect x="48" y="38" width="10" height="32" rx="2" fill="#D6D3DC"/><rect x="64" y="20" width="10" height="50" rx="2" fill="#D6D3DC"/><path d="M69 14v12M64 14h10M64 26h10" stroke="#16141F" stroke-width="2"/><circle cx="88" cy="34" r="16" fill="#fff" fill-opacity=".6" stroke="#C8401F" stroke-width="3"/><path d="M100 46l12 12" stroke="#C8401F" stroke-width="4" stroke-linecap="round"/></svg>
-          <span class="chip info">Critical appraisal available</span>
-          <h3>Critical appraisal</h3>
-          <p class="q2">What methodological or statistical limitations affect its interpretation?</p>
-        </article>
+    <div class="wrap how-grid">
+      <div class="how-copy">
+        <p class="eyebrow">How review works</p>
+        <h2 id="how-h">Two different questions, labeled separately</h2>
+        <ol class="qsteps">
+          <li><span class="qn">1</span><div><h3>Source fidelity</h3><p>Does the post match the study it cites?</p></div></li>
+          <li><span class="qn">2</span><div><h3>Critical appraisal</h3><p>What limits how far the result can go?</p></div></li>
+        </ol>
+        <p class="banner"><b>Review shows what was checked.</b> It doesn’t certify a finding as true.</p>
+        <ul class="pillrow">
+          <li><svg><use href="#i-eye"/></svg>Reviews are public</li>
+          <li><svg><use href="#i-pen"/></svg>Signed or anonymous</li>
+          <li><svg class="sealic"><use href="#i-verified"/></svg>Verified reviewers <span class="chip plan">Planned</span></li>
+        </ul>
       </div>
-      <p class="banner"><b>Review shows what was checked.</b> It doesn’t certify a finding as true.</p>
-      <ul class="iconrow">
-        <li><span class="ico"><svg><use href="#i-eye"/></svg></span><b>Reviews are public</b><span>With the author’s reply and every revision</span></li>
-        <li><span class="ico"><svg><use href="#i-pen"/></svg></span><b>Signed or anonymous</b><span>The reviewer decides, review by review</span></li>
-        <li><span class="ico vfi"><svg><use href="#i-verified"/></svg></span><b>Verified reviewers</b><span>Credentials checked privately <span class="chip plan">Planned</span></span></li>
-      </ul>
+      <div class="howdemo" role="img" aria-label="Animated example: a post's linked source is checked, then a critical appraisal adds its notes and the label changes to expert-reviewed">
+        <div class="hd-card">
+          <div class="hd-h"><img class="av" src="https://images.unsplash.com/photo-1758691737587-7630b4d31d16?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><div><b>Dr. Sarah <span class="nw">Whitfield<svg class="vf" role="img" aria-label="Verified"><use href="#i-verified"/></svg></span></b><small>Cardiology · 3h</small></div></div>
+          <p class="hd-t">Early results from a multicenter trial on SGLT2 inhibitors in heart failure</p>
+          <div class="hd-src"><span class="doc" aria-hidden="true"></span><div><b>Multicenter randomized trial</b><small>Linked source · DOI</small></div><span class="tick" aria-hidden="true"><svg><use href="#i-check"/></svg></span><span class="scan" aria-hidden="true"></span></div>
+          <div class="hd-labels"><span class="chip ok l1">Source checked</span><span class="chip info l2">Critical appraisal</span></div>
+          <ul class="hd-notes">
+            <li class="n1"><i class="ok"></i>Randomized, multicenter</li>
+            <li class="n2"><i class="warn"></i>Short follow-up</li>
+            <li class="n3"><i class="warn"></i>Holds for older adults?</li>
+          </ul>
+          <div class="hd-foot"><span class="rig"><span class="r0">Source-linked</span><span class="r1">Expert-reviewed</span></span><span class="hd-rv">2 reviewers</span></div>
+        </div>
+      </div>
     </div>
   </section>
 
   <section class="sec fair" id="fair" aria-labelledby="fair-h">
     <div class="wrap">
       <p class="eyebrow">Fair by design</p>
-      <h2 id="fair-h">Reviews judge the work, not the person</h2>
-      <p class="rlead">Two kinds of review, both built against bias.</p>
+      <h2 id="fair-h">Reviews judge the work, <em>not the person</em></h2>
       <div class="modes">
-        <div class="mode"><div class="mtop"><span class="ico"><svg><use href="#i-doc"/></svg></span><span class="chip plan">Planned</span></div><h3>Before you publish</h3><p class="who">Manuscripts, preprints, drafts</p><p>Double-anonymous and private until you choose.</p></div>
-        <div class="mode"><div class="mtop"><span class="ico"><svg><use href="#i-video"/></svg></span><span class="chip ok">In the demo</span></div><h3>After it’s out</h3><p class="who">Posts and videos on published work</p><p>Checked against the source, with the safeguards below.</p></div>
+        <div class="mode"><svg class="mill" viewBox="0 0 220 90" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="34" cy="34" r="14"/><path d="M14 74c3-13 11-20 20-20s17 7 20 20"/><path d="M22 33h24" stroke-width="7" stroke-opacity=".9"/><circle cx="186" cy="34" r="14"/><path d="M166 74c3-13 11-20 20-20s17 7 20 20"/><path d="M174 33h24" stroke-width="7" stroke-opacity=".9"/><rect x="92" y="18" width="36" height="48" rx="4"/><path d="M100 32h20M100 42h20M100 52h12"/><path d="M58 44h26M136 44h26" stroke-dasharray="3 5"/></g></svg><div class="mhead"><h3>Before you publish</h3><span class="st plan">Planned</span></div><p>Double-anonymous. Private until you choose.</p></div>
+        <div class="mode"><svg class="mill" viewBox="0 0 220 90" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="20" y="8" width="44" height="76" rx="9"/><path d="M38 38v16l13-8z" fill="currentColor"/><rect x="150" y="18" width="40" height="52" rx="4"/><path d="M158 32h24M158 42h24M158 52h14"/><path d="M76 46h62" stroke-dasharray="3 5"/><circle cx="107" cy="46" r="11" fill="var(--fair-bg)"/><path d="M102 46.5l3.5 3.5 6.5-7"/></g></svg><div class="mhead"><h3>After it’s out</h3><span class="st ok">In the demo</span></div><p>The video is checked against its source.</p></div>
       </div>
-      <h3 class="rules-h">Safeguards</h3>
       <ul class="tiles">
-        <li><span class="ico"><svg><use href="#i-eyeoff"/></svg></span><b>Likes hidden while reviewing</b><span class="chip ok">In the demo</span></li>
-        <li><span class="ico"><svg><use href="#i-list"/></svg></span><b>Scoped, structured reviews</b><span class="chip ok">In the demo</span></li>
-        <li><span class="ico"><svg><use href="#i-scale"/></svg></span><b>Conflicts declared first</b><span class="chip ok">In the demo</span></li>
-        <li><span class="ico"><svg><use href="#i-shuffle"/></svg></span><b>Reviewers assigned, not chosen</b><span class="chip plan">Planned</span></li>
-        <li><span class="ico"><svg><use href="#i-people"/></svg></span><b>More reach, more reviewers</b><span class="chip plan">Planned</span></li>
-        <li><span class="ico"><svg><use href="#i-shield"/></svg></span><b>Reviewer identity protected</b><span class="chip ok">In the demo</span></li>
+        <li><span class="ico"><svg><use href="#i-eyeoff"/></svg></span><b>Likes hidden while reviewing</b><span class="st ok">In the demo</span></li>
+        <li><span class="ico"><svg><use href="#i-list"/></svg></span><b>Scoped, structured reviews</b><span class="st ok">In the demo</span></li>
+        <li><span class="ico"><svg><use href="#i-scale"/></svg></span><b>Conflicts declared first</b><span class="st ok">In the demo</span></li>
+        <li><span class="ico"><svg><use href="#i-shuffle"/></svg></span><b>Reviewers assigned, not chosen</b><span class="st plan">Planned</span></li>
+        <li><span class="ico"><svg><use href="#i-people"/></svg></span><b>More reach, more reviewers</b><span class="st plan">Planned</span></li>
+        <li><span class="ico"><svg><use href="#i-shield"/></svg></span><b>Reviewer identity protected</b><span class="st ok">In the demo</span></li>
       </ul>
     </div>
   </section>
@@ -806,22 +1026,54 @@ footer .brand .word{font-size:18px}
     <div class="wrap">
       <p class="eyebrow">For reviewers</p>
       <h2 id="why-h">What you get as a reviewer</h2>
-      <p class="rlead">Peer review usually goes unseen. On Lyncei, it counts.</p>
+      <p class="rlead">Peer review usually goes unseen. On Lyncei, it counts, and the papers you cite open right in the thread.</p>
       <div class="rvwrap">
         <div class="pmock" role="img" aria-label="Illustrative reviewer profile with a verified badge and review counts">
-          <div class="pm-h"><img class="av" src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=144&h=144&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><div><b>Dr. Michael Brennan<svg class="vf" role="img" aria-label="Verified"><use href="#i-verified"/></svg></b><small>@michaelbrennan · Biostatistics</small></div></div>
+          <div class="pm-h"><img class="av" src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=144&h=144&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><div><b>Dr. Michael <span class="nw">Brennan<svg class="vf" role="img" aria-label="Verified"><use href="#i-verified"/></svg></span></b><small>@michaelbrennan · Biostatistics</small></div></div>
           <span class="vbadge"><svg><use href="#i-verified"/></svg>Verified reviewer</span>
           <div class="pm-stats"><div><b>42</b><span>Reviews</span></div><div><b>18</b><span>Signed</span></div><div><b>24</b><span>Anonymous</span></div></div>
           <div class="pm-bars" aria-hidden="true"><span style="--h:40%"></span><span style="--h:65%"></span><span style="--h:50%"></span><span style="--h:80%"></span><span style="--h:60%"></span><span style="--h:95%"></span><span style="--h:75%"></span></div>
           <div class="pm-tags"><span class="chip ok">Source fidelity</span><span class="chip info">Statistics</span></div>
         </div>
-        <ul class="ilist">
-          <li><span class="ico"><svg><use href="#i-award"/></svg></span><div><b>Credit you can show</b><span>Every review counts on your profile, anonymous ones too.</span></div></li>
-          <li><span class="ico"><svg><use href="#i-pen"/></svg></span><div><b>Sign or stay anonymous</b><span>Your call, review by review.</span></div></li>
-          <li><span class="ico"><svg><use href="#i-clock"/></svg></span><div><b>Fits your week</b><span>One claim, one method or one source.</span></div></li>
-          <li><span class="ico"><svg><use href="#i-share"/></svg></span><div><b>A record beyond Lyncei <span class="chip plan">Planned</span></b><span>Export your reviews to ORCID.</span></div></li>
-        </ul>
+        <div class="thread" aria-label="Example comment with an AI-assisted preview of the cited paper">
+          <p class="th-on">Comments on <b>Early results from a multicenter trial on SGLT2 inhibitors in heart failure</b></p>
+          <div class="cm">
+            <img class="av" src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async">
+            <div class="cm-b">
+              <div class="cm-h"><b>Dr. Michael <span class="nw">Brennan<svg class="vf" role="img" aria-label="Verified"><use href="#i-verified"/></svg></span></b><small>Biostatistics · 1h</small></div>
+              <p>Worth reading next to the DELIVER kidney analysis: <a class="ref" href="https://doi.org/10.1001/jamacardio.2022.4210" target="_blank" rel="noopener noreferrer">Mc Causland et al., JAMA Cardiology 2023</a>.</p>
+              <div class="aiprev">
+                <div class="ai-h"><span class="spark" aria-hidden="true">✦</span>Reference preview<span class="ai-tag">AI-assisted</span><span class="chip plan">Planned</span></div>
+                <div class="ai-stack">
+                  <div class="ai-body">
+                    <small class="j">JAMA Cardiology · 2023 · Randomized clinical trial</small>
+                    <b class="t">Dapagliflozin and Kidney Outcomes in Patients With Heart Failure With Mildly Reduced or Preserved Ejection Fraction</b>
+                    <small class="a">Mc Causland FR, Claggett BL, Vaduganathan M, et al.</small>
+                    <ul>
+                      <li>6,262 patients from the DELIVER trial</li>
+                      <li>Baseline kidney function didn’t change the drug’s benefit</li>
+                      <li>Slower eGFR decline; kidney composite outcome not significantly reduced</li>
+                    </ul>
+                    <a class="doi" href="https://doi.org/10.1001/jamacardio.2022.4210" target="_blank" rel="noopener noreferrer">doi:10.1001/jamacardio.2022.4210 ↗</a>
+                  </div>
+                  <div class="ai-skel" aria-hidden="true"><i style="width:45%"></i><i></i><i style="width:85%"></i><i style="width:60%"></i><span>Reading the paper…</span></div>
+                </div>
+                <p class="ai-note">AI summary of the cited paper. Always check the source.</p>
+              </div>
+            </div>
+          </div>
+          <div class="cm reply">
+            <img class="av" src="https://images.unsplash.com/photo-1758691737587-7630b4d31d16?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async">
+            <div class="cm-b"><div class="cm-h"><b>Dr. Sarah <span class="nw">Whitfield<svg class="vf" role="img" aria-label="Verified"><use href="#i-verified"/></svg></span></b><small>Author · 40m</small></div><p>Thanks. Adding it to the post’s sources.</p></div>
+          </div>
+        </div>
       </div>
+      <ul class="pillrow bp">
+        <li><svg><use href="#i-award"/></svg>Credit you can show</li>
+        <li><svg><use href="#i-pen"/></svg>Sign or stay anonymous</li>
+        <li><svg><use href="#i-clock"/></svg>Fits your week</li>
+        <li><svg><use href="#i-share"/></svg>ORCID export <span class="chip plan">Planned</span></li>
+      </ul>
     </div>
   </section>
 
@@ -946,7 +1198,7 @@ footer .brand .word{font-size:18px}
 (function(){
   if(!('IntersectionObserver' in window)) return;
   if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var GROUP='.two,.three,.modes,.rules,.steps,.rgrid,.rvwrap,ul,ol'+(window.innerWidth>760?',.phones':'');
+  var GROUP='.two,.three,.modes,.rules,.steps,.rgrid,.rvwrap,.how-grid,ul,ol'+(window.innerWidth>760?',.phones':'');
   var items=[];
   function mark(el){
     if(el.matches(GROUP)){ for(var i=0;i<el.children.length;i++) items.push(el.children[i]); }
