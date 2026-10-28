@@ -10,18 +10,29 @@ export const metadata = { title: "Sign in" };
 export default async function Login({ searchParams }: { searchParams: Promise<{ error?: string; next?: string }> }) {
   if (await getCurrentUser()) redirect("/");
   const sp = await searchParams;
+  /* Without an email provider in production, sign-in links can't be delivered: point people to the waitlist instead of a form that fails. */
+  const emailReady = !!process.env.RESEND_API_KEY || process.env.NODE_ENV !== "production";
   return (
     <main className="main" id="main">
       <div className="auth">
         <Link className="brand" href="/" style={{ padding: "0 0 24px" }}><Mark /><span className="word">Lyncei</span></Link>
         <h1 className="pg">Sign in</h1>
-        <p className="pgsub">We'll email you a link. No password needed.</p>
-        {sp.error && <div className="msg err" style={{ marginBottom: 14 }}>That sign-in link is invalid or has expired. Request a new one.</div>}
-        <ActionForm action={requestLoginAction}>
-          <input type="hidden" name="next" value={sp.next ?? "/"} />
-          <label className="f">Email<input type="email" name="email" autoComplete="email" placeholder="you@university.edu" required /></label>
-          <Submit>Email me a sign-in link</Submit>
-        </ActionForm>
+        {emailReady ? (
+          <>
+            <p className="pgsub">We'll email you a link. No password needed.</p>
+            {sp.error && <div className="msg err" style={{ marginBottom: 14 }}>That sign-in link is invalid or has expired. Request a new one.</div>}
+            <ActionForm action={requestLoginAction}>
+              <input type="hidden" name="next" value={sp.next ?? "/"} />
+              <label className="f">Email<input type="email" name="email" autoComplete="email" placeholder="you@university.edu" required /></label>
+              <Submit>Email me a sign-in link</Submit>
+            </ActionForm>
+          </>
+        ) : (
+          <>
+            <p className="pgsub">Accounts open with the private beta. Join the waitlist and we'll email you as soon as you can sign in.</p>
+            <Link className="btn pri" href="/welcome#join">Join the beta waitlist</Link>
+          </>
+        )}
         {process.env.DEMO_ACCOUNTS === "1" && (
           <div className="box" style={{ marginTop: 24 }}>
             <h3>Try a demo account</h3>
