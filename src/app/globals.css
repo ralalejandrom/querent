@@ -265,7 +265,7 @@ h1 .vf{width:22px;height:22px;vertical-align:-1px;margin-left:8px}
 .reelc-ov{position:absolute;left:0;right:0;bottom:0;padding:70px 16px 58px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.78));color:#fff;pointer-events:none;display:grid;gap:8px}
 .reelc-ov a{pointer-events:auto;color:#fff;text-decoration:none}
 .reelc-who{display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px}
-.reelc h2{margin:0;font-family:var(--serif);font-size:18px;line-height:1.25;font-weight:600;text-shadow:0 1px 8px rgba(0,0,0,.4)}
+.reelc h2{margin:0;font-family:var(--serif);font-size:19px;line-height:1.25;font-weight:500;text-shadow:0 1px 8px rgba(0,0,0,.4)}
 .reelc-tags{display:flex;gap:6px;flex-wrap:wrap;pointer-events:auto}
 .reelc-tags .design{background:rgba(255,255,255,.16);color:#fff;border-color:transparent}
 .reelc-src{display:flex;gap:6px;align-items:center;font-size:12px;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}

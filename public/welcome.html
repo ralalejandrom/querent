@@ -233,7 +233,7 @@ img.av{object-fit:cover;background:#E4E7EC}
 .why{background:#16141F;color:#F5F7FB;border-top:0}
 .why .wrap{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:48px;align-items:start}
 .why .eyebrow{color:#FF8A6B}
-.why h2{color:#F5F7FB}.why h2 em{font-style:italic;color:#9AA8FF}
+.why h2{color:#F5F7FB}.why h2 em{font-style:italic;color:#FF8A6B}
 .why p.lead{color:#CFCBD6;line-height:1.6;margin:0 0 18px;font-size:17px}
 .why a.src{color:#F5F7FB;font-weight:600;text-decoration:underline;text-underline-offset:3px}
 .why ul{list-style:none;margin:0;padding:0;display:grid;gap:12px}
@@ -524,7 +524,7 @@ footer .brand .word{font-size:18px}
 /* ===== Fair by design: dark band ===== */
 .sec.fair{background:#16141F;color:#F5F7FB;--fair-bg:#1F1C2B}
 .fair .eyebrow{color:#FF8A6B}
-.fair h2{color:#F5F7FB}.fair h2 em{font-style:italic;color:#9AA8FF}
+.fair h2{color:#F5F7FB}.fair h2 em{font-style:italic;color:#FF8A6B}
 .fair .modes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:30px 0 18px}
 .fair .mode{background:var(--fair-bg);border:1px solid #2E2B3A;border-radius:16px;padding:24px;gap:10px}
 .fair .mode p{color:#B9B4C4;margin:0}
@@ -623,12 +623,12 @@ footer .brand .word{font-size:18px}
 /* ===== Why now: same video, two feeds ===== */
 .why .wrap{align-items:center}
 .why .lead{font-size:19px;margin:0 0 22px}
-.natcard{display:flex;gap:16px;align-items:center;max-width:460px;background:#1F1C2B;border:1px solid #2E2B3A;border-radius:14px;padding:16px 18px;text-decoration:none;color:#F5F7FB;transition:border-color .2s,transform .2s}
-.natcard:hover{border-color:#5A5670;transform:translateY(-2px)}
-.nat-logo{flex:none;width:56px;height:56px;border-radius:12px;background:rgba(154,168,255,.14);color:#9AA8FF;display:grid;place-items:center}.nat-logo svg{width:28px;height:28px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.nat-t small i{text-transform:none;font-style:italic;letter-spacing:0;color:#F5F7FB}
-.nat-t{display:grid;gap:3px}.nat-t small{color:#A7A2B0;font-size:12px;text-transform:uppercase;letter-spacing:.08em;font-weight:600}
-.nat-t b{font-family:var(--serif);font-weight:400;font-size:17px;line-height:1.3}
-.nat-go{color:#9AA8FF;font-size:13px;font-weight:600}
+.natcard{display:block;max-width:440px;padding:16px 0 0;border-top:1px solid #2E2B3A;text-decoration:none;color:#F5F7FB}
+.nat-src{display:flex;align-items:baseline;gap:10px;font-size:13px;color:#A7A2B0}
+.nat-src i{font-family:var(--serif);font-size:17px;color:#F5F7FB}
+.nat-t{display:block;font-family:var(--serif);font-size:22px;line-height:1.28;margin:6px 0 10px}
+.nat-go{font-size:14px;font-weight:600;text-decoration:underline;text-decoration-color:#FF8A6B;text-decoration-thickness:1.5px;text-underline-offset:5px;transition:color .2s}
+.natcard:hover .nat-go,.natcard:focus-visible .nat-go{color:#FF8A6B}
 .vs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;max-width:520px;justify-self:center;width:100%}
 .vcol{display:grid;gap:12px;justify-items:center}
 .vlab{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 12px;border-radius:999px}
@@ -652,7 +652,7 @@ footer .brand .word{font-size:18px}
   @keyframes tagin{from{opacity:0;translate:-10px 0}to{opacity:1;translate:none}}
 }
 @media (max-width:860px){.vs{max-width:none;gap:12px}}
-@media (max-width:560px){.mphone{border-width:5px;border-radius:22px}.mp-cap{font-size:13.5px;left:10px;right:10px}.mp-tags{left:8px;right:8px;bottom:8px;gap:4px}.why .mp-tags li{font-size:10px;padding:4px 6px}.mp-cap{top:48%}.mp-views{font-size:10px;top:10px;left:10px}.natcard{padding:14px}.nat-logo{width:52px;height:52px;font-size:14px}.nat-t b{font-size:15.5px}}
+@media (max-width:560px){.mphone{border-width:5px;border-radius:22px}.mp-cap{font-size:13.5px;left:10px;right:10px}.mp-tags{left:8px;right:8px;bottom:8px;gap:4px}.why .mp-tags li{font-size:10px;padding:4px 6px}.mp-cap{top:48%}.mp-views{font-size:10px;top:10px;left:10px}.nat-t{font-size:19px}}
 
 /* Short videos: rotating subtitles, sound bars, floating hearts */
 .reel .snd{position:absolute;top:40px;right:24px;display:flex;align-items:flex-end;gap:2px;height:14px;z-index:2}
@@ -939,8 +939,9 @@ a.inl:hover{text-decoration:underline}
         <h2 id="whynow-h">Science has moved to the feed. <em>Its rigor hasn’t.</em></h2>
         <p class="lead">Same video, two feeds.</p>
         <a class="natcard" href="https://www.nature.com/articles/d41586-026-01723-1" target="_blank" rel="noopener noreferrer">
-          <span class="nat-logo" aria-hidden="true"><svg><use href="#i-doc"/></svg></span>
-          <span class="nat-t"><small><i>Nature</i> · Editorial · June 2026</small><b>The future of science communication is not an article like this</b><span class="nat-go">Read the editorial ↗</span></span>
+          <span class="nat-src"><i>Nature</i>Editorial, June 2026</span>
+          <span class="nat-t">The future of science communication is not an article like this</span>
+          <span class="nat-go">Read the editorial</span>
         </a>
       </div>
       <div class="vs" role="img" aria-label="Comparison: the same science video elsewhere has no source, undisclosed interests and no review; on Lyncei it links its source, declares conflicts and shows its review label">
