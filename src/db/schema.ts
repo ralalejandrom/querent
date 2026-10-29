@@ -13,6 +13,10 @@ export const reviewStatusEnum = pgEnum("review_status", ["in_progress", "complet
 export const contributionTypeEnum = pgEnum("contribution_type", ["question", "evidence", "objection", "interpretation", "correction"]);
 export const reactionKindEnum = pgEnum("reaction_kind", ["like", "insightful"]);
 export const correctionStatusEnum = pgEnum("correction_status", ["none_known", "corrected", "expression_of_concern", "retracted", "unknown"]);
+export const studyTypeEnum = pgEnum("study_type", [
+  "randomized_trial", "systematic_review", "cohort", "case_control", "cross_sectional", "case_series",
+  "animal", "in_vitro", "computational", "qualitative", "other",
+]);
 export const followTargetEnum = pgEnum("follow_target", ["user", "question", "topic"]);
 export const reportStatusEnum = pgEnum("report_status", ["open", "actioned", "dismissed"]);
 
@@ -89,6 +93,12 @@ export const sources = pgTable("sources", {
   correctionStatus: correctionStatusEnum("correction_status").notNull().default("unknown"),
   provenance: jsonb("provenance").$type<{ provider: string; fetchedAt: string }>().notNull(),
   lastSyncedAt: timestamp("last_synced_at", { withTimezone: true }),
+  /** Abstract as published in Crossref metadata (plain text), when the publisher deposits one. */
+  abstract: text("abstract"),
+  /** AI-assisted summary of the abstract. Never used to set review labels. */
+  aiSummary: jsonb("ai_summary").$type<{ points: string[]; design: string | null; model: string; generatedAt: string }>(),
+  /** Last time a summary was attempted (to avoid repeated calls). */
+  aiSummaryAt: timestamp("ai_summary_at", { withTimezone: true }),
 }, (t) => [uniqueIndex("sources_doi_uq").on(sql`lower(${t.doi})`)]);
 
 /* ------------------------------------------------------------------ posts */
@@ -102,6 +112,8 @@ export const posts = pgTable("posts", {
   topicId: integer("topic_id").references(() => topics.id),
   questionId: uuid("question_id").references(() => questions.id),
   sourceId: uuid("source_id").references(() => sources.id),
+  /** Study design of the cited research, chosen by the author. */
+  studyType: studyTypeEnum("study_type"),
   aiAssisted: boolean("ai_assisted").notNull().default(false),
   status: postStatusEnum("status").notNull().default("visible"),
   disputedReason: text("disputed_reason"),

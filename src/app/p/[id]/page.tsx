@@ -9,12 +9,18 @@ import { Avatar, Empty, Icon, PostCard, Name } from "@/components/ui";
 import { ActionForm, ComposerFields, ReplyToggle, Submit } from "@/components/client";
 import { Rail } from "@/components/rail";
 import { addContributionAction, reportPostAction, respondAction } from "@/app/actions";
+import { after } from "next/server";
+import { ensureSourceSummary, loadSourcePreviews, needsSummary } from "@/lib/source-preview";
+import { RefPreview } from "@/components/ref-preview";
+import { ShareButton } from "@/components/client";
 
 type Params = { params: Promise<{ id: string }> };
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const d = await getPostDetail((await params).id, null);
-  return { title: d?.post.title ?? "Post" };
+  if (!d) return { title: "Post" };
+  const desc = `${d.post.rigor.label} on Lyncei · ${d.post.author.displayName}`;
+  return { title: d.post.title, description: desc, openGraph: { title: d.post.title, description: desc, type: "article" }, twitter: { card: "summary_large_image", title: d.post.title, description: desc } };
 }
 
 export default async function PostPage({ params }: Params) {
@@ -24,6 +30,12 @@ export default async function PostPage({ params }: Params) {
   if (!d) notFound();
   const { post, reviews, comments } = d;
   const isAuthor = user?.id === post.author.id;
+  // Cited papers: the post's source and any DOIs cited in the discussion.
+  const citedDois = [post.source?.doi, ...comments.flatMap(({ c, replies }) => [c.sourceDoi, ...replies.map((r) => r.c.sourceDoi)])].filter((d): d is string => !!d);
+  const previews = await loadSourcePreviews(citedDois);
+  for (const s of previews.values()) if (needsSummary(s)) after(() => ensureSourceSummary(s.id));
+  const preview = (doi: string | null | undefined) => (doi ? previews.get(doi.toLowerCase()) : undefined);
+  const postSource = preview(post.source?.doi);
   const canReview = isReviewer(user) && !isAuthor && !!post.source && post.rigor.key !== "unreviewed";
   const methodological = reviews.find((r) => r.review.type === "methodological" && r.review.status === "completed" && r.review.ratings);
   const lvl = (v: string) => (/high|low|available/i.test(v) ? "" : /moderate|pending/i.test(v) ? "mid" : "low");
@@ -56,6 +68,8 @@ export default async function PostPage({ params }: Params) {
       <main className="main" id="main">
         <Link className="back" href="/?tab=foryou"><Icon name="left" />Back to feed</Link>
         <PostCard p={post} full signedIn={!!user} />
+        <div className="sharebar"><ShareButton url={`/p/${post.id}`} title={post.title} /></div>
+        {postSource && (postSource.aiSummary || postSource.correctionStatus === "retracted" || postSource.correctionStatus === "expression_of_concern") && <RefPreview source={postSource} />}
 
         <div className="sec">
           <h2>Reviews ({reviews.length})</h2>
@@ -93,11 +107,11 @@ export default async function PostPage({ params }: Params) {
         {comments.length ? comments.map(({ c, author, replies }) => (
           <div className="cmt" key={c.id}>
             <div className="ph" style={{ margin: 0 }}><Avatar name={author.displayName} handle={author.handle} size="sm" /><div className="who"><Link href={`/u/${author.handle}`}>{author.displayName}</Link><small>{author.field} · {timeAgo(c.createdAt)}</small></div><span className={`tag ${c.type}`} style={{ marginLeft: "auto" }}>{c.type}</span></div>
-            <div className="body">{c.body}{c.sourceDoi && <a className="study" style={{ margin: "8px 0 0" }} href={`https://doi.org/${c.sourceDoi}`} target="_blank" rel="noopener noreferrer"><div><b>Cited evidence</b><span className="doi">doi:{c.sourceDoi}</span></div></a>}</div>
+            <div className="body">{c.body}{c.sourceDoi && (preview(c.sourceDoi) ? <RefPreview source={preview(c.sourceDoi)!} compact /> : <a className="study" style={{ margin: "8px 0 0" }} href={`https://doi.org/${c.sourceDoi}`} target="_blank" rel="noopener noreferrer"><div><b>Cited evidence</b><span className="doi">doi:{c.sourceDoi}</span></div></a>)}</div>
             {replies.map(({ c: r, author: ra }) => (
               <div className="cmt reply" key={r.id}>
                 <div className="ph" style={{ margin: 0 }}><Avatar name={ra.displayName} handle={ra.handle} size="sm" /><div className="who"><Link href={`/u/${ra.handle}`}>{ra.displayName}</Link><small>{ra.field} · {timeAgo(r.createdAt)}</small></div><span className={`tag ${r.type}`} style={{ marginLeft: "auto" }}>{r.type}</span></div>
-                <div className="body">{r.body}{r.sourceDoi && <span className="doi" style={{ display: "block", marginTop: 6 }}>doi:{r.sourceDoi}</span>}</div>
+                <div className="body">{r.body}{r.sourceDoi && (preview(r.sourceDoi) ? <RefPreview source={preview(r.sourceDoi)!} compact /> : <span className="doi" style={{ display: "block", marginTop: 6 }}>doi:{r.sourceDoi}</span>)}</div>
               </div>
             ))}
             {user && <div style={{ marginLeft: 30 }}><ReplyToggle>{composer(c.id)}</ReplyToggle></div>}

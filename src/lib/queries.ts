@@ -16,7 +16,8 @@ export interface PostView {
   authorResponse: string | null;
   version: number;
   author: { id: string; handle: string; displayName: string; field: string; verified: boolean };
-  source: { doi: string | null; title: string; venue: string | null; publishedYear: number | null; correctionStatus: string } | null;
+  source: { doi: string | null; title: string; venue: string | null; publishedYear: number | null; correctionStatus: string; sourceType: string | null } | null;
+  studyType: string | null;
   question: { id: string; slug: string; text: string } | null;
   topic: string | null;
   topicId: number | null;
@@ -78,7 +79,8 @@ export async function loadPosts(opts: { where?: SQL; viewerId?: string | null; l
       id: post.id, kind: post.kind, title: post.title, body: post.body, createdAt: post.createdAt,
       aiAssisted: post.aiAssisted, disputedReason: post.disputedReason, authorResponse: post.authorResponse, version: post.version,
       author: { id: author.id, handle: author.handle, displayName: author.displayName, field: author.field, verified: verified.has(author.id) },
-      source: source ? { doi: source.doi, title: source.title, venue: source.venue, publishedYear: source.publishedYear, correctionStatus: source.correctionStatus } : null,
+      source: source ? { doi: source.doi, title: source.title, venue: source.venue, publishedYear: source.publishedYear, correctionStatus: source.correctionStatus, sourceType: source.sourceType } : null,
+      studyType: post.studyType,
       question: question ? { id: question.id, slug: question.slug, text: question.text } : null,
       topic: topic?.label ?? null, topicId: topic?.id ?? null,
       likes: reactMap.get(key(post.id, "like")) ?? 0,

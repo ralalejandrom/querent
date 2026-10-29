@@ -12,6 +12,8 @@ import { fetchCrossref, normalizeDoi } from "@/lib/doi";
 import { computeRigor, REVIEW_TYPE_LABELS, type ReviewType } from "@/lib/rigor";
 import { slugify } from "@/lib/text";
 import { notifyAdmins } from "@/lib/notify";
+import { after } from "next/server";
+import { ensureSourceSummary } from "@/lib/source-preview";
 
 export type ActionState = { error?: string; ok?: string };
 
@@ -85,11 +87,12 @@ async function resolveSource(rawDoi: string): Promise<{ id: string } | { error: 
     .insert(schema.sources)
     .values(
       meta
-        ? { doi, title: meta.title, authors: meta.authors, venue: meta.venue, publishedYear: meta.publishedYear, sourceType: meta.sourceType, correctionStatus: meta.correctionStatus, provenance: { provider: "crossref", fetchedAt: new Date().toISOString() }, lastSyncedAt: new Date() }
+        ? { doi, title: meta.title, authors: meta.authors, venue: meta.venue, publishedYear: meta.publishedYear, sourceType: meta.sourceType, correctionStatus: meta.correctionStatus, abstract: meta.abstract, provenance: { provider: "crossref", fetchedAt: new Date().toISOString() }, lastSyncedAt: new Date() }
         // Never invent metadata: keep the DOI, mark it unresolved, and retry later.
         : { doi, title: doi, correctionStatus: "unknown", provenance: { provider: "unresolved", fetchedAt: new Date().toISOString() } },
     )
     .returning({ id: schema.sources.id });
+  if (meta?.abstract) after(() => ensureSourceSummary(row.id)); // AI preview, generated after the response
   return row;
 }
 
@@ -102,13 +105,14 @@ const postSchema = z.object({
   questionId: z.union([uuid, z.literal("")]),
   topicId: z.union([z.coerce.number().int().positive(), z.literal("")]),
   ai: z.boolean(),
+  studyType: z.union([z.enum(schema.studyTypeEnum.enumValues), z.literal("")]),
 });
 
 export async function createPostAction(_: ActionState, fd: FormData): Promise<ActionState> {
   const user = await requireUser("/new");
   const parsed = postSchema.safeParse({
     kind: str(fd, "kind"), title: str(fd, "title"), body: str(fd, "body"), doi: str(fd, "doi"),
-    questionId: str(fd, "questionId"), topicId: str(fd, "topicId"), ai: fd.get("ai") === "on",
+    questionId: str(fd, "questionId"), topicId: str(fd, "topicId"), ai: fd.get("ai") === "on", studyType: str(fd, "studyType"),
   });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Check the form and try again." };
   const p = parsed.data;
@@ -122,7 +126,7 @@ export async function createPostAction(_: ActionState, fd: FormData): Promise<Ac
   const [post] = await db.transaction(async (tx) => {
     const inserted = await tx.insert(schema.posts).values({
       authorId: user.id, kind: p.kind, title: p.title, body: p.body, sourceId,
-      questionId: p.questionId || null, topicId: p.topicId === "" ? null : p.topicId, aiAssisted: p.ai,
+      questionId: p.questionId || null, topicId: p.topicId === "" ? null : p.topicId, aiAssisted: p.ai, studyType: p.studyType || null,
     }).returning({ id: schema.posts.id });
     await audit(tx, { actorId: user.id, entityType: "post", entityId: inserted[0].id, action: "post.created", after: { title: p.title, sourceId } });
     return inserted;
@@ -182,6 +186,7 @@ export async function addContributionAction(_: ActionState, fd: FormData): Promi
   if (c.type === "evidence" && !doi) return { error: "Evidence needs a source. Add a DOI, or choose another type." };
   const [post] = await db.select({ id: schema.posts.id, authorId: schema.posts.authorId, title: schema.posts.title }).from(schema.posts).where(eq(schema.posts.id, c.postId)).limit(1);
   if (!post) return { error: "This post no longer exists." };
+  if (doi) await resolveSource(doi); // store the cited paper's metadata so the thread can show a preview
 
   await db.transaction(async (tx) => {
     const [row] = await tx.insert(schema.contributions).values({ postId: c.postId, parentId: c.parentId || null, authorId: user.id, type: c.type, body: c.body, sourceDoi: doi }).returning({ id: schema.contributions.id });

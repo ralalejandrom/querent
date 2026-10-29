@@ -36,6 +36,13 @@
       "when": 1793235687754,
       "tag": "0004_reviewer_applications",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1793237819596,
+      "tag": "0005_ai_preview_study_type",
+      "breakpoints": true
     }
   ]
 }

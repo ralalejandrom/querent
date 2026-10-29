@@ -19,6 +19,8 @@ export interface SourceMetadata {
   publishedYear: number | null;
   sourceType: string | null;
   correctionStatus: "none_known" | "corrected" | "expression_of_concern" | "retracted" | "unknown";
+  /** Plain-text abstract, when the publisher deposited one with Crossref. */
+  abstract: string | null;
   provider: "crossref" | "manual";
 }
 
@@ -29,6 +31,21 @@ interface CrossrefWork {
   issued?: { "date-parts"?: number[][] };
   type?: string;
   "updated-by"?: { type?: string }[];
+  abstract?: string;
+}
+
+/** Crossref abstracts are JATS XML. Keeps the text, drops the markup, and caps the length. */
+export function abstractToText(jats: string | undefined): string | null {
+  if (!jats) return null;
+  const text = jats
+    .replace(/<jats:title>(.*?)<\/jats:title>/gi, "$1: ")
+    .replace(/<\/(jats:)?p>/gi, " ")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/&amp;/g, "&")
+    .replace(/\s+/g, " ")
+    .replace(/^Abstract:?\s*/i, "")
+    .trim();
+  return text.length >= 80 ? text.slice(0, 8000) : null;
 }
 
 /** Maps Crossref "updated-by" notices to a correction status. */
@@ -50,6 +67,7 @@ export function parseCrossrefWork(doi: string, work: CrossrefWork): SourceMetada
     publishedYear: typeof year === "number" ? year : null,
     sourceType: work.type ?? null,
     correctionStatus: correctionFromCrossref(work),
+    abstract: abstractToText(work.abstract),
     provider: "crossref",
   };
 }

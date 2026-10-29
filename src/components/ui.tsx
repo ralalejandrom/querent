@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import type { PostView } from "@/lib/queries";
 import { compact, initials, timeAgo } from "@/lib/text";
 import { toggleReactionAction, toggleSaveAction } from "@/app/actions";
+import { CORRECTION_LABELS, DESIGN_LABELS, isPreprint } from "@/lib/study";
 
 const PATHS: Record<string, ReactNode> = {
   home: <path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z" />,
@@ -122,7 +123,11 @@ export function PostCard({ p, full = false, signedIn }: { p: PostView; full?: bo
         <div className="who"><Link href={`/u/${p.author.handle}`}><Name name={p.author.displayName} verified={p.author.verified} /></Link><small>{p.author.field}</small></div>
         <span className="t">{timeAgo(p.createdAt)}</span>
       </div>
-      <span className="kind">{KIND_LABELS[p.kind]}{p.aiAssisted ? " · AI-assisted" : ""}</span>
+      <div className="kindrow">
+        <span className="kind">{KIND_LABELS[p.kind]}{p.aiAssisted ? " · AI-assisted" : ""}</span>
+        {p.studyType && <span className="design">{DESIGN_LABELS[p.studyType] ?? p.studyType}</span>}
+        {isPreprint(p.source?.sourceType) && <span className="design pre">Preprint · not peer-reviewed</span>}
+      </div>
       <h2 className="ptitle">{full ? p.title : <Link href={`/p/${p.id}`}>{p.title}</Link>}</h2>
       {body && <p className="pbody">{body}</p>}
       {p.why && !full && <p className="why">{p.why}</p>}
@@ -133,6 +138,7 @@ export function PostCard({ p, full = false, signedIn }: { p: PostView; full?: bo
             <b>{p.source.title}</b>
             <span>{[p.source.venue, p.source.publishedYear].filter(Boolean).join(" · ") || "Source"}</span>
             {p.source.doi && <span className="doi">doi:{p.source.doi}</span>}
+            {CORRECTION_LABELS[p.source.correctionStatus] && <span className={`corr ${p.source.correctionStatus}`}>{CORRECTION_LABELS[p.source.correctionStatus]}</span>}
           </div>
         </a>
       ) : <div className="study missing">No source linked</div>}

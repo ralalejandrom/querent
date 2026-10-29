@@ -5,6 +5,7 @@ import { requireUser } from "@/lib/auth";
 import { ActionForm, DoiHint, Submit } from "@/components/client";
 import { Icon, KIND_LABELS } from "@/components/ui";
 import { createPostAction } from "@/app/actions";
+import { DESIGN_LABELS } from "@/lib/study";
 
 export const metadata = { title: "Create a post" };
 
@@ -29,6 +30,7 @@ export default async function NewPost({ searchParams }: { searchParams: Promise<
           <label className="f">Title<input type="text" name="title" maxLength={200} placeholder="What did the study find?" required /></label>
           <label className="f">What you want to share<textarea name="body" rows={6} maxLength={5000} placeholder="Explain the finding, who was studied and the main limitations." /></label>
           <label className="f">Source DOI <small>Required for research claims. Leave empty only for an open question or opinion.</small><input type="text" name="doi" placeholder="10.1000/xyz123 or https://doi.org/…" /></label>
+          <label className="f">Study design <small>Helps readers judge how strong the evidence is. Reviewers can correct it.</small><select name="studyType" defaultValue=""><option value="">Not a study / not sure</option>{Object.entries(DESIGN_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}</select></label>
           <DoiHint />
           <div className="grid2">
             <label className="f">Topic<select name="topicId" defaultValue=""><option value="">None</option>{topics.map((t) => <option key={t.id} value={t.id}>{t.label}</option>)}</select></label>

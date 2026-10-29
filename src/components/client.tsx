@@ -128,3 +128,22 @@ export function ReplyToggle({ children }: { children: ReactNode }) {
     </>
   );
 }
+
+/** Copies a post's link (or opens the phone's share sheet). The link shows a "Reviewed on Lyncei" card when shared. */
+export function ShareButton({ url, title }: { url: string; title: string }) {
+  const [state, setState] = useState<"idle" | "copied" | "failed">("idle");
+  async function share() {
+    const full = new URL(url, window.location.origin).toString();
+    try {
+      if (navigator.share && window.matchMedia("(pointer: coarse)").matches) { await navigator.share({ title, url: full }); return; }
+      await navigator.clipboard.writeText(full);
+      setState("copied");
+    } catch { setState("failed"); }
+    setTimeout(() => setState("idle"), 2500);
+  }
+  return (
+    <button type="button" className="btn sm" onClick={share} aria-live="polite">
+      {state === "copied" ? "Link copied" : state === "failed" ? "Copy failed. Use the address bar." : "Share"}
+    </button>
+  );
+}

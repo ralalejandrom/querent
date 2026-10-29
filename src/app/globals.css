@@ -224,3 +224,26 @@ h1 .vf{width:22px;height:22px;vertical-align:-1px;margin-left:8px}
 .atbl td small{display:block;color:var(--muted);font-size:12px}
 .atbl .num{font-variant-numeric:tabular-nums;text-align:right}
 .atbl .when{color:var(--muted);white-space:nowrap}
+
+/* Study design and correction chips */
+.kindrow{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
+.design{font-size:11.5px;font-weight:600;color:var(--ink-2);background:var(--sunk);border-radius:999px;padding:2px 9px}
+.design.pre{background:var(--amber-soft,#FDF3E2);color:var(--amber,#A15C07)}
+.corr{display:inline-block;margin-top:4px;font-size:11.5px;font-weight:700;border-radius:3px;padding:1px 7px;background:var(--amber-soft,#FDF3E2);color:var(--amber,#A15C07)}
+.corr.retracted{background:#FDECEC;color:#B42318}
+
+/* Reference preview (AI-assisted) */
+.refp{border:1px solid color-mix(in srgb,#2B3FD8 28%,var(--rule));border-radius:10px;padding:14px;margin:12px 0;background:linear-gradient(180deg,color-mix(in srgb,#2B3FD8 7%,var(--surface)),var(--surface) 75%);display:grid;gap:5px}
+.refp.compact{margin:8px 0 0;padding:12px}
+.refp-h{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;color:#2B3FD8;flex-wrap:wrap}
+@media (prefers-color-scheme:dark){.refp-h{color:#9AA8FF}}
+.refp-tag{font-weight:600;font-size:11px;border:1px solid currentColor;border-radius:999px;padding:0 7px;opacity:.85}
+.refp-meta{font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.refp-t{font-family:var(--serif);font-weight:500;font-size:16px;line-height:1.3}
+.refp-a,.refp-design{font-size:12.5px;color:var(--muted)}
+.refp ul{margin:4px 0;padding-left:18px;font-size:13.5px;line-height:1.45;color:var(--ink-2);display:grid;gap:3px}
+.refp-doi{font-size:12px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:#2B3FD8;text-decoration:none;word-break:break-all}
+.refp-note{margin:4px 0 0;font-size:11.5px;color:var(--muted)}
+.refp-warn{font-size:12.5px;font-weight:600;border-radius:6px;padding:6px 9px;background:var(--amber-soft,#FDF3E2);color:var(--amber,#A15C07)}
+.refp-warn.retracted{background:#FDECEC;color:#B42318}
+.sharebar{display:flex;gap:8px;flex-wrap:wrap;margin:-4px 0 14px}
