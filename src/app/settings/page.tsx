@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 import { db, schema } from "@/db";
 import { requireUser } from "@/lib/auth";
 import { ActionForm, Submit } from "@/components/client";
-import { deleteAccountAction, updateProfileAction } from "@/app/actions";
+import { deleteAccountAction, signOutAction, updateProfileAction } from "@/app/actions";
 
 export const metadata = { title: "Settings" };
 
@@ -13,7 +13,8 @@ export default async function Settings({ searchParams }: { searchParams: Promise
   const orcidReady = !!process.env.ORCID_CLIENT_ID;
   return (
     <main className="main" id="main" style={{ maxWidth: 680 }}>
-      <h1 className="pg">Settings</h1>
+      <div className="pghead"><h1 className="pg">Settings</h1><form action={signOutAction}><button className="btn">Sign out</button></form></div>
+      <p className="hint" style={{ marginTop: -4 }}>Signed in as {u.email}</p>
       {sp.welcome === "1" && <div className="msg ok" style={{ marginBottom: 16 }}>Welcome to Lyncei. Start by adding your name and field so people know who you are.</div>}
       <div className="sec"><h2>Profile</h2></div>
       <ActionForm action={updateProfileAction}>

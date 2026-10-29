@@ -287,3 +287,6 @@ h1 .vf{width:22px;height:22px;vertical-align:-1px;margin-left:8px}
 .legal ul{padding-left:20px;display:grid;gap:6px}
 .appfoot{max-width:1360px;margin:0 auto;padding:18px 28px 90px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--rule)}
 .appfoot a{color:inherit}
+.ownacts{display:flex;gap:8px;flex-wrap:wrap}
+.pghead{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.mtop-acts{display:flex;gap:8px}

@@ -8,7 +8,7 @@ import { loadPosts } from "@/lib/queries";
 import { REVIEW_TYPE_LABELS, type ReviewType } from "@/lib/rigor";
 import { Avatar, Empty, Icon, PostCard, Name } from "@/components/ui";
 import { Rail } from "@/components/rail";
-import { toggleFollowAction } from "@/app/actions";
+import { toggleFollowAction, signOutAction } from "@/app/actions";
 
 export default async function Profile({ params }: { params: Promise<{ handle: string }> }) {
   const { handle } = await params;
@@ -44,7 +44,7 @@ export default async function Profile({ params }: { params: Promise<{ handle: st
               {u.orcidId && <a className="badge" href={`https://orcid.org/${u.orcidId}`} target="_blank" rel="noopener noreferrer">ORCID {u.orcidId}</a>}
             </div>
           </div>
-          {isMe ? <Link className="btn" href="/settings">Edit profile</Link>
+          {isMe ? <div className="ownacts"><Link className="btn" href="/settings">Edit profile</Link><form action={signOutAction}><button className="btn">Sign out</button></form></div>
             : viewer && <form action={toggleFollowAction.bind(null, "user", u.id)}><button className={`btn ${following ? "" : "pri"}`}>{following ? "Following" : "Follow"}</button></form>}
         </div>
         {u.bio && <p style={{ color: "var(--ink-2)", margin: "14px 0 4px" }}>{u.bio}</p>}

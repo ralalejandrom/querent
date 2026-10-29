@@ -35,7 +35,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body>
         <div className="mtop">
           <Link className="brand" href="/"><Mark size={28} /><span className="word">Lyncei</span></Link>
-          {user ? <Link className="btn sm" href="/notifications" aria-label="Notifications"><Icon name="bell" />{unread > 0 && unread}</Link> : <Link className="btn sm pri" href="/login">Sign in</Link>}
+          {user ? <div className="mtop-acts"><Link className="btn sm" href="/notifications" aria-label="Notifications"><Icon name="bell" />{unread > 0 && unread}</Link><Link className="btn sm" href="/settings" aria-label="Settings and sign out"><Icon name="settings" /></Link></div> : <Link className="btn sm pri" href="/login">Sign in</Link>}
         </div>
         {process.env.DEMO_LOGIN === "1" && <div className="notice" style={{ margin: 0, borderRadius: 0, textAlign: "center" }}>Demo version of Lyncei. People, studies and DOIs are fictional; anyone can sign in to the demo accounts.</div>}
         <div className="shell">
