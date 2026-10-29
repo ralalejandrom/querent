@@ -272,3 +272,20 @@ export const accessGrants = pgTable("access_grants", {
   grantedBy: uuid("granted_by").references(() => users.id, { onDelete: "set null" }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 }, (t) => [uniqueIndex("access_grants_email_idx").on(sql`lower(${t.email})`)]);
+
+/**
+ * First-party visit counts, without cookies: no IP address is stored. `visitor` is a hash of
+ * IP, browser and day with a server-side salt, so the same person counts once per day and
+ * can't be followed across days. Location comes from the hosting provider's IP lookup.
+ */
+export const pageViews = pgTable("page_views", {
+  id: serial("id").primaryKey(),
+  at: timestamp("at", { withTimezone: true }).notNull().defaultNow(),
+  path: text("path").notNull(),
+  referrerHost: text("referrer_host"),
+  country: text("country"),
+  region: text("region"),
+  city: text("city"),
+  device: text("device").notNull().default("desktop"),
+  visitor: text("visitor").notNull(),
+}, (t) => [index("page_views_at_idx").on(t.at)]);

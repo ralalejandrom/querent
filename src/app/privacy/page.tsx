@@ -14,7 +14,7 @@ export default function Privacy() {
         <li><b>What you do on Lyncei:</b> your posts, videos, reviews, comments, reactions, saves and follows.</li>
         <li><b>Forms on lyncei.com:</b> what you enter when you ask for early access, apply as a reviewer or request a partnership (for example your name, email, field, institution, career stage and ORCID iD).</li>
         <li><b>Technical data:</b> a cookie that keeps you signed in, and the standard request logs our hosting provider keeps (such as IP address and browser) to run and protect the service.</li>
-        <li><b>Visit counts:</b> we use Vercel Web Analytics, which counts page views without cookies and doesn't track you across other websites.</li>
+        <li><b>Visit counts:</b> we count page views without cookies, using Vercel Web Analytics and our own counter. For each view we keep the page, the approximate place (country, region and city, from an IP lookup by our hosting provider), the site that linked to it, the type of device, and a code that changes every day so a visitor counts once per day. We don't store IP addresses and we don't follow you across days or other websites.</li>
       </ul>
 
       <h2>What's public</h2>

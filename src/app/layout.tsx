@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { VisitBeacon } from "@/components/visit-beacon";
 import Link from "next/link";
 import Script from "next/script";
 import { and, count, eq, isNull } from "drizzle-orm";
@@ -78,6 +79,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         </nav>
         {/* Vercel Web Analytics: cookie-free, aggregate page views. Active once enabled in the Vercel project. */}
         <Script src="/_vercel/insights/script.js" strategy="afterInteractive" />
+        <VisitBeacon />
       </body>
     </html>
   );

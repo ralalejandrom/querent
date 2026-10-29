@@ -23,6 +23,7 @@
 <!-- Vercel Web Analytics: cookie-free, aggregate page views. Active once enabled in the Vercel project. -->
 <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};</script>
 <script defer src="/_vercel/insights/script.js"></script>
+<script>try{var d=JSON.stringify({p:location.pathname+location.search,r:document.referrer});if(!(navigator.sendBeacon&&navigator.sendBeacon('/api/collect',d)))fetch('/api/collect',{method:'POST',body:d,keepalive:true}).catch(function(){})}catch(e){}</script>
 </head>
 <body>
 

@@ -50,6 +50,13 @@
       "when": 1793250712345,
       "tag": "0006_access_grants",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1793252906596,
+      "tag": "0007_page_views",
+      "breakpoints": true
     }
   ]
 }
