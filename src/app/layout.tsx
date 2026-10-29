@@ -14,10 +14,10 @@ const PITCH = "The social network for science, with expert review built in. Shar
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.SITE_URL || process.env.APP_URL || "https://lyncei.com"),
-  title: { default: `Lyncei — ${TAGLINE}`, template: "%s · Lyncei" },
+  title: { default: `Lyncei | ${TAGLINE}`, template: "%s · Lyncei" },
   description: PITCH,
-  openGraph: { type: "website", siteName: "Lyncei", title: `Lyncei — ${TAGLINE}`, description: PITCH, images: [{ url: "/og.png", width: 1200, height: 630, alt: `Lyncei — ${TAGLINE}.` }] },
-  twitter: { card: "summary_large_image", title: `Lyncei — ${TAGLINE}`, description: PITCH, images: ["/og.png"] },
+  openGraph: { type: "website", siteName: "Lyncei", title: `Lyncei | ${TAGLINE}`, description: PITCH, images: [{ url: "/og.png", width: 1200, height: 630, alt: `Lyncei | ${TAGLINE}.` }] },
+  twitter: { card: "summary_large_image", title: `Lyncei | ${TAGLINE}`, description: PITCH, images: ["/og.png"] },
 };
 export const viewport: Viewport = { width: "device-width", initialScale: 1, viewportFit: "cover" };
 
@@ -30,6 +30,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en">
       <head>
+        <link rel="preload" href="/fonts/dm-sans-var.woff2" as="font" type="font/woff2" crossOrigin="" />
       </head>
       <body>
         <div className="mtop">

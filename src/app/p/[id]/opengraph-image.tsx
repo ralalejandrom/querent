@@ -46,7 +46,7 @@ export default async function Image({ params }: { params: Promise<{ id: string }
             <div style={{ width: 14, height: 14, borderRadius: 7, background: st.fg }} />
             {rigor?.label ?? "On Lyncei"}
           </div>
-          <span style={{ fontSize: 26, color: "#9AA8FF" }}>Reviewed on lyncei.com</span>
+          <span style={{ fontSize: 26, color: "#A7A2B0" }}>Reviewed on lyncei.com</span>
         </div>
       </div>
     ),
