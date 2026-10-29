@@ -7,7 +7,7 @@ import "./globals.css";
 import { db, schema } from "@/db";
 import { getCurrentUser, isModerator } from "@/lib/auth";
 import { Icon, Mark } from "@/components/ui";
-import { NavLink } from "@/components/client";
+import { GuestSignIn, NavLink } from "@/components/client";
 import { signOutAction } from "./actions";
 
 const TAGLINE = "The future of science, reviewed in the open";
@@ -34,13 +34,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link rel="preload" href="/fonts/dm-sans-var.woff2" as="font" type="font/woff2" crossOrigin="" />
       </head>
       <body>
-        <div className="mtop">
+        <div className={user ? "mtop" : "mtop guest"}>
           <Link className="brand" href="/"><Mark size={28} /><span className="word">Lyncei</span></Link>
-          {user ? <div className="mtop-acts"><Link className="btn sm" href="/notifications" aria-label="Notifications"><Icon name="bell" />{unread > 0 && unread}</Link><Link className="btn sm" href="/settings" aria-label="Settings and sign out"><Icon name="settings" /></Link></div> : <Link className="btn sm pri" href="/login">Sign in</Link>}
+          {user ? <div className="mtop-acts"><Link className="btn sm" href="/notifications" aria-label="Notifications"><Icon name="bell" />{unread > 0 && unread}</Link><Link className="btn sm" href="/settings" aria-label="Settings and sign out"><Icon name="settings" /></Link></div> : <div className="mtop-acts"><GuestSignIn /></div>}
         </div>
         {process.env.DEMO_LOGIN === "1" && <div className="notice" style={{ margin: 0, borderRadius: 0, textAlign: "center" }}>Demo version of Lyncei. People, studies and DOIs are fictional; anyone can sign in to the demo accounts.</div>}
-        <div className="shell">
-          <aside className="side" aria-label="Main navigation">
+        <div className={user ? "shell" : "shell guest"}>
+          {/* The app navigation is for members: guests get the top bar only. */}
+          {user && <aside className="side" aria-label="Main navigation">
             <Link className="brand" href="/"><Mark /><span className="word">Lyncei</span></Link>
             <nav style={{ display: "grid", gap: 4 }}>
               <NavLink href="/?tab=foryou" exact><Icon name="home" />Home</NavLink>
@@ -54,19 +55,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </nav>
             <Link className="create" href="/new"><Icon name="plus" />Create post</Link>
             <div className="sidefoot">
-              {user ? (
-                <>
-                  <div><b>{user.displayName}</b><div className="hint">{user.roles.has("reviewer") ? "Verified reviewer" : "Member"}</div></div>
-                  <div className="row">
-                    <Link className="btn sm" href="/settings"><Icon name="settings" />Settings</Link>
-                    <form action={signOutAction}><button className="btn sm">Sign out</button></form>
-                  </div>
-                </>
-              ) : (
-                <Link className="btn pri" href="/login" style={{ justifyContent: "center" }}>Sign in</Link>
-              )}
+              <div><b>{user.displayName}</b><div className="hint">{user.roles.has("reviewer") ? "Verified reviewer" : "Member"}</div></div>
+              <div className="row">
+                <Link className="btn sm" href="/settings"><Icon name="settings" />Settings</Link>
+                <form action={signOutAction}><button className="btn sm">Sign out</button></form>
+              </div>
             </div>
-          </aside>
+          </aside>}
           {children}
         </div>
         <footer className="appfoot">Lyncei is for discussing research, not medical advice. Never post anything that could identify a patient. <Link href="/guidelines">Review guidelines</Link> · <Link href="/terms">Terms</Link> · <Link href="/privacy">Privacy</Link></footer>

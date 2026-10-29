@@ -2,7 +2,6 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { ActionForm, Submit } from "@/components/client";
-import { Mark } from "@/components/ui";
 import { demoLoginAction, requestLoginAction } from "@/app/actions";
 
 export const metadata = { title: "Sign in" };
@@ -15,7 +14,6 @@ export default async function Login({ searchParams }: { searchParams: Promise<{ 
   return (
     <main className="main" id="main">
       <div className="auth">
-        <Link className="brand" href="/" style={{ padding: "0 0 24px" }}><Mark /><span className="word">Lyncei</span></Link>
         <h1 className="pg">Sign in</h1>
         {emailReady ? (
           <>

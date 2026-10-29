@@ -34,6 +34,13 @@ export function ActionForm({ action, children, className = "form", resetOnOk = f
   );
 }
 
+/** Guests' top-bar sign-in button; hidden on the sign-in page itself. */
+export function GuestSignIn() {
+  const path = usePathname();
+  if (path.startsWith("/login")) return null;
+  return <Link className="btn sm pri" href="/login">Sign in</Link>;
+}
+
 export function NavLink({ href, children, className = "navb", exact = false }: { href: string; children: ReactNode; className?: string; exact?: boolean }) {
   const path = usePathname();
   const base = href.split("?")[0];

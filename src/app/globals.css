@@ -180,6 +180,12 @@ label.f small,div.f small{font-weight:400;color:var(--muted)}
 .auth{max-width:420px;margin:12vh auto;padding:0 16px}
 
 .mtop,.dock{display:none}
+/* Guests: no app navigation, just a slim top bar with the brand and Sign in. */
+.mtop.guest{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;position:sticky;top:0;z-index:20;border-bottom:1px solid var(--rule);background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.shell.guest{grid-template-columns:minmax(0,1fr) 300px;max-width:1120px}
+.shell.guest:not(:has(.rail)){grid-template-columns:minmax(0,1fr)}
+.shell.guest:not(:has(.rail)) .main{border-right:0}
+@media (max-width:1180px){.shell.guest{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:1180px){.shell{grid-template-columns:220px minmax(0,1fr)}.rail{display:none}.main{border-right:0}}
 @media (max-width:760px){
   .shell{grid-template-columns:minmax(0,1fr)}
