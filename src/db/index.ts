@@ -1,6 +1,7 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import * as schema from "./schema";
+import { databaseUrl } from "./url";
 
 const globalForDb = globalThis as unknown as { pool?: Pool };
 
@@ -8,7 +9,7 @@ const globalForDb = globalThis as unknown as { pool?: Pool };
 const pool =
   globalForDb.pool ??
   new Pool({
-    connectionString: process.env.DATABASE_URL ?? "postgres://querent:querent@localhost:5432/querent",
+    connectionString: databaseUrl(),
     max: 10,
   });
 if (process.env.NODE_ENV !== "production") globalForDb.pool = pool;

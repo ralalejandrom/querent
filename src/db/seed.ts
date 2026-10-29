@@ -6,8 +6,9 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import { count, eq } from "drizzle-orm";
 import * as schema from "./schema";
+import { databaseUrl } from "./url";
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL ?? "postgres://querent:querent@localhost:5432/querent" });
+const pool = new Pool({ connectionString: databaseUrl() });
 const db = drizzle(pool, { schema });
 const RENAMED_DEMO_ACCOUNTS = [
   ["elenacastro", "sarahwhitfield", "Dr. Sarah Whitfield"],

@@ -10,8 +10,9 @@ import { Pool } from "pg";
 import { eq, isNotNull } from "drizzle-orm";
 import * as schema from "../db/schema";
 import { fetchCrossref } from "../lib/doi";
+import { databaseUrl } from "../db/url";
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL ?? "postgres://querent:querent@localhost:5432/querent" });
+const pool = new Pool({ connectionString: databaseUrl() });
 const db = drizzle(pool, { schema });
 
 async function main() {
