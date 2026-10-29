@@ -70,13 +70,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           {children}
         </div>
         <footer className="appfoot">Lyncei is for discussing research, not medical advice. Never post anything that could identify a patient. <Link href="/terms">Terms</Link> · <Link href="/privacy">Privacy</Link></footer>
-        <nav className="dock" aria-label="Mobile navigation">
+        {user && <nav className="dock" aria-label="Mobile navigation">
           <NavLink href="/?tab=foryou" exact className=""><Icon name="home" />Home</NavLink>
           <NavLink href="/questions" className=""><Icon name="q" />Questions</NavLink>
           <Link className="plus" href="/new" aria-label="Create post"><Icon name="plus" /></Link>
           <NavLink href="/reviews" className=""><Icon name="review" />Reviews</NavLink>
-          <NavLink href={user ? `/u/${user.handle}` : "/login"} className=""><Icon name="user" />{user ? "Profile" : "Sign in"}</NavLink>
-        </nav>
+          <NavLink href={`/u/${user.handle}`} className=""><Icon name="user" />Profile</NavLink>
+        </nav>}
         {/* Vercel Web Analytics: cookie-free, aggregate page views. Active once enabled in the Vercel project. */}
         <Script src="/_vercel/insights/script.js" strategy="afterInteractive" />
         <VisitBeacon />
