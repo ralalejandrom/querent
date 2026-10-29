@@ -38,7 +38,10 @@ export default async function NewPost({ searchParams }: { searchParams: Promise<
             <label className="f">Topic<select name="topicId" defaultValue=""><option value="">None</option>{topics.map((t) => <option key={t.id} value={t.id}>{t.label}</option>)}</select></label>
             <label className="f">Link to a question<select name="questionId" defaultValue={sp.q ?? ""}><option value="">None</option>{questions.map((q) => <option key={q.id} value={q.id}>{q.text.length > 70 ? q.text.slice(0, 70) + "…" : q.text}</option>)}</select></label>
           </div>
-          <div className="checks"><label><input type="checkbox" name="ai" /> I used AI tools to help write or edit this post</label></div>
+          <div className="checks">
+            <label><input type="checkbox" name="ai" /> I used AI tools to help write or edit this post</label>
+            <label><input type="checkbox" name="noPatientData" required /> No patient or study participant can be identified from this post or its video</label>
+          </div>
           <div className="row"><Submit>Publish</Submit></div>
         </ActionForm>
       </div>

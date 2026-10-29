@@ -43,7 +43,7 @@ export function Mark({ size = 34 }: { size?: number }) {
 }
 
 const AV_COLORS = ["#B5654A", "#4C6E9E", "#6E8B5A", "#8A5A9E", "#4E8C8A", "#A2803C", "#5A6FB5", "#9E5A6E"];
-// Portrait photos for the fictional demo accounts only (Unsplash license). Real accounts keep initials.
+// Portrait photos for the fictional example accounts only (Unsplash license). Real accounts keep initials.
 const DEMO_PHOTOS: Record<string, string> = {
   sarahwhitfield: "photo-1758691737587-7630b4d31d16",
   michaelbrennan: "photo-1560250097-0b93528c311a",
@@ -129,6 +129,7 @@ export function PostCard({ p, full = false, signedIn }: { p: PostView; full?: bo
         <span className="kind">{KIND_LABELS[p.kind]}{p.aiAssisted ? " · AI-assisted" : ""}</span>
         {p.studyType && <span className="design">{DESIGN_LABELS[p.studyType] ?? p.studyType}</span>}
         {isPreprint(p.source?.sourceType) && <span className="design pre">Preprint · not peer-reviewed</span>}
+        {p.author.example && <span className="design ex" title="This person, study and DOI are made up to show how Lyncei works.">Example · fictional</span>}
       </div>
       <h2 className="ptitle">{full ? p.title : <Link href={`/p/${p.id}`}>{p.title}</Link>}</h2>
       {body && <p className="pbody">{body}</p>}
@@ -186,6 +187,7 @@ export function ReelCard({ p }: { p: PostView }) {
         </div>
         <h2><Link href={`/p/${p.id}`}>{p.title}</Link></h2>
         <div className="reelc-tags">
+          {p.author.example && <span className="design ex">Example · fictional</span>}
           <RigorChip rigor={p.rigor} />
           {p.studyType && <span className="design">{DESIGN_LABELS[p.studyType] ?? p.studyType}</span>}
         </div>

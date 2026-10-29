@@ -1,5 +1,6 @@
 import "server-only";
-import { and, count, desc, eq, inArray, ne, sql, type SQL } from "drizzle-orm";
+import { and, count, desc, eq, inArray, ne, notLike, sql, type SQL } from "drizzle-orm";
+import { isExampleEmail, showExamples } from "./examples";
 import { db, schema } from "@/db";
 import { computeRigor, type Rigor, type ReviewType } from "./rigor";
 
@@ -15,7 +16,7 @@ export interface PostView {
   disputedReason: string | null;
   authorResponse: string | null;
   version: number;
-  author: { id: string; handle: string; displayName: string; field: string; verified: boolean };
+  author: { id: string; handle: string; displayName: string; field: string; verified: boolean; example: boolean };
   source: { doi: string | null; title: string; venue: string | null; publishedYear: number | null; correctionStatus: string; sourceType: string | null } | null;
   studyType: string | null;
   mediaUrl: string | null;
@@ -38,6 +39,7 @@ export interface PostView {
 /** Loads posts with author, source, question, reach and rigor in a fixed number of queries. */
 export async function loadPosts(opts: { where?: SQL; viewerId?: string | null; limit?: number; ids?: string[] }): Promise<PostView[]> {
   const conds: SQL[] = [eq(posts.status, "visible")];
+  if (!showExamples()) conds.push(notLike(users.email, "%@example.com"));
   if (opts.where) conds.push(opts.where);
   if (opts.ids) {
     if (!opts.ids.length) return [];
@@ -79,7 +81,7 @@ export async function loadPosts(opts: { where?: SQL; viewerId?: string | null; l
     return {
       id: post.id, kind: post.kind, title: post.title, body: post.body, createdAt: post.createdAt,
       aiAssisted: post.aiAssisted, disputedReason: post.disputedReason, authorResponse: post.authorResponse, version: post.version,
-      author: { id: author.id, handle: author.handle, displayName: author.displayName, field: author.field, verified: verified.has(author.id) },
+      author: { id: author.id, handle: author.handle, displayName: author.displayName, field: author.field, verified: verified.has(author.id), example: isExampleEmail(author.email) },
       source: source ? { doi: source.doi, title: source.title, venue: source.venue, publishedYear: source.publishedYear, correctionStatus: source.correctionStatus, sourceType: source.sourceType } : null,
       studyType: post.studyType,
       mediaUrl: post.mediaUrl,

@@ -13,6 +13,8 @@ import { fetchCrossref, normalizeDoi } from "@/lib/doi";
 import { computeRigor, REVIEW_TYPE_LABELS, type ReviewType } from "@/lib/rigor";
 import { slugify } from "@/lib/text";
 import { notifyAdmins } from "@/lib/notify";
+import { canSignIn } from "@/lib/access";
+import { isExampleEmail } from "@/lib/examples";
 import { after } from "next/server";
 import { ensureSourceSummary } from "@/lib/source-preview";
 
@@ -49,19 +51,27 @@ export async function requestLoginAction(_: ActionState, fd: FormData): Promise<
   const ip = ((await headers()).get("x-forwarded-for") ?? "").split(",")[0].trim() || "unknown";
   if (loginThrottled(ip)) return { error: "Too many sign-in requests. Wait a few minutes and try again." };
   if (!process.env.RESEND_API_KEY && process.env.NODE_ENV === "production") {
-    return { error: "Email sign-in isn't set up on this server yet." + (process.env.DEMO_ACCOUNTS === "1" ? " Use a demo account below." : "") };
+    return { error: "Email sign-in isn't set up on this server yet." };
   }
-  try {
-    await sendLoginLink(email.data, str(fd, "next") || "/");
-  } catch {
-    return { error: "We couldn't send the email right now. Try again in a minute." };
+  // Early access: emails without access join the list instead. The reply is the same either way,
+  // so the form can't be used to find out who has an account.
+  const address = email.data.toLowerCase();
+  if (await canSignIn(address)) {
+    try {
+      await sendLoginLink(address, str(fd, "next") || "/");
+    } catch {
+      return { error: "We couldn't send the email right now. Try again in a minute." };
+    }
+  } else if (!isExampleEmail(address)) {
+    const added = await db.insert(schema.waitlist).values({ email: address, interest: "individual" }).onConflictDoNothing().returning({ id: schema.waitlist.id });
+    if (added.length) notifyAdmins(`Lyncei: new waitlist sign-up (${address})`, [`Email: ${address}`, "Came from the sign-in page without access yet."]);
   }
-  return { ok: "Check your inbox for a sign-in link. It expires in 15 minutes." };
+  return { ok: "If this email has access, your sign-in link is on its way (it expires in 15 minutes). If not, it's now on the early-access list and we'll email you when your access is ready." };
 }
 
-/** Demo deployments only: one-click sign-in to the fictional seeded accounts (…@example.com). */
+/** Separate demo deployments only (DEMO_LOGIN=1): one-click sign-in to the fictional example accounts (…@example.com). */
 export async function demoLoginAction(handle: string) {
-  if (process.env.DEMO_ACCOUNTS !== "1") redirect("/login");
+  if (process.env.DEMO_LOGIN !== "1") redirect("/login");
   const [u] = await db.select({ id: schema.users.id, email: schema.users.email }).from(schema.users).where(eq(schema.users.handle, handle)).limit(1);
   if (!u || !u.email.endsWith("@example.com")) redirect("/login");
   // Public demo sign-in never grants staff powers: accounts with moderation or admin roles are excluded.
@@ -119,6 +129,7 @@ export async function createPostAction(_: ActionState, fd: FormData): Promise<Ac
   });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Check the form and try again." };
   const p = parsed.data;
+  if (fd.get("noPatientData") !== "on") return { error: "Confirm that no patient or participant can be identified from this post." };
   if (p.kind === "video" && !p.mediaUrl) return { error: "Add your video, or pick another format." };
 
   let sourceId: string | null = null;
@@ -356,4 +367,26 @@ export async function markNotificationsReadAction() {
   const user = await requireUser("/notifications");
   await db.update(schema.notifications).set({ readAt: new Date() }).where(and(eq(schema.notifications.recipientId, user.id), sql`${schema.notifications.readAt} is null`));
   revalidatePath("/", "layout");
+}
+
+/* ---------------------------------------------------------------- account */
+/**
+ * Deletes the signed-in account. The profile and posts disappear; reviews and comments stay
+ * (the review record matters to other people) but now show "Deleted account". Email, bio and
+ * ORCID iD are erased, so the address can't sign in or be contacted again.
+ */
+export async function deleteAccountAction(fd: FormData) {
+  const user = await requireUser("/settings");
+  if (str(fd, "confirm").trim().toUpperCase() !== "DELETE") redirect("/settings?delete=confirm");
+  await db.transaction(async (tx) => {
+    await tx.update(schema.posts).set({ status: "removed" }).where(eq(schema.posts.authorId, user.id));
+    await tx.update(schema.users).set({
+      deletedAt: new Date(), email: `deleted+${user.id}@invalid`, displayName: "Deleted account", handle: `deleted-${user.id.slice(0, 8)}`,
+      bio: "", currentWork: "", field: "", orcidId: null,
+    }).where(eq(schema.users.id, user.id));
+    await tx.delete(schema.sessions).where(eq(schema.sessions.userId, user.id));
+    await audit(tx, { actorId: user.id, entityType: "user", entityId: user.id, action: "account.deleted" });
+  });
+  await endSession();
+  redirect("/welcome");
 }

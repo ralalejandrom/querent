@@ -360,6 +360,7 @@ mark.good{background:#E7F5EE;color:#0B5E3C}
 
 footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding-block:26px;color:var(--muted);font-size:14px}
 footer{border-top:1px solid var(--rule)}
+footer .wrap a{color:inherit}
 footer .brand .word{font-size:18px}
 
 /* ---------- responsive ---------- */
@@ -778,7 +779,7 @@ a.inl:hover{text-decoration:underline}
       <a href="#partners">Partners</a>
       <a href="#join">Early access</a>
     </nav>
-    <div style="display:flex;gap:10px;align-items:center"><a href="/login" style="text-decoration:none;font-weight:600;font-size:15px">Sign in</a><a class="pill" href="/?tab=foryou">Explore the demo</a></div>
+    <div style="display:flex;gap:10px;align-items:center"><a href="/login" style="text-decoration:none;font-weight:600;font-size:15px">Sign in</a><a class="pill" href="#join">Get early access</a></div>
   </div>
 </header>
 
@@ -788,7 +789,7 @@ a.inl:hover{text-decoration:underline}
       <div>
         <h1>The future of science, <em>reviewed in the open.</em></h1>
         <p class="lede">The social network for science, with expert review built in.</p>
-        <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center"><a class="pill lg" href="/?tab=foryou">Explore the demo <span aria-hidden="true">→</span></a><a href="#join" style="font-weight:600;text-decoration:none;border-bottom:1px solid currentColor">Get early access</a></div>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center"><a class="pill lg" href="#join">Get early access <span aria-hidden="true">→</span></a><a href="/?tab=foryou" style="font-weight:600;text-decoration:none;border-bottom:1px solid currentColor">See example posts</a></div>
       </div>
 
       <div class="devices" role="img" aria-label="Illustrative product preview: a post on a laptop and a phone, with its source check and review status">
@@ -1077,15 +1078,15 @@ a.inl:hover{text-decoration:underline}
       <h2 id="fair-h">Reviews judge the work, <em>not the person</em></h2>
       <div class="modes">
         <div class="mode"><svg class="mill" viewBox="0 0 220 90" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="34" cy="34" r="14"/><path d="M14 74c3-13 11-20 20-20s17 7 20 20"/><path d="M22 33h24" stroke-width="7" stroke-opacity=".9"/><circle cx="186" cy="34" r="14"/><path d="M166 74c3-13 11-20 20-20s17 7 20 20"/><path d="M174 33h24" stroke-width="7" stroke-opacity=".9"/><rect x="92" y="18" width="36" height="48" rx="4"/><path d="M100 32h20M100 42h20M100 52h12"/><path d="M58 44h26M136 44h26" stroke-dasharray="3 5"/></g></svg><div class="mhead"><h3>Before you publish</h3><span class="stat plan">Planned</span></div><p>Double-anonymous. Private until you choose.</p></div>
-        <div class="mode"><svg class="mill" viewBox="0 0 220 90" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="20" y="8" width="44" height="76" rx="9"/><path d="M38 38v16l13-8z" fill="currentColor"/><rect x="150" y="18" width="40" height="52" rx="4"/><path d="M158 32h24M158 42h24M158 52h14"/><path d="M76 46h62" stroke-dasharray="3 5"/><circle cx="107" cy="46" r="11" fill="var(--fair-bg)"/><path d="M102 46.5l3.5 3.5 6.5-7"/></g></svg><div class="mhead"><h3>After it’s out</h3><span class="stat ok">In the demo</span></div><p>The video is checked against its source.</p></div>
+        <div class="mode"><svg class="mill" viewBox="0 0 220 90" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="20" y="8" width="44" height="76" rx="9"/><path d="M38 38v16l13-8z" fill="currentColor"/><rect x="150" y="18" width="40" height="52" rx="4"/><path d="M158 32h24M158 42h24M158 52h14"/><path d="M76 46h62" stroke-dasharray="3 5"/><circle cx="107" cy="46" r="11" fill="var(--fair-bg)"/><path d="M102 46.5l3.5 3.5 6.5-7"/></g></svg><div class="mhead"><h3>After it’s out</h3><span class="stat ok">Live</span></div><p>The video is checked against its source.</p></div>
       </div>
       <ul class="tiles">
-        <li><span class="ico"><svg><use href="#i-eyeoff"/></svg></span><b>Likes hidden while reviewing</b><span class="stat ok">In the demo</span></li>
-        <li><span class="ico"><svg><use href="#i-list"/></svg></span><b>Scoped, structured reviews</b><span class="stat ok">In the demo</span></li>
-        <li><span class="ico"><svg><use href="#i-scale"/></svg></span><b>Conflicts declared first</b><span class="stat ok">In the demo</span></li>
+        <li><span class="ico"><svg><use href="#i-eyeoff"/></svg></span><b>Likes hidden while reviewing</b><span class="stat ok">Live</span></li>
+        <li><span class="ico"><svg><use href="#i-list"/></svg></span><b>Scoped, structured reviews</b><span class="stat ok">Live</span></li>
+        <li><span class="ico"><svg><use href="#i-scale"/></svg></span><b>Conflicts declared first</b><span class="stat ok">Live</span></li>
         <li><span class="ico"><svg><use href="#i-shuffle"/></svg></span><b>Reviewers assigned, not chosen</b><span class="stat plan">Planned</span></li>
         <li><span class="ico"><svg><use href="#i-people"/></svg></span><b>More reach, more reviewers</b><span class="stat plan">Planned</span></li>
-        <li><span class="ico"><svg><use href="#i-shield"/></svg></span><b>Reviewer identity protected</b><span class="stat ok">In the demo</span></li>
+        <li><span class="ico"><svg><use href="#i-shield"/></svg></span><b>Reviewer identity protected</b><span class="stat ok">Live</span></li>
       </ul>
     </div>
   </section>
@@ -1253,7 +1254,7 @@ a.inl:hover{text-decoration:underline}
 <footer>
   <div class="wrap">
     <a class="brand" href="/" aria-label="Lyncei home"><svg width="26" height="26" aria-hidden="true"><use href="#mark"/></svg><span class="word">Lyncei</span></a>
-    <span>© 2026 Lyncei · Boston, MA · Product previews show illustrative content; portrait photos from Unsplash.</span>
+    <span>© 2026 Lyncei · Boston, MA · Product previews show fictional examples; portrait photos from Unsplash. Lyncei is for discussing research, not medical advice. <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a></span>
   </div>
 </footer>
 

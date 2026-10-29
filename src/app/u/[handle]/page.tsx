@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { isExampleEmail, showExamples } from "@/lib/examples";
 import { notFound } from "next/navigation";
 import { and, count, desc, eq, sql } from "drizzle-orm";
 import { db, schema } from "@/db";
@@ -14,6 +15,8 @@ export default async function Profile({ params }: { params: Promise<{ handle: st
   const viewer = await getCurrentUser();
   const [u] = await db.select().from(schema.users).where(sql`lower(${schema.users.handle}) = ${handle.toLowerCase()}`).limit(1);
   if (!u || u.deletedAt) notFound();
+  const example = isExampleEmail(u.email);
+  if (example && !showExamples()) notFound();
   const isMe = viewer?.id === u.id;
   const [roles, list, reviews, [{ n: followers }], following, [{ n: reviewTotal }]] = await Promise.all([
     db.select().from(schema.userRoles).where(eq(schema.userRoles.userId, u.id)),
@@ -30,6 +33,7 @@ export default async function Profile({ params }: { params: Promise<{ handle: st
   return (
     <>
       <main className="main" id="main">
+        {example && <p className="exnote"><b>Fictional example account.</b> This person doesn't exist. Their posts and reviews show how Lyncei works.</p>}
         <div className="profile-h">
           <Avatar name={u.displayName} handle={u.handle} size="lg" />
           <div style={{ flex: 1, minWidth: 0 }}>

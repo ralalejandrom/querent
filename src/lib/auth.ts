@@ -7,6 +7,7 @@ import { and, count, eq, gt, isNull, sql } from "drizzle-orm";
 import { db, schema } from "@/db";
 import { slugify } from "./text";
 import { sendEmail } from "./email";
+import { adminEmailList, applyGrant, canSignIn } from "./access";
 
 const SESSION_COOKIE = "querent_session";
 const SESSION_DAYS = 30;
@@ -72,8 +73,7 @@ export async function sendLoginLink(email: string, next = "/"): Promise<void> {
 /** Emails listed in ADMIN_EMAILS (comma-separated) get the founding team's roles when they sign in. */
 const FOUNDER_ROLES = ["member", "reviewer", "moderator", "integrity_admin", "platform_admin"] as const;
 async function grantFounderRoles(userId: string, email: string): Promise<void> {
-  const admins = (process.env.ADMIN_EMAILS ?? "").split(",").map((e) => e.trim().toLowerCase()).filter(Boolean);
-  if (!admins.includes(email.toLowerCase())) return;
+  if (!adminEmailList().includes(email.toLowerCase())) return;
   const added = await db.insert(schema.userRoles)
     .values(FOUNDER_ROLES.map((role) => ({ userId, role })))
     .onConflictDoNothing()
@@ -108,8 +108,10 @@ export async function consumeLoginToken(token: string): Promise<{ id: string; is
     if (existing.deletedAt) return null;
     if (!existing.emailVerifiedAt) await db.update(schema.users).set({ emailVerifiedAt: now }).where(eq(schema.users.id, existing.id));
     await grantFounderRoles(existing.id, row.email);
+    await applyGrant(existing.id, row.email);
     return { id: existing.id, isNew: false, email: row.email };
   }
+  if (!(await canSignIn(row.email))) return null; // early access: only invited emails get a new account
   const local = row.email.split("@")[0] ?? "member";
   const [created] = await db
     .insert(schema.users)
@@ -117,6 +119,7 @@ export async function consumeLoginToken(token: string): Promise<{ id: string; is
     .returning({ id: schema.users.id });
   await db.insert(schema.userRoles).values({ userId: created.id, role: "member" }).onConflictDoNothing();
   await grantFounderRoles(created.id, row.email);
+  await applyGrant(created.id, row.email);
   return { id: created.id, isNew: true, email: row.email };
 }
 

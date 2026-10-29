@@ -2,11 +2,11 @@ import { eq } from "drizzle-orm";
 import { db, schema } from "@/db";
 import { requireUser } from "@/lib/auth";
 import { ActionForm, Submit } from "@/components/client";
-import { updateProfileAction } from "@/app/actions";
+import { deleteAccountAction, updateProfileAction } from "@/app/actions";
 
 export const metadata = { title: "Settings" };
 
-export default async function Settings({ searchParams }: { searchParams: Promise<{ orcid?: string; welcome?: string }> }) {
+export default async function Settings({ searchParams }: { searchParams: Promise<{ orcid?: string; welcome?: string; delete?: string }> }) {
   const user = await requireUser("/settings");
   const sp = await searchParams;
   const [u] = await db.select().from(schema.users).where(eq(schema.users.id, user.id));
@@ -35,6 +35,13 @@ export default async function Settings({ searchParams }: { searchParams: Promise
       <div className="sec"><h2>Your data</h2></div>
       <p className="hint">Download everything you've posted, reviewed and contributed as JSON.</p>
       <a className="btn" href="/api/v1/me/export">Export my data</a>
+      <div className="sec"><h2>Delete account</h2></div>
+      <p className="hint">Your profile and posts are removed and your email is erased. Reviews and comments you wrote stay, shown as "Deleted account", because other people rely on the review record. This can't be undone.</p>
+      {sp.delete === "confirm" && <div className="msg err" style={{ marginBottom: 10 }}>Type DELETE to confirm.</div>}
+      <form action={deleteAccountAction} className="delacct">
+        <label className="f">Type DELETE to confirm<input type="text" name="confirm" autoComplete="off" required /></label>
+        <button className="btn danger">Delete my account</button>
+      </form>
     </main>
   );
 }

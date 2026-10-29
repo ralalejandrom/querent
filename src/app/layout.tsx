@@ -37,7 +37,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <Link className="brand" href="/"><Mark size={28} /><span className="word">Lyncei</span></Link>
           {user ? <Link className="btn sm" href="/notifications" aria-label="Notifications"><Icon name="bell" />{unread > 0 && unread}</Link> : <Link className="btn sm pri" href="/login">Sign in</Link>}
         </div>
-        {process.env.DEMO_ACCOUNTS === "1" && <div className="notice" style={{ margin: 0, borderRadius: 0, textAlign: "center" }}>Demo version of Lyncei. People, studies and DOIs are fictional; anyone can sign in to the demo accounts.</div>}
+        {process.env.DEMO_LOGIN === "1" && <div className="notice" style={{ margin: 0, borderRadius: 0, textAlign: "center" }}>Demo version of Lyncei. People, studies and DOIs are fictional; anyone can sign in to the demo accounts.</div>}
         <div className="shell">
           <aside className="side" aria-label="Main navigation">
             <Link className="brand" href="/"><Mark /><span className="word">Lyncei</span></Link>
@@ -68,6 +68,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           </aside>
           {children}
         </div>
+        <footer className="appfoot">Lyncei is for discussing research, not medical advice. Never post anything that could identify a patient. <Link href="/terms">Terms</Link> · <Link href="/privacy">Privacy</Link></footer>
         <nav className="dock" aria-label="Mobile navigation">
           <NavLink href="/?tab=foryou" exact className=""><Icon name="home" />Home</NavLink>
           <NavLink href="/questions" className=""><Icon name="q" />Questions</NavLink>

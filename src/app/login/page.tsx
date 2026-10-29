@@ -33,7 +33,7 @@ export default async function Login({ searchParams }: { searchParams: Promise<{ 
             <Link className="btn pri" href="/welcome#join">Get early access</Link>
           </>
         )}
-        {process.env.DEMO_ACCOUNTS === "1" && (
+        {process.env.DEMO_LOGIN === "1" && (
           <div className="box" style={{ marginTop: 24 }}>
             <h3>Try a demo account</h3>
             <p className="hint" style={{ marginTop: 0 }}>Fictional people with sample data. Anyone can use these, so don't post anything private.</p>

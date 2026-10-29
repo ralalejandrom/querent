@@ -67,6 +67,7 @@ export default async function PostPage({ params }: Params) {
     <>
       <main className="main" id="main">
         <Link className="back" href="/?tab=foryou"><Icon name="left" />Back to feed</Link>
+        {post.author.example && <p className="exnote"><b>Fictional example.</b> The people, study, DOI and reviews on this page are made up to show how Lyncei works.</p>}
         <PostCard p={post} full signedIn={!!user} />
         <div className="sharebar"><ShareButton url={`/p/${post.id}`} title={post.title} /></div>
         {postSource && (postSource.aiSummary || postSource.correctionStatus === "retracted" || postSource.correctionStatus === "expression_of_concern") && <RefPreview source={postSource} />}

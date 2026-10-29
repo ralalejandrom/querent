@@ -262,3 +262,13 @@ export const waitlist = pgTable("waitlist", {
   partnerType: partnerTypeEnum("partner_type"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 }, (t) => [uniqueIndex("waitlist_email_interest_idx").on(sql`lower(${t.email})`, t.interest)]);
+
+/** Early access: emails the founding team let in. Reviewer grants also give the reviewer role (and the verified seal). */
+export const accessGrants = pgTable("access_grants", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  email: text("email").notNull(),
+  asReviewer: boolean("as_reviewer").notNull().default(false),
+  fields: text("fields").array().notNull().default(sql`'{}'::text[]`),
+  grantedBy: uuid("granted_by").references(() => users.id, { onDelete: "set null" }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [uniqueIndex("access_grants_email_idx").on(sql`lower(${t.email})`)]);
