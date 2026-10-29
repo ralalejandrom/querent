@@ -11,6 +11,7 @@ import { audit, notify } from "@/lib/audit";
 import { fetchCrossref, normalizeDoi } from "@/lib/doi";
 import { computeRigor, REVIEW_TYPE_LABELS, type ReviewType } from "@/lib/rigor";
 import { slugify } from "@/lib/text";
+import { notifyAdmins } from "@/lib/notify";
 
 export type ActionState = { error?: string; ok?: string };
 
@@ -36,6 +37,7 @@ export async function confirmLoginAction(fd: FormData) {
   const user = token ? await consumeLoginToken(token) : null;
   if (!user) redirect("/login?error=invalid");
   await startSession(user.id);
+  if (user.isNew) notifyAdmins(`Lyncei: new account (${user.email})`, [`Email: ${user.email}`, "Signed in for the first time."]);
   redirect(user.isNew ? "/settings?welcome=1" : safeNext);
 }
 export async function requestLoginAction(_: ActionState, fd: FormData): Promise<ActionState> {

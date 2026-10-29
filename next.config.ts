@@ -6,7 +6,8 @@ import type { NextConfig } from "next";
  */
 const CSP = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  // Development builds evaluate code for hot reloading; production never needs eval.
+  `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "production" ? "" : " 'unsafe-eval'"}`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https://images.unsplash.com",
   "font-src 'self' data:",

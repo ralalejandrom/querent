@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { db, schema } from "@/db";
+import { notifyAdmins } from "@/lib/notify";
 
 /**
  * Beta waitlist sign-up from the public landing page (/welcome).
@@ -55,6 +56,15 @@ export async function POST(req: Request) {
       })
       .onConflictDoNothing()
       .returning({ id: schema.waitlist.id });
+    if (rows.length) {
+      const d = parsed.data;
+      if (d.interest === "institutional") {
+        notifyAdmins(`Lyncei: partnership request from ${d.organization || d.email}`, [
+          `Email: ${d.email}`, `Organization: ${d.organization || "not given"}`, `Type: ${d.partnerType ?? "not given"}`]);
+      } else {
+        notifyAdmins(`Lyncei: new waitlist sign-up (${d.email})`, [`Email: ${d.email}`]);
+      }
+    }
     return rows.length
       ? NextResponse.json({ status: "added" }, { status: 201 })
       : NextResponse.json({ status: "exists" }, { status: 200 });

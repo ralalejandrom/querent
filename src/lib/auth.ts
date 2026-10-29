@@ -94,7 +94,7 @@ async function uniqueHandle(base: string): Promise<string> {
 }
 
 /** Consumes a sign-in token, creating the account on first sign-in. Returns the user or null if invalid. */
-export async function consumeLoginToken(token: string): Promise<{ id: string; isNew: boolean } | null> {
+export async function consumeLoginToken(token: string): Promise<{ id: string; isNew: boolean; email: string } | null> {
   const now = new Date();
   const [row] = await db
     .update(schema.loginTokens)
@@ -108,7 +108,7 @@ export async function consumeLoginToken(token: string): Promise<{ id: string; is
     if (existing.deletedAt) return null;
     if (!existing.emailVerifiedAt) await db.update(schema.users).set({ emailVerifiedAt: now }).where(eq(schema.users.id, existing.id));
     await grantFounderRoles(existing.id, row.email);
-    return { id: existing.id, isNew: false };
+    return { id: existing.id, isNew: false, email: row.email };
   }
   const local = row.email.split("@")[0] ?? "member";
   const [created] = await db
@@ -117,7 +117,7 @@ export async function consumeLoginToken(token: string): Promise<{ id: string; is
     .returning({ id: schema.users.id });
   await db.insert(schema.userRoles).values({ userId: created.id, role: "member" }).onConflictDoNothing();
   await grantFounderRoles(created.id, row.email);
-  return { id: created.id, isNew: true };
+  return { id: created.id, isNew: true, email: row.email };
 }
 
 export async function startSession(userId: string): Promise<void> {

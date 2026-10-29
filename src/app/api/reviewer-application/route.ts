@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { db, schema } from "@/db";
+import { notifyAdmins } from "@/lib/notify";
 
 /**
  * "Apply as a founding reviewer" form on the public landing page (/welcome).
@@ -65,6 +66,11 @@ export async function POST(req: Request) {
       })
       .onConflictDoNothing()
       .returning({ id: schema.reviewerApplications.id });
+    if (rows.length) {
+      notifyAdmins(`Lyncei: founding reviewer application from ${d.name} (${d.field})`, [
+        `Name: ${d.name}`, `Email: ${d.email}`, `Field: ${d.field}`, `Institution: ${d.institution}`,
+        `Career stage: ${d.careerStage.replace("_", " ")}`, `ORCID: ${d.orcid || "not given"}`, `Reviews per month: ${d.reviewsPerMonth}`]);
+    }
     return rows.length
       ? NextResponse.json({ status: "added" }, { status: 201 })
       : NextResponse.json({ status: "exists" }, { status: 200 });

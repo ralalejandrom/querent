@@ -48,6 +48,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               {user && <NavLink href="/notifications"><Icon name="bell" />Notifications{unread > 0 && <span className="ct">{unread}</span>}</NavLink>}
               {user && <NavLink href={`/u/${user.handle}`}><Icon name="user" />Profile</NavLink>}
               {isModerator(user) && <NavLink href="/moderation"><Icon name="shield" />Moderation</NavLink>}
+              {user?.roles.has("platform_admin") && <NavLink href="/admin"><Icon name="user" />Sign-ups</NavLink>}
             </nav>
             <Link className="create" href="/new"><Icon name="plus" />Create post</Link>
             <div className="sidefoot">
