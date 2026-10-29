@@ -4,7 +4,7 @@
  */
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
-import { count, eq } from "drizzle-orm";
+import { and, count, eq, isNull } from "drizzle-orm";
 import * as schema from "./schema";
 import { databaseUrl } from "./url";
 
@@ -17,6 +17,11 @@ const RENAMED_DEMO_ACCOUNTS = [
   ["jonahpark", "danielhoffman", "Dr. Daniel Hoffman"],
   ["priyashah", "emilycarter", "Dr. Emily Carter"],
 ] as const;
+/** Short animated explainers shipped in public/media/demo, attached to the demo posts with these titles. */
+const DEMO_VIDEOS: Record<string, string> = {
+  "Early results from a multicenter trial on SGLT2 inhibitors in heart failure with preserved ejection fraction": "/media/demo/demo-hfpef.mp4",
+  "Why our sleep study surprised us": "/media/demo/demo-sleep.mp4",
+};
 const ago = (h: number) => new Date(Date.now() - h * 3_600_000);
 
 async function main() {
@@ -26,6 +31,11 @@ async function main() {
   // Databases seeded before the demo cast changed: rename those fictional accounts in place.
   for (const [from, to, name] of RENAMED_DEMO_ACCOUNTS) {
     await db.update(schema.users).set({ handle: to, displayName: name, email: `${to}@example.com` }).where(eq(schema.users.email, `${from}@example.com`));
+  }
+
+  // Databases seeded before demo videos existed: attach them to the matching demo posts.
+  for (const [title, mediaUrl] of Object.entries(DEMO_VIDEOS)) {
+    await db.update(schema.posts).set({ mediaUrl }).where(and(eq(schema.posts.title, title), isNull(schema.posts.mediaUrl)));
   }
 
   const [{ n }] = await db.select({ n: count() }).from(schema.users);
@@ -72,9 +82,9 @@ async function main() {
   const S = Object.fromEntries(sources.map((s) => [s.doi!, s.id]));
 
   const posts = await db.insert(schema.posts).values([
-    { authorId: U.sarahwhitfield, kind: "video", title: "Early results from a multicenter trial on SGLT2 inhibitors in heart failure with preserved ejection fraction", body: "The trial reports a reduction in the composite primary outcome. Here's what was measured, who was included, and the limits to keep in mind before changing practice.", topicId: T.Cardiology, questionId: Q["sglt2-hfpef"], sourceId: S["10.5555/demo.hfpef.2026"], createdAt: ago(3) },
+    { authorId: U.sarahwhitfield, kind: "video", title: "Early results from a multicenter trial on SGLT2 inhibitors in heart failure with preserved ejection fraction", body: "The trial reports a reduction in the composite primary outcome. Here's what was measured, who was included, and the limits to keep in mind before changing practice.", topicId: T.Cardiology, questionId: Q["sglt2-hfpef"], sourceId: S["10.5555/demo.hfpef.2026"], mediaUrl: "/media/demo/demo-hfpef.mp4", createdAt: ago(3) },
     { authorId: U.danielhoffman, kind: "visual", title: "Updated meta-analysis on neoadjuvant immunotherapy in early-stage NSCLC", body: "Event-free survival improves across trials; overall survival data are still maturing.", topicId: T.Oncology, questionId: Q["neoadjuvant-io-nsclc"], sourceId: S["10.5555/demo.nsclc.2026"], createdAt: ago(6) },
-    { authorId: U.sofiamendes, kind: "behind_the_paper", title: "Why our sleep study surprised us", body: "We expected sleep to help every kind of memory. It didn't. Here's the story of the experiment and what we think is really going on.", topicId: T.Neuroscience, questionId: Q["sleep-memory"], sourceId: S["10.5555/demo.sleep.2026"], createdAt: ago(10) },
+    { authorId: U.sofiamendes, kind: "behind_the_paper", title: "Why our sleep study surprised us", body: "We expected sleep to help every kind of memory. It didn't. Here's the story of the experiment and what we think is really going on.", topicId: T.Neuroscience, questionId: Q["sleep-memory"], sourceId: S["10.5555/demo.sleep.2026"], mediaUrl: "/media/demo/demo-sleep.mp4", createdAt: ago(10) },
     { authorId: U.emilycarter, kind: "open_question", title: "Open question: how should we measure long-term adherence to GLP-1 therapy?", body: "Trials run for a few years, but patients may take these drugs for decades. What outcome measures would actually tell us about long-term adherence?", topicId: T.Metabolism, createdAt: ago(20) },
   ]).returning();
   const [p1, p2, p3] = posts;

@@ -18,6 +18,7 @@ export interface PostView {
   author: { id: string; handle: string; displayName: string; field: string; verified: boolean };
   source: { doi: string | null; title: string; venue: string | null; publishedYear: number | null; correctionStatus: string; sourceType: string | null } | null;
   studyType: string | null;
+  mediaUrl: string | null;
   question: { id: string; slug: string; text: string } | null;
   topic: string | null;
   topicId: number | null;
@@ -81,6 +82,7 @@ export async function loadPosts(opts: { where?: SQL; viewerId?: string | null; l
       author: { id: author.id, handle: author.handle, displayName: author.displayName, field: author.field, verified: verified.has(author.id) },
       source: source ? { doi: source.doi, title: source.title, venue: source.venue, publishedYear: source.publishedYear, correctionStatus: source.correctionStatus, sourceType: source.sourceType } : null,
       studyType: post.studyType,
+      mediaUrl: post.mediaUrl,
       question: question ? { id: question.id, slug: question.slug, text: question.text } : null,
       topic: topic?.label ?? null, topicId: topic?.id ?? null,
       likes: reactMap.get(key(post.id, "like")) ?? 0,
@@ -97,7 +99,7 @@ export async function loadPosts(opts: { where?: SQL; viewerId?: string | null; l
   });
 }
 
-export type FeedTab = "foryou" | "following" | "reviewed" | "questions";
+export type FeedTab = "foryou" | "following" | "reviewed" | "questions" | "videos";
 
 /**
  * Feed ranking v0: transparent heuristic from the technical spec.
@@ -118,6 +120,7 @@ export async function getFeed(viewerId: string | null, tab: FeedTab, search?: st
   if (tab === "following") filtered = list.filter((p) => fUsers.has(p.author.id) || (p.question && fQuestions.has(p.question.id)) || p.author.id === viewerId);
   if (tab === "reviewed") filtered = list.filter((p) => p.rigor.key === "expert_reviewed" || p.rigor.key === "source_checked");
   if (tab === "questions") filtered = list.filter((p) => p.kind === "open_question" || !!p.question);
+  if (tab === "videos") filtered = list.filter((p) => !!p.mediaUrl);
 
   const now = Date.now();
   const scored = filtered.map((p) => {

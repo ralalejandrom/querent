@@ -4,6 +4,7 @@ import type { PostView } from "@/lib/queries";
 import { compact, initials, timeAgo } from "@/lib/text";
 import { toggleReactionAction, toggleSaveAction } from "@/app/actions";
 import { CORRECTION_LABELS, DESIGN_LABELS, isPreprint } from "@/lib/study";
+import { ReelVideo } from "@/components/client";
 
 const PATHS: Record<string, ReactNode> = {
   home: <path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z" />,
@@ -22,6 +23,7 @@ const PATHS: Record<string, ReactNode> = {
   left: <path d="M15 5l-7 7 7 7" />,
   shield: <path d="M12 3l7 3v5c0 5-3.2 8.3-7 10-3.8-1.7-7-5-7-10V6z" />,
   check: <path d="M5 12.5l4.5 4.5L19 7.5" />,
+  play: <><rect x="3.5" y="5" width="17" height="14" rx="3" /><path d="M10.5 9.3v5.4l4.3-2.7z" /></>,
   settings: <><circle cx="12" cy="12" r="3" /><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1" /></>,
 };
 
@@ -130,6 +132,7 @@ export function PostCard({ p, full = false, signedIn }: { p: PostView; full?: bo
       </div>
       <h2 className="ptitle">{full ? p.title : <Link href={`/p/${p.id}`}>{p.title}</Link>}</h2>
       {body && <p className="pbody">{body}</p>}
+      {p.mediaUrl && <video className="pvideo" src={p.mediaUrl} poster={posterFor(p.mediaUrl)} controls playsInline preload="metadata" aria-label={`Video: ${p.title}`} />}
       {p.why && !full && <p className="why">{p.why}</p>}
       {p.source ? (
         <a className="study" href={doiUrl ?? "#"} target="_blank" rel="noopener noreferrer">
@@ -161,6 +164,32 @@ export function PostCard({ p, full = false, signedIn }: { p: PostView; full?: bo
           {signedIn && <form action={save}><button className={`act ${p.saved ? "saved" : ""}`} aria-pressed={p.saved} aria-label="Save to library"><Icon name="bookmark" /></button></form>}
         </div>
         <div className="row"><span className="hint">Rigor</span><RigorChip rigor={p.rigor} /></div>
+      </div>
+    </article>
+  );
+}
+
+/** Demo videos ship with a poster frame next to them; uploaded videos show their first frame. */
+function posterFor(url: string) {
+  return url.startsWith("/media/") ? url.replace(/\.mp4$/, ".jpg") : undefined;
+}
+
+/** One full-height card in the Videos feed. */
+export function ReelCard({ p }: { p: PostView }) {
+  return (
+    <article className="reelc">
+      <ReelVideo src={p.mediaUrl!} poster={posterFor(p.mediaUrl!)} label={`Video: ${p.title}`} />
+      <div className="reelc-ov">
+        <div className="reelc-who">
+          <Avatar name={p.author.displayName} handle={p.author.handle} size="sm" />
+          <Link href={`/u/${p.author.handle}`}><Name name={p.author.displayName} verified={p.author.verified} /></Link>
+        </div>
+        <h2><Link href={`/p/${p.id}`}>{p.title}</Link></h2>
+        <div className="reelc-tags">
+          <RigorChip rigor={p.rigor} />
+          {p.studyType && <span className="design">{DESIGN_LABELS[p.studyType] ?? p.studyType}</span>}
+        </div>
+        {p.source && <Link className="reelc-src" href={`/p/${p.id}`}><Icon name="book" />{p.source.title}</Link>}
       </div>
     </article>
   );

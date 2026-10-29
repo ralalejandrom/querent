@@ -2,10 +2,10 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { getFeed, type FeedTab } from "@/lib/queries";
-import { Empty, Icon, PostCard } from "@/components/ui";
+import { Empty, Icon, PostCard, ReelCard } from "@/components/ui";
 import { Rail } from "@/components/rail";
 
-const TABS: [FeedTab, string][] = [["foryou", "For you"], ["following", "Following"], ["reviewed", "Reviewed"], ["questions", "Open questions"]];
+const TABS: [FeedTab, string][] = [["foryou", "For you"], ["videos", "Videos"], ["following", "Following"], ["reviewed", "Reviewed"], ["questions", "Open questions"]];
 
 export default async function Home({ searchParams }: { searchParams: Promise<{ tab?: string; q?: string }> }) {
   const sp = await searchParams;
@@ -26,8 +26,12 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ t
         <nav className="tabs" aria-label="Feed">
           {TABS.map(([k, l]) => <Link key={k} href={href(k)} className={tab === k ? "on" : ""} aria-current={tab === k ? "page" : undefined}>{l}</Link>)}
         </nav>
-        {list.length ? list.map((p) => <PostCard key={p.id} p={p} signedIn={!!user} />) : (
-          <Empty title="No posts here yet">{sp.q ? "Try a different search." : tab === "following" ? "Follow people or questions to fill this feed." : "Be the first to share research."}</Empty>
+        {tab === "videos" && list.length > 0 ? (
+          <div className="reels">{list.map((p) => <ReelCard key={p.id} p={p} />)}</div>
+        ) : list.length ? list.map((p) => <PostCard key={p.id} p={p} signedIn={!!user} />) : (
+          <Empty title={tab === "videos" ? "No videos yet" : "No posts here yet"}>
+            {sp.q ? "Try a different search." : tab === "following" ? "Follow people or questions to fill this feed." : tab === "videos" ? <>Explain a study in under three minutes. <Link href="/new">Post a video</Link>.</> : "Be the first to share research."}
+          </Empty>
         )}
       </main>
       <Rail />

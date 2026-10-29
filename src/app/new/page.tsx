@@ -2,10 +2,11 @@ import Link from "next/link";
 import { asc } from "drizzle-orm";
 import { db, schema } from "@/db";
 import { requireUser } from "@/lib/auth";
-import { ActionForm, DoiHint, Submit } from "@/components/client";
+import { ActionForm, DoiHint, Submit, VideoUpload } from "@/components/client";
 import { Icon, KIND_LABELS } from "@/components/ui";
 import { createPostAction } from "@/app/actions";
 import { DESIGN_LABELS } from "@/lib/study";
+import { VIDEO_MAX_BYTES, VIDEO_MAX_SECONDS, VIDEO_TYPES } from "@/lib/media";
 
 export const metadata = { title: "Create a post" };
 
@@ -27,6 +28,7 @@ export default async function NewPost({ searchParams }: { searchParams: Promise<
             <legend className="hint" style={{ marginBottom: 6 }}>Format</legend>
             {Object.entries(KIND_LABELS).map(([k, l], i) => <label key={k} className="chip"><input type="radio" name="kind" value={k} defaultChecked={i === 0} />{l}</label>)}
           </fieldset>
+          <div className="f"><span>Video <small>Required for a video explainer. Optional for other formats.</small></span><VideoUpload maxSeconds={VIDEO_MAX_SECONDS} maxBytes={VIDEO_MAX_BYTES} types={VIDEO_TYPES} /></div>
           <label className="f">Title<input type="text" name="title" maxLength={200} placeholder="What did the study find?" required /></label>
           <label className="f">What you want to share<textarea name="body" rows={6} maxLength={5000} placeholder="Explain the finding, who was studied and the main limitations." /></label>
           <label className="f">Source DOI <small>Required for research claims. Leave empty only for an open question or opinion.</small><input type="text" name="doi" placeholder="10.1000/xyz123 or https://doi.org/…" /></label>
@@ -37,7 +39,6 @@ export default async function NewPost({ searchParams }: { searchParams: Promise<
             <label className="f">Link to a question<select name="questionId" defaultValue={sp.q ?? ""}><option value="">None</option>{questions.map((q) => <option key={q.id} value={q.id}>{q.text.length > 70 ? q.text.slice(0, 70) + "…" : q.text}</option>)}</select></label>
           </div>
           <div className="checks"><label><input type="checkbox" name="ai" /> I used AI tools to help write or edit this post</label></div>
-          <p className="hint" style={{ margin: 0 }}>Video upload arrives in the next release. For now, link your video in the text.</p>
           <div className="row"><Submit>Publish</Submit></div>
         </ActionForm>
       </div>

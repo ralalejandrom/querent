@@ -11,7 +11,9 @@ const CSP = [
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https://images.unsplash.com",
   "font-src 'self' data:",
-  "connect-src 'self'",
+  "media-src 'self' blob: https://*.public.blob.vercel-storage.com",
+  // Video uploads go straight from the browser to Vercel Blob.
+  "connect-src 'self' https://blob.vercel-storage.com https://*.blob.vercel-storage.com",
   "frame-ancestors 'none'",
   "form-action 'self'",
   "base-uri 'self'",

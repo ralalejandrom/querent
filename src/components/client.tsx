@@ -147,3 +147,80 @@ export function ShareButton({ url, title }: { url: string; title: string }) {
     </button>
   );
 }
+
+/**
+ * Video picker for new posts: checks type, size and length in the browser, uploads straight to storage
+ * with a progress bar, then puts the video's address in a hidden field for the post form.
+ */
+export function VideoUpload({ maxSeconds, maxBytes, types }: { maxSeconds: number; maxBytes: number; types: string[] }) {
+  const [url, setUrl] = useState("");
+  const [progress, setProgress] = useState<number | null>(null);
+  const [error, setError] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  async function pick(file: File | undefined) {
+    setError("");
+    if (!file) return;
+    if (!types.includes(file.type)) { setError("Use an MP4, WebM or MOV video."); return; }
+    if (file.size > maxBytes) { setError(`That file is over ${Math.round(maxBytes / 1024 / 1024)} MB. Export a shorter or smaller version.`); return; }
+    const seconds = await new Promise<number>((resolve) => {
+      const v = document.createElement("video");
+      v.preload = "metadata";
+      v.onloadedmetadata = () => { URL.revokeObjectURL(v.src); resolve(v.duration); };
+      v.onerror = () => resolve(0);
+      v.src = URL.createObjectURL(file);
+    });
+    if (seconds > maxSeconds + 1) { setError(`Keep it under ${Math.round(maxSeconds / 60)} minutes. This one is ${Math.round(seconds)} seconds.`); return; }
+    try {
+      setProgress(0);
+      const { upload } = await import("@vercel/blob/client");
+      const safe = file.name.toLowerCase().replace(/[^a-z0-9.]+/g, "-").slice(-60);
+      const blob = await upload(`videos/${safe}`, file, {
+        access: "public", handleUploadUrl: "/api/upload", contentType: file.type, multipart: file.size > 20 * 1024 * 1024,
+        onUploadProgress: ({ percentage }) => setProgress(Math.round(percentage)),
+      });
+      setUrl(blob.url);
+    } catch (e) {
+      setError(e instanceof Error && /set up/i.test(e.message) ? "Video upload isn't switched on yet." : "The upload didn't finish. Check your connection and try again.");
+    } finally {
+      setProgress(null);
+    }
+  }
+
+  return (
+    <div className="vup">
+      <input type="hidden" name="mediaUrl" value={url} />
+      {url ? (
+        <div className="vup-done">
+          <video src={url} controls playsInline preload="metadata" className="vup-preview" />
+          <button type="button" className="btn sm" onClick={() => { setUrl(""); if (inputRef.current) inputRef.current.value = ""; }}>Remove video</button>
+        </div>
+      ) : (
+        <label className="vup-drop">
+          <input ref={inputRef} type="file" accept={types.join(",")} onChange={(e) => pick(e.target.files?.[0])} disabled={progress !== null} />
+          <b>{progress !== null ? `Uploading… ${progress}%` : "Add a short video"}</b>
+          <span>MP4, WebM or MOV, up to {Math.round(maxSeconds / 60)} minutes. Explain your study in your own words.</span>
+          {progress !== null && <span className="vup-bar"><i style={{ width: `${progress}%` }} /></span>}
+        </label>
+      )}
+      {error && <p className="msg err" role="alert" style={{ margin: "8px 0 0" }}>{error}</p>}
+    </div>
+  );
+}
+
+/** A vertical video in the Videos feed: plays muted while on screen, pauses when scrolled away. */
+export function ReelVideo({ src, poster, label }: { src: string; poster?: string; label: string }) {
+  const ref = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    const v = ref.current;
+    if (!v || typeof IntersectionObserver === "undefined") return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && e.intersectionRatio > 0.6 && !reduce) v.play().catch(() => {});
+      else v.pause();
+    }, { threshold: [0, 0.6, 1] });
+    io.observe(v);
+    return () => io.disconnect();
+  }, []);
+  return <video ref={ref} className="reelv" src={src} poster={poster} muted loop playsInline controls preload="metadata" aria-label={label} />;
+}

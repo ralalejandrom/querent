@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { isOurVideoUrl } from "@/lib/media";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import { and, eq, inArray, sql } from "drizzle-orm";
@@ -106,6 +107,7 @@ const postSchema = z.object({
   topicId: z.union([z.coerce.number().int().positive(), z.literal("")]),
   ai: z.boolean(),
   studyType: z.union([z.enum(schema.studyTypeEnum.enumValues), z.literal("")]),
+  mediaUrl: z.union([z.string().max(500).refine(isOurVideoUrl, "That video link isn't valid. Upload the video again."), z.literal("")]),
 });
 
 export async function createPostAction(_: ActionState, fd: FormData): Promise<ActionState> {
@@ -113,9 +115,11 @@ export async function createPostAction(_: ActionState, fd: FormData): Promise<Ac
   const parsed = postSchema.safeParse({
     kind: str(fd, "kind"), title: str(fd, "title"), body: str(fd, "body"), doi: str(fd, "doi"),
     questionId: str(fd, "questionId"), topicId: str(fd, "topicId"), ai: fd.get("ai") === "on", studyType: str(fd, "studyType"),
+    mediaUrl: str(fd, "mediaUrl"),
   });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Check the form and try again." };
   const p = parsed.data;
+  if (p.kind === "video" && !p.mediaUrl) return { error: "Add your video, or pick another format." };
 
   let sourceId: string | null = null;
   if (p.doi) {
@@ -126,9 +130,9 @@ export async function createPostAction(_: ActionState, fd: FormData): Promise<Ac
   const [post] = await db.transaction(async (tx) => {
     const inserted = await tx.insert(schema.posts).values({
       authorId: user.id, kind: p.kind, title: p.title, body: p.body, sourceId,
-      questionId: p.questionId || null, topicId: p.topicId === "" ? null : p.topicId, aiAssisted: p.ai, studyType: p.studyType || null,
+      questionId: p.questionId || null, topicId: p.topicId === "" ? null : p.topicId, aiAssisted: p.ai, studyType: p.studyType || null, mediaUrl: p.mediaUrl || null,
     }).returning({ id: schema.posts.id });
-    await audit(tx, { actorId: user.id, entityType: "post", entityId: inserted[0].id, action: "post.created", after: { title: p.title, sourceId } });
+    await audit(tx, { actorId: user.id, entityType: "post", entityId: inserted[0].id, action: "post.created", after: { title: p.title, sourceId, mediaUrl: p.mediaUrl || null } });
     return inserted;
   });
   revalidatePath("/");
