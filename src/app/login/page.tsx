@@ -29,8 +29,8 @@ export default async function Login({ searchParams }: { searchParams: Promise<{ 
           </>
         ) : (
           <>
-            <p className="pgsub">Accounts open with the private beta. Join the waitlist and we'll email you as soon as you can sign in.</p>
-            <Link className="btn pri" href="/welcome#join">Join the beta waitlist</Link>
+            <p className="pgsub">Accounts are opening gradually. Ask for early access and we'll email you as soon as you can sign in.</p>
+            <Link className="btn pri" href="/welcome#join">Get early access</Link>
           </>
         )}
         {process.env.DEMO_ACCOUNTS === "1" && (
