@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, inArray, sql } from "drizzle-orm";
 import { z } from "zod";
 import { db, schema } from "@/db";
 import { consumeLoginToken, endSession, isModerator, isReviewer, requireUser, sendLoginLink, startSession } from "@/lib/auth";
@@ -59,6 +59,10 @@ export async function demoLoginAction(handle: string) {
   if (process.env.DEMO_ACCOUNTS !== "1") redirect("/login");
   const [u] = await db.select({ id: schema.users.id, email: schema.users.email }).from(schema.users).where(eq(schema.users.handle, handle)).limit(1);
   if (!u || !u.email.endsWith("@example.com")) redirect("/login");
+  // Public demo sign-in never grants staff powers: accounts with moderation or admin roles are excluded.
+  const staff = await db.select({ role: schema.userRoles.role }).from(schema.userRoles)
+    .where(and(eq(schema.userRoles.userId, u.id), inArray(schema.userRoles.role, ["moderator", "integrity_admin", "platform_admin"]))).limit(1);
+  if (staff.length) redirect("/login");
   await startSession(u.id);
   redirect("/");
 }

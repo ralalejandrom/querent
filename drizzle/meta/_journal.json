@@ -29,6 +29,13 @@
       "when": 1793129276435,
       "tag": "0003_partners",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1793235687754,
+      "tag": "0004_reviewer_applications",
+      "breakpoints": true
     }
   ]
 }

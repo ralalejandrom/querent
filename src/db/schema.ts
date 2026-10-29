@@ -226,6 +226,21 @@ export const waitlistInterestEnum = pgEnum("waitlist_interest", ["individual", "
 /** Beta waitlist sign-ups from the public landing page. One row per email and interest type. */
 export const partnerTypeEnum = pgEnum("partner_type", ["university", "institute", "publisher", "other"]);
 
+export const careerStageEnum = pgEnum("career_stage", ["phd_student", "postdoc", "faculty", "clinician", "industry", "other"]);
+
+/** Applications to join the beta as a founding reviewer, from the public landing page. */
+export const reviewerApplications = pgTable("reviewer_applications", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  field: text("field").notNull(),
+  institution: text("institution").notNull(),
+  careerStage: careerStageEnum("career_stage").notNull(),
+  orcidId: text("orcid_id"),
+  reviewsPerMonth: integer("reviews_per_month").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [uniqueIndex("reviewer_applications_email_idx").on(sql`lower(${t.email})`)]);
+
 export const waitlist = pgTable("waitlist", {
   id: uuid("id").primaryKey().defaultRandom(),
   email: text("email").notNull(),

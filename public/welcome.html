@@ -715,6 +715,16 @@ footer .brand .word{font-size:18px}
   @keyframes handheld2{0%,100%{translate:0 0}30%{translate:-1.5px 1px}60%{translate:1px -1.5px}80%{translate:1.5px .5px}}
   @keyframes talkzoom2{from{scale:1.02}to{scale:1.06}}
 }
+
+/* Founding reviewer application */
+.rform{margin-top:36px}
+.rf-points{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:8px;color:var(--ink-2);font-size:15px}
+.rf-points li{position:relative;padding-left:24px}
+.rf-points li::before{content:"";position:absolute;left:0;top:4px;width:14px;height:14px;border-radius:50%;background:var(--lav-soft)}
+.rf-points li::after{content:"";position:absolute;left:5px;top:7px;width:3px;height:6px;border:solid var(--ultra);border-width:0 2px 2px 0;rotate:45deg}
+.pform .opt{font-weight:400;color:var(--muted)}
+a.inl{color:var(--ultra);font-weight:600;text-decoration:none;white-space:nowrap}
+a.inl:hover{text-decoration:underline}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -1145,6 +1155,28 @@ footer .brand .word{font-size:18px}
         <li><svg><use href="#i-clock"/></svg>Fits your week</li>
         <li><svg><use href="#i-share"/></svg>ORCID export <span class="chip plan">Planned</span></li>
       </ul>
+      <div class="pform rform" id="apply">
+        <div>
+          <p class="eyebrow" style="margin-bottom:8px">Founding reviewers</p>
+          <h3>Apply to review in the beta</h3>
+          <p>Short, scoped reviews in your own field, signed or anonymous. Founding reviewers help write the review guidelines.</p>
+          <ul class="rf-points"><li>About 20 minutes per review</li><li>Credit on your profile from day one</li><li>We reply within a week</li></ul>
+        </div>
+        <form class="form" id="reviewer-form" novalidate>
+          <div class="grid">
+            <label class="f" for="ra-name">Full name<input id="ra-name" name="name" type="text" autocomplete="name" placeholder="Dr. Ana Ruiz" required maxlength="120"></label>
+            <label class="f" for="ra-email">Work email<input id="ra-email" name="email" type="email" autocomplete="email" placeholder="you@university.edu" required maxlength="254"></label>
+            <label class="f" for="ra-field">Field<input id="ra-field" name="field" type="text" placeholder="e.g. Cardiology, Climate science" required maxlength="120"></label>
+            <label class="f" for="ra-inst">Institution<input id="ra-inst" name="institution" type="text" autocomplete="organization" placeholder="University, hospital or institute" required maxlength="200"></label>
+            <label class="f" for="ra-stage">Career stage<select id="ra-stage" name="careerStage"><option value="faculty">Faculty or principal investigator</option><option value="clinician">Clinician or clinician-scientist</option><option value="postdoc">Postdoc or fellow</option><option value="phd_student">PhD student</option><option value="industry">Industry researcher</option><option value="other">Other</option></select></label>
+            <label class="f" for="ra-rate">Reviews per month<select id="ra-rate" name="reviewsPerMonth"><option value="1">About 1</option><option value="2" selected>2 to 3</option><option value="4">4 or more</option></select></label>
+            <label class="f full" for="ra-orcid"><span>ORCID iD <span class="opt">(optional)</span></span><input id="ra-orcid" name="orcid" type="text" inputmode="numeric" placeholder="0000-0000-0000-0000" maxlength="60"></label>
+          </div>
+          <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <button class="pill lg" type="submit" style="margin-top:14px">Apply as a founding reviewer</button>
+          <p class="note" id="note-ra" aria-live="polite"></p>
+        </form>
+      </div>
     </div>
   </section>
 
@@ -1196,7 +1228,7 @@ footer .brand .word{font-size:18px}
       <div class="two">
         <div class="jcard">
           <h3>For researchers</h3>
-          <p>Be among the first to post and review.</p>
+          <p>Be among the first to post and review. <a href="#apply" class="inl">Want to review? Apply here →</a></p>
           <form class="form" data-interest="individual" novalidate>
             <label for="email-ind" class="sr">Email address</label>
             <input id="email-ind" type="email" name="email" placeholder="you@university.edu" autocomplete="email" required aria-describedby="note-ind">
@@ -1292,6 +1324,32 @@ footer .brand .word{font-size:18px}
     });
   },{rootMargin:'-4% 0px -6% 0px',threshold:0.08});
   items.forEach(function(el){io.observe(el);});
+})();
+
+/* Founding reviewer application: posts to /api/reviewer-application. Success is shown only after the server saves it. */
+(function(){
+  var form=document.getElementById('reviewer-form'); if(!form) return;
+  var note=document.getElementById('note-ra'), btn=form.querySelector('button'), label=btn.textContent;
+  var MSG={name:'Enter your full name.',email:'Enter a valid email address, like name@university.edu.',field:'Tell us your field.',institution:'Tell us your institution.',orcid:'That ORCID iD doesn\u2019t look right. It has 16 digits, like 0000-0002-1825-0097.'};
+  form.addEventListener('submit',async function(e){
+    e.preventDefault(); note.className='note'; note.textContent='';
+    form.querySelectorAll('[aria-invalid]').forEach(function(el){el.removeAttribute('aria-invalid');});
+    var data=Object.fromEntries(new FormData(form).entries());
+    var missing=['name','email','field','institution'].find(function(k){return !String(data[k]||'').trim();});
+    if(!missing && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(data.email).trim())) missing='email';
+    if(missing){ note.textContent=MSG[missing]; note.classList.add('err'); var el=form.querySelector('[name="'+missing+'"]'); el.setAttribute('aria-invalid','true'); el.focus(); return; }
+    btn.disabled=true; btn.textContent='Sending\u2026';
+    try{
+      var res=await fetch('/api/reviewer-application',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+      var out=await res.json().catch(function(){return {};});
+      if(res.status===201){ note.textContent='Thanks. Your application is in; we\u2019ll reply within a week.'; note.classList.add('ok'); form.reset(); }
+      else if(res.ok&&out.status==='exists'){ note.textContent='We already have an application from this email. We\u2019ll be in touch.'; note.classList.add('ok'); }
+      else if(res.status===400){ note.textContent=MSG[out.field]||'Check the form and try again.'; note.classList.add('err'); if(out.field){var f=form.querySelector('[name="'+out.field+'"]'); if(f){f.setAttribute('aria-invalid','true'); f.focus();}} }
+      else if(res.status===429){ note.textContent='Too many attempts. Please try again in a few minutes.'; note.classList.add('err'); }
+      else { note.textContent='We couldn\u2019t save your application. Please try again.'; note.classList.add('err'); }
+    }catch(err){ note.textContent='We couldn\u2019t reach the server. Check your connection and try again.'; note.classList.add('err'); }
+    finally{ btn.disabled=false; btn.textContent=label; }
+  });
 })();
 
 /* Beta waitlist: posts to /api/waitlist (see src/app/api/waitlist/route.ts). Success is shown only after the server confirms the row was saved. */
