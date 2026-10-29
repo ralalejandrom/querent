@@ -32,6 +32,8 @@ export interface PostView {
   reviewTotal: number;
   reviewCompleted: number;
   completedTypes: ReviewType[];
+  /** The author changed the post because of a public review. */
+  revisedAfterReview: boolean;
   rigor: Rigor;
   why?: string;
 }
@@ -64,7 +66,7 @@ export async function loadPosts(opts: { where?: SQL; viewerId?: string | null; l
     opts.viewerId ? db.select({ postId: reactions.postId, kind: reactions.kind }).from(reactions).where(and(inArray(reactions.postId, ids), eq(reactions.userId, opts.viewerId))) : Promise.resolve([]),
     opts.viewerId ? db.select({ postId: saves.postId }).from(saves).where(and(inArray(saves.postId, ids), eq(saves.userId, opts.viewerId))) : Promise.resolve([]),
     db.select({ postId: contributions.postId, n: count() }).from(contributions).where(and(inArray(contributions.postId, ids), eq(contributions.status, "visible"))).groupBy(contributions.postId),
-    db.select({ postId: reviews.postId, type: reviews.type, status: reviews.status }).from(reviews).where(inArray(reviews.postId, ids)),
+    db.select({ postId: reviews.postId, type: reviews.type, status: reviews.status, recommendation: reviews.recommendation, publicAt: reviews.publicAt, ledToRevision: reviews.ledToRevision }).from(reviews).where(inArray(reviews.postId, ids)),
     db.select({ userId: userRoles.userId }).from(userRoles).where(and(inArray(userRoles.userId, authorIds), eq(userRoles.role, "reviewer"))),
   ]);
   const verified = new Set(reviewerRows.map((r) => r.userId));
@@ -77,7 +79,8 @@ export async function loadPosts(opts: { where?: SQL; viewerId?: string | null; l
 
   return rows.map(({ post, author, source, question, topic }) => {
     const rv = reviewRows.filter((r) => r.postId === post.id);
-    const completedTypes = rv.filter((r) => r.status === "completed").map((r) => r.type);
+    const published = rv.filter((r) => isPublicReview(r));
+    const completedTypes = published.map((r) => r.type);
     return {
       id: post.id, kind: post.kind, title: post.title, body: post.body, createdAt: post.createdAt,
       aiAssisted: post.aiAssisted, disputedReason: post.disputedReason, authorResponse: post.authorResponse, version: post.version,
@@ -96,7 +99,8 @@ export async function loadPosts(opts: { where?: SQL; viewerId?: string | null; l
       reviewTotal: rv.length,
       reviewCompleted: completedTypes.length,
       completedTypes,
-      rigor: computeRigor({ hasSource: !!source && source.provenance.provider !== "unresolved", sourceUnverified: source?.provenance.provider === "unresolved", disputedReason: post.disputedReason, correctionStatus: source?.correctionStatus, completedReviewTypes: completedTypes }),
+      revisedAfterReview: published.some((r) => r.ledToRevision),
+      rigor: computeRigor({ hasSource: !!source && source.provenance.provider !== "unresolved", sourceUnverified: source?.provenance.provider === "unresolved", disputedReason: post.disputedReason, correctionStatus: source?.correctionStatus, completedReviewTypes: completedTypes, verdicts: published.map((r) => r.recommendation) }),
     };
   });
 }
@@ -142,6 +146,11 @@ export async function getFeed(viewerId: string | null, tab: FeedTab, search?: st
     return { ...p, score: s, why: reasons.length ? `Shown because ${reasons.join(", ")}.` : "Shown because it's recent." };
   });
   return scored.sort((a, b) => b.score - a.score).slice(0, 50);
+}
+
+/** A completed review is public once its right-of-reply window has passed (or the author replied). */
+export function isPublicReview(r: { status: string; publicAt: Date | null }, now = new Date()) {
+  return r.status === "completed" && !!r.publicAt && r.publicAt <= now;
 }
 
 export async function getPostDetail(id: string, viewerId: string | null) {

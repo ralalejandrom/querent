@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { isExampleEmail, showExamples } from "@/lib/examples";
 import { notFound } from "next/navigation";
-import { and, count, desc, eq, sql } from "drizzle-orm";
+import { and, count, desc, eq, lte, sql } from "drizzle-orm";
 import { db, schema } from "@/db";
 import { getCurrentUser } from "@/lib/auth";
 import { loadPosts } from "@/lib/queries";
@@ -18,14 +18,21 @@ export default async function Profile({ params }: { params: Promise<{ handle: st
   const example = isExampleEmail(u.email);
   if (example && !showExamples()) notFound();
   const isMe = viewer?.id === u.id;
-  const [roles, list, reviews, [{ n: followers }], following, [{ n: reviewTotal }]] = await Promise.all([
+  const [roles, list, reviews, [{ n: followers }], following, [{ n: reviewTotal }], [impact]] = await Promise.all([
     db.select().from(schema.userRoles).where(eq(schema.userRoles.userId, u.id)),
     loadPosts({ where: eq(schema.posts.authorId, u.id), viewerId: viewer?.id ?? null }),
     db.select({ r: schema.reviews, title: schema.posts.title }).from(schema.reviews).innerJoin(schema.posts, eq(schema.posts.id, schema.reviews.postId))
-      .where(and(eq(schema.reviews.reviewerId, u.id), eq(schema.reviews.status, "completed"), isMeOrSigned(isMe))).orderBy(desc(schema.reviews.completedAt)),
+      .where(and(eq(schema.reviews.reviewerId, u.id), eq(schema.reviews.status, "completed"), isMeOrSigned(isMe), isMe ? sql`true` : lte(schema.reviews.publicAt, new Date()))).orderBy(desc(schema.reviews.completedAt)),
     db.select({ n: count() }).from(schema.follows).where(and(eq(schema.follows.targetType, "user"), eq(schema.follows.targetId, u.id))),
     viewer && !isMe ? db.select().from(schema.follows).where(and(eq(schema.follows.userId, viewer.id), eq(schema.follows.targetType, "user"), eq(schema.follows.targetId, u.id))).then((r) => r.length > 0) : false,
     db.select({ n: count() }).from(schema.reviews).where(and(eq(schema.reviews.reviewerId, u.id), eq(schema.reviews.status, "completed"))),
+    // What authors say about this person's reviews, and how often this person revised their own posts after review.
+    db.select({
+      improved: sql<number>`count(*) filter (where ${schema.reviews.reviewerId} = ${u.id} and ${schema.reviews.ledToRevision})`.mapWith(Number),
+      useful: sql<number>`count(*) filter (where ${schema.reviews.reviewerId} = ${u.id} and ${schema.reviews.helpfulness} >= 4)`.mapWith(Number),
+      revisedOwn: sql<number>`count(distinct ${schema.reviews.postId}) filter (where ${schema.posts.authorId} = ${u.id} and ${schema.reviews.ledToRevision})`.mapWith(Number),
+    }).from(schema.reviews).innerJoin(schema.posts, eq(schema.posts.id, schema.reviews.postId))
+      .where(and(eq(schema.reviews.status, "completed"), lte(schema.reviews.publicAt, new Date()))),
   ]);
   const totalReviews = Number(reviewTotal);
   const hiddenReviews = totalReviews - reviews.length;
@@ -42,6 +49,7 @@ export default async function Profile({ params }: { params: Promise<{ handle: st
             <div className="row" style={{ marginTop: 8 }}>
               {reviewer && <span className="badge"><Icon name="check" className="i" />Verified reviewer{reviewer.fields.length ? ` · ${reviewer.fields.join(", ")}` : ""}</span>}
               {u.orcidId && <a className="badge" href={`https://orcid.org/${u.orcidId}`} target="_blank" rel="noopener noreferrer">ORCID {u.orcidId}</a>}
+              {impact.revisedOwn > 0 && <span className="badge rev" title="Changed their posts after reviewers' feedback">Revised {impact.revisedOwn} {impact.revisedOwn === 1 ? "post" : "posts"} after review</span>}
             </div>
           </div>
           {isMe ? <div className="ownacts"><Link className="btn" href="/settings">Edit profile</Link><form action={signOutAction}><button className="btn">Sign out</button></form></div>
@@ -52,8 +60,9 @@ export default async function Profile({ params }: { params: Promise<{ handle: st
         <div className="stats">
           <div><b>{list.length}</b><span>Posts</span></div>
           <div><b>{totalReviews}</b><span>Reviews written</span></div>
+          <div><b>{impact.improved}</b><span>Posts improved by their reviews</span></div>
+          <div><b>{impact.useful}</b><span>Reviews rated useful</span></div>
           <div><b>{Number(followers)}</b><span>Followers</span></div>
-          <div><b>{totalReviews * 3 + list.length}</b><span>Contribution credits</span></div>
         </div>
         <div className="sec"><h2>Posts</h2></div>
         {list.length ? list.map((p) => <PostCard key={p.id} p={p} signedIn={!!viewer} />) : <Empty title="No posts yet">{isMe ? "Share your first post: a summary, a figure or an open question." : "Nothing posted yet."}</Empty>}

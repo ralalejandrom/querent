@@ -57,3 +57,15 @@ describe("slugify", () => {
     expect(slugify("Ñandú & Café")).toBe("nandu-cafe");
   });
 });
+
+describe("computeRigor verdicts", () => {
+  const base = { hasSource: true, disputedReason: null, completedReviewTypes: [] as never[] };
+  it("never sounds better than the reviewers' verdicts", () => {
+    const both = ["methodological", "statistical"] as const;
+    expect(computeRigor({ ...base, completedReviewTypes: both, verdicts: ["Sound", "Sound with caveats"] }).key).toBe("expert_reviewed");
+    expect(computeRigor({ ...base, completedReviewTypes: both, verdicts: ["Sound", "Major concerns"] }).key).toBe("contested");
+    expect(computeRigor({ ...base, completedReviewTypes: both, verdicts: ["Major concerns", "Major concerns"] }).label).toBe("Major concerns");
+    expect(computeRigor({ ...base, completedReviewTypes: ["source_fidelity"], verdicts: ["Not faithful to source"] }).label).toBe("Not faithful to source");
+    expect(computeRigor({ ...base, disputedReason: "x", verdicts: ["Sound", "Major concerns"] }).key).toBe("disputed");
+  });
+});

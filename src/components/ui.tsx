@@ -103,7 +103,8 @@ export const KIND_LABELS: Record<PostView["kind"], string> = {
 };
 
 function ReviewStrip({ p }: { p: PostView }) {
-  if (p.rigor.key === "disputed" || p.rigor.key === "retracted") return <div className="disputed"><b>{p.rigor.label}</b> · {p.rigor.description}</div>;
+  if (p.rigor.key === "disputed" || p.rigor.key === "retracted" || p.rigor.key === "concerns") return <div className="disputed"><b>{p.rigor.label}</b> · {p.rigor.description}</div>;
+  if (p.rigor.key === "contested") return <div className="contested"><b>{p.rigor.label}</b> · {p.rigor.description}</div>;
   if (!p.reviewTotal) return null;
   if (p.rigor.key === "expert_reviewed")
     return <div className="reviewed"><span className="chk"><Icon name="check" className="" /></span><div><b>Human expert review completed</b><span className="muted">{p.reviewCompleted} review{p.reviewCompleted > 1 ? "s" : ""}</span></div></div>;
@@ -129,6 +130,7 @@ export function PostCard({ p, full = false, signedIn }: { p: PostView; full?: bo
         <span className="kind">{KIND_LABELS[p.kind]}{p.aiAssisted ? " · AI-assisted" : ""}</span>
         {p.studyType && <span className="design">{DESIGN_LABELS[p.studyType] ?? p.studyType}</span>}
         {isPreprint(p.source?.sourceType) && <span className="design pre">Preprint · not peer-reviewed</span>}
+        {p.revisedAfterReview && <span className="design rev" title="The author changed this post after a reviewer's feedback.">Revised after review</span>}
         {p.author.example && <span className="design ex" title="This person, study and DOI are made up to show how Lyncei works.">Example · fictional</span>}
       </div>
       <h2 className="ptitle">{full ? p.title : <Link href={`/p/${p.id}`}>{p.title}</Link>}</h2>

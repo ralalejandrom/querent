@@ -112,7 +112,7 @@ export function ComposerFields({ id }: { id: string }) {
       <label className="sr" htmlFor={`body-${id}`}>Your contribution</label>
       <textarea id={`body-${id}`} name="body" rows={2} placeholder="Ask a question, add evidence or raise an objection…" required minLength={3} />
       <div className="row" style={{ justifyContent: "space-between" }}>
-        <input type="text" name="doi" placeholder="DOI for evidence, e.g. 10.1000/xyz123" style={{ maxWidth: 340 }} aria-label="DOI (optional)" />
+        <input type="text" name="doi" placeholder="DOI, e.g. 10.1000/xyz123 (needed for evidence and objections)" style={{ maxWidth: 380 }} aria-label="DOI (needed for evidence and objections)" />
         <Submit className="btn pri sm">Post</Submit>
       </div>
     </>
@@ -130,6 +130,16 @@ export function ReplyToggle({ children }: { children: ReactNode }) {
 }
 
 /** Copies a post's link (or opens the phone's share sheet). The link shows a "Reviewed on Lyncei" card when shared. */
+/** Copies a block of text, such as a citation, with a visible confirmation. */
+export function CopyText({ text, label = "Copy" }: { text: string; label?: string }) {
+  const [state, setState] = useState<"idle" | "copied" | "failed">("idle");
+  async function copy() {
+    try { await navigator.clipboard.writeText(text); setState("copied"); } catch { setState("failed"); }
+    setTimeout(() => setState("idle"), 2500);
+  }
+  return <button type="button" className="btn sm" onClick={copy} aria-live="polite">{state === "copied" ? "Copied" : state === "failed" ? "Select the text to copy" : label}</button>;
+}
+
 export function ShareButton({ url, title }: { url: string; title: string }) {
   const [state, setState] = useState<"idle" | "copied" | "failed">("idle");
   async function share() {

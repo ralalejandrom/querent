@@ -290,3 +290,18 @@ h1 .vf{width:22px;height:22px;vertical-align:-1px;margin-left:8px}
 .ownacts{display:flex;gap:8px;flex-wrap:wrap}
 .pghead{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .mtop-acts{display:flex;gap:8px}
+.rigor-contested{background:var(--amber-soft);color:var(--amber)}
+.rigor-concerns{background:var(--red-soft);color:var(--red)}
+.contested{background:var(--amber-soft);color:var(--amber);border-radius:4px;padding:10px 12px;font-size:13.5px;margin:0 0 12px}
+.design.rev{background:var(--green-soft);color:var(--green);border-color:transparent}
+.notice.reply{background:var(--blue-soft);color:var(--ink-2);font-size:13.5px;line-height:1.5}
+.pendingnote{font-size:12px;font-weight:600;color:var(--amber);background:var(--amber-soft);border-radius:4px;padding:5px 9px;margin:0 0 10px;display:inline-block}
+.impact{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.cite{margin-top:10px;font-size:13px}
+.cite summary{cursor:pointer;color:var(--muted);font-weight:600}
+.citetext{font-size:13px;line-height:1.5;background:var(--sunk);border-radius:4px;padding:8px 10px;margin:8px 0;word-break:break-word}
+.rate{margin-top:12px;padding-top:10px;border-top:1px dashed var(--rule);display:grid;gap:6px}
+.rate-row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.rate-row .chip{cursor:pointer;display:inline-flex;gap:4px;align-items:center}
+.rate-rev{display:flex;gap:6px;align-items:center;font-size:13px;color:var(--ink-2);margin:0 6px}
+.chip.ok{background:var(--green-soft);color:var(--green);border-color:transparent}

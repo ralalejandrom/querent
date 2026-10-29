@@ -57,6 +57,13 @@
       "when": 1793252906596,
       "tag": "0007_page_views",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1793293287121,
+      "tag": "0008_review_reply_and_quality",
+      "breakpoints": true
     }
   ]
 }

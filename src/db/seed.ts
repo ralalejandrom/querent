@@ -4,7 +4,7 @@
  */
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
-import { and, count, eq, isNull } from "drizzle-orm";
+import { and, count, eq, isNull, sql } from "drizzle-orm";
 import * as schema from "./schema";
 import { databaseUrl } from "./url";
 
@@ -37,6 +37,15 @@ async function main() {
   for (const [title, mediaUrl] of Object.entries(DEMO_VIDEOS)) {
     await db.update(schema.posts).set({ mediaUrl }).where(and(eq(schema.posts.title, title), isNull(schema.posts.mediaUrl)));
   }
+
+  // Example reviews get the author ratings that real reviews receive, so the examples show how usefulness and revisions appear.
+  await db.execute(sql`update reviews r set helpfulness = 4, author_rated_at = now()
+    from users rv, posts p, users a
+    where r.helpfulness is null and r.status = 'completed' and rv.id = r.reviewer_id and p.id = r.post_id and a.id = p.author_id
+      and rv.email like '%@example.com' and a.email like '%@example.com'`);
+  await db.execute(sql`update reviews r set helpfulness = 5, led_to_revision = true
+    from posts p where p.id = r.post_id and r.type = 'statistical' and r.led_to_revision = false
+      and p.title = 'Early results from a multicenter trial on SGLT2 inhibitors in heart failure with preserved ejection fraction'`);
 
   const [{ n }] = await db.select({ n: count() }).from(schema.users);
   if (Number(n) > 0) { console.log("Database already has users; skipping seed."); return; }

@@ -174,12 +174,23 @@ export async function respondAction(_: ActionState, fd: FormData): Promise<Actio
   if (text.length < 10) return { error: "Write a response of at least 10 characters." };
   const [post] = await db.select().from(schema.posts).where(eq(schema.posts.id, postId)).limit(1);
   if (!post || post.authorId !== user.id) return { error: "Only the author can respond to reviewers." };
-  await db.transaction(async (tx) => {
-    await tx.update(schema.posts).set({ authorResponse: text, updatedAt: new Date() }).where(eq(schema.posts.id, postId));
+  const now = new Date();
+  const published = await db.transaction(async (tx) => {
+    await tx.update(schema.posts).set({ authorResponse: text, updatedAt: now }).where(eq(schema.posts.id, postId));
     await audit(tx, { actorId: user.id, entityType: "post", entityId: postId, action: "post.author_response", before: post.authorResponse, after: text });
+    // The author has replied, so reviews still in their private window go public together with the response.
+    const opened = await tx.update(schema.reviews).set({ publicAt: now })
+      .where(and(eq(schema.reviews.postId, postId), eq(schema.reviews.status, "completed"), sql`${schema.reviews.publicAt} > ${now}`))
+      .returning({ id: schema.reviews.id, reviewerId: schema.reviews.reviewerId });
+    for (const r of opened) {
+      await audit(tx, { actorId: user.id, entityType: "review", entityId: r.id, action: "review.published", after: { via: "author_response" } });
+      await notify(tx, r.reviewerId, `Your review of “${post.title.slice(0, 60)}” is now public, with the author's response.`, `/p/${postId}#review-${r.id}`);
+    }
+    return opened.length;
   });
   revalidatePath(`/p/${postId}`);
-  return { ok: "Response published." };
+  revalidatePath("/");
+  return { ok: published ? "Response published. The reviews are now public together with your response." : "Response published." };
 }
 
 /* ---------------------------------------------------------- discussion */
@@ -199,6 +210,9 @@ export async function addContributionAction(_: ActionState, fd: FormData): Promi
   const doi = c.doi ? normalizeDoi(c.doi) : null;
   if (c.doi && !doi) return { error: "That DOI doesn't look right. It should start with 10." };
   if (c.type === "evidence" && !doi) return { error: "Evidence needs a source. Add a DOI, or choose another type." };
+  if ((c.type === "objection" || c.type === "correction") && !doi && !/https?:\/\/\S+/.test(c.body)) {
+    return { error: "Objections and corrections need evidence: add a DOI or a link. To ask without evidence, choose “question”." };
+  }
   const [post] = await db.select({ id: schema.posts.id, authorId: schema.posts.authorId, title: schema.posts.title }).from(schema.posts).where(eq(schema.posts.id, c.postId)).limit(1);
   if (!post) return { error: "This post no longer exists." };
   if (doi) await resolveSource(doi); // store the cited paper's metadata so the thread can show a preview
@@ -213,6 +227,7 @@ export async function addContributionAction(_: ActionState, fd: FormData): Promi
 }
 
 /* ---------------------------------------------------------------- review */
+const REPLY_HOURS = Math.max(0, Number(process.env.REVIEW_REPLY_HOURS ?? 48)) || 48;
 const RECS = ["Sound", "Sound with caveats", "Faithful to source", "Major concerns", "Not faithful to source"] as const;
 const LEVELS = ["High", "Moderate", "Low"] as const;
 const reviewSchema = z.object({
@@ -252,32 +267,51 @@ export async function submitReviewAction(_: ActionState, fd: FormData): Promise<
   if (!post.source) return { error: "Posts without a source can't be reviewed." };
   if (post.source.provenance.provider === "unresolved") return { error: "This post's DOI hasn't been verified yet, so it can't be reviewed." };
 
-  const rigorOf = async (tx: typeof db) => {
-    const done = await tx.select({ type: schema.reviews.type }).from(schema.reviews).where(and(eq(schema.reviews.postId, r.postId), eq(schema.reviews.status, "completed")));
-    return computeRigor({ hasSource: post.source!.provenance.provider !== "unresolved", disputedReason: post.post.disputedReason, correctionStatus: post.source!.correctionStatus, completedReviewTypes: done.map((d) => d.type as ReviewType) });
-  };
-
   try {
-    const changed = await db.transaction(async (tx) => {
-      const before = await rigorOf(tx as unknown as typeof db);
+    // Right of reply: the author reads the review first. It goes public after REVIEW_REPLY_HOURS, or as soon as the author responds.
+    const now = new Date();
+    const publicAt = new Date(now.getTime() + REPLY_HOURS * 3_600_000);
+    await db.transaction(async (tx) => {
       const [row] = await tx.insert(schema.reviews).values({
         postId: r.postId, reviewerId: user.id, type: r.type, status: "completed", recommendation: r.recommendation, summary: r.summary,
         checklist: Object.fromEntries(r.checklist.map((k) => [k, true])), ratings, conflicts: /^none\.?$/i.test(r.conflicts) ? "None declared" : r.conflicts,
-        isSigned: r.signed, postVersion: post.post.version, completedAt: new Date(),
+        isSigned: r.signed, postVersion: post.post.version, completedAt: now, publicAt,
       }).returning({ id: schema.reviews.id });
-      await audit(tx, { actorId: user.id, entityType: "review", entityId: row.id, action: "review.completed", after: { postId: r.postId, type: r.type, recommendation: r.recommendation } });
-      const after = await rigorOf(tx as unknown as typeof db);
-      if (before.key !== after.key) await audit(tx, { actorId: user.id, entityType: "post", entityId: r.postId, action: "label.changed", before: before.key, after: after.key });
-      await notify(tx, post.post.authorId, `${r.signed ? user.displayName : "A reviewer"} completed a ${REVIEW_TYPE_LABELS[r.type].toLowerCase()} on “${post.post.title.slice(0, 60)}”.`, `/p/${r.postId}`);
-      return before.key !== after.key ? `Label changed: ${before.label} → ${after.label}.` : "";
+      await audit(tx, { actorId: user.id, entityType: "review", entityId: row.id, action: "review.completed", after: { postId: r.postId, type: r.type, recommendation: r.recommendation, publicAt } });
+      await notify(tx, post.post.authorId, `${r.signed ? user.displayName : "A reviewer"} completed a ${REVIEW_TYPE_LABELS[r.type].toLowerCase()} on “${post.post.title.slice(0, 60)}”. You see it first: it goes public in ${REPLY_HOURS} hours, or as soon as you reply.`, `/p/${r.postId}#review-${row.id}`);
     });
     revalidatePath(`/p/${r.postId}`);
     revalidatePath("/");
-    return { ok: `Review published and credited on your profile. ${changed}`.trim() };
+    return { ok: `Review saved and credited on your profile. The author reads it first; it becomes public in ${REPLY_HOURS} hours or when they reply.` };
   } catch (e) {
     if (String(e).includes("reviews_one_per_type_uq")) return { error: "You've already published this type of review on this post." };
     throw e;
   }
+}
+
+/**
+ * The post's author says how useful a review was (1–5) and whether it led them to change the post.
+ * This, not the number of reviews, is what builds a reviewer's reputation.
+ */
+export async function rateReviewAction(fd: FormData) {
+  const user = await requireUser();
+  const reviewId = str(fd, "reviewId");
+  const helpfulness = Number(str(fd, "helpfulness"));
+  if (!uuid.safeParse(reviewId).success || !Number.isInteger(helpfulness) || helpfulness < 1 || helpfulness > 5) return;
+  const ledToRevision = fd.get("ledToRevision") === "on";
+  const [row] = await db.select({ review: schema.reviews, post: schema.posts }).from(schema.reviews)
+    .innerJoin(schema.posts, eq(schema.posts.id, schema.reviews.postId)).where(eq(schema.reviews.id, reviewId)).limit(1);
+  if (!row || row.post.authorId !== user.id || row.review.status !== "completed") return;
+  const firstRevision = ledToRevision && !row.review.ledToRevision;
+  await db.transaction(async (tx) => {
+    await tx.update(schema.reviews).set({ helpfulness, ledToRevision, authorRatedAt: new Date() }).where(eq(schema.reviews.id, reviewId));
+    await audit(tx, { actorId: user.id, entityType: "review", entityId: reviewId, action: "review.rated", before: { helpfulness: row.review.helpfulness, ledToRevision: row.review.ledToRevision }, after: { helpfulness, ledToRevision } });
+    const title = row.post.title.slice(0, 60);
+    if (firstRevision) await notify(tx, row.review.reviewerId, `Your review changed a post: the author revised “${title}” because of it.`, `/p/${row.post.id}#review-${reviewId}`);
+    else if (helpfulness >= 4 && !row.review.helpfulness) await notify(tx, row.review.reviewerId, `The author found your review of “${title}” ${helpfulness === 5 ? "very useful" : "useful"}.`, `/p/${row.post.id}#review-${reviewId}`);
+  });
+  revalidatePath(`/p/${row.post.id}`);
+  revalidatePath("/");
 }
 
 /* ------------------------------------------------------------ moderation */

@@ -69,7 +69,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           </aside>
           {children}
         </div>
-        <footer className="appfoot">Lyncei is for discussing research, not medical advice. Never post anything that could identify a patient. <Link href="/terms">Terms</Link> · <Link href="/privacy">Privacy</Link></footer>
+        <footer className="appfoot">Lyncei is for discussing research, not medical advice. Never post anything that could identify a patient. <Link href="/guidelines">Review guidelines</Link> · <Link href="/terms">Terms</Link> · <Link href="/privacy">Privacy</Link></footer>
         {user && <nav className="dock" aria-label="Mobile navigation">
           <NavLink href="/?tab=foryou" exact className=""><Icon name="home" />Home</NavLink>
           <NavLink href="/questions" className=""><Icon name="q" />Questions</NavLink>

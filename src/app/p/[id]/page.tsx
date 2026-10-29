@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getCurrentUser, isReviewer } from "@/lib/auth";
-import { getPostDetail } from "@/lib/queries";
+import { appUrl, getCurrentUser, isModerator, isReviewer } from "@/lib/auth";
+import { getPostDetail, isPublicReview } from "@/lib/queries";
 import { REVIEW_TYPE_LABELS, type ReviewType } from "@/lib/rigor";
 import { timeAgo } from "@/lib/text";
 import { Avatar, Empty, Icon, PostCard, Name } from "@/components/ui";
-import { ActionForm, ComposerFields, ReplyToggle, Submit } from "@/components/client";
+import { ActionForm, ComposerFields, CopyText, ReplyToggle, Submit } from "@/components/client";
 import { Rail } from "@/components/rail";
-import { addContributionAction, reportPostAction, respondAction } from "@/app/actions";
+import { addContributionAction, rateReviewAction, reportPostAction, respondAction } from "@/app/actions";
 import { after } from "next/server";
 import { ensureSourceSummary, loadSourcePreviews, needsSummary } from "@/lib/source-preview";
 import { RefPreview } from "@/components/ref-preview";
@@ -28,8 +28,15 @@ export default async function PostPage({ params }: Params) {
   const user = await getCurrentUser();
   const d = await getPostDetail(id, user?.id ?? null);
   if (!d) notFound();
-  const { post, reviews, comments } = d;
+  const { post, comments } = d;
   const isAuthor = user?.id === post.author.id;
+  // Right of reply: a review in its private window is shown only to the post's author, its reviewer and moderators.
+  const now = new Date();
+  const reviews = d.reviews.filter(({ review: r }) => r.status !== "completed" || isPublicReview(r, now) || isAuthor || r.reviewerId === user?.id || isModerator(user));
+  const pending = reviews.filter(({ review: r }) => r.status === "completed" && !isPublicReview(r, now));
+  const citeYear = (dt: Date | null) => (dt ?? now).getUTCFullYear();
+  const citation = (r: (typeof reviews)[number]["review"], reviewer: (typeof reviews)[number]["reviewer"]) =>
+    `${r.isSigned ? reviewer.displayName : "Anonymous verified reviewer"} (${citeYear(r.completedAt)}). ${REVIEW_TYPE_LABELS[r.type as ReviewType]} of “${post.title}”. Lyncei. ${appUrl()}/p/${post.id}#review-${r.id}`;
   // Cited papers: the post's source and any DOIs cited in the discussion.
   const citedDois = [post.source?.doi, ...comments.flatMap(({ c, replies }) => [c.sourceDoi, ...replies.map((r) => r.c.sourceDoi)])].filter((d): d is string => !!d);
   const previews = await loadSourcePreviews(citedDois);
@@ -37,7 +44,7 @@ export default async function PostPage({ params }: Params) {
   const preview = (doi: string | null | undefined) => (doi ? previews.get(doi.toLowerCase()) : undefined);
   const postSource = preview(post.source?.doi);
   const canReview = isReviewer(user) && !isAuthor && !!post.source && post.rigor.key !== "unreviewed";
-  const methodological = reviews.find((r) => r.review.type === "methodological" && r.review.status === "completed" && r.review.ratings);
+  const methodological = reviews.find((r) => r.review.type === "methodological" && isPublicReview(r.review, now) && r.review.ratings);
   const lvl = (v: string) => (/high|low|available/i.test(v) ? "" : /moderate|pending/i.test(v) ? "mid" : "low");
 
   const quality = (
@@ -79,8 +86,14 @@ export default async function PostPage({ params }: Params) {
           </div>
         </div>
         <p className="hint" style={{ marginTop: -4 }}>{post.rigor.description}</p>
+        {isAuthor && pending.length > 0 && (
+          <div className="notice reply">
+            <b>You read {pending.length === 1 ? "this review" : "these reviews"} first.</b> {pending.length === 1 ? "It goes" : "They go"} public on {pending.map(({ review: r }) => r.publicAt!).sort((a, b) => a.getTime() - b.getTime())[0].toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit", timeZone: "America/New_York" })} ET, or as soon as you publish your response below. Disagreeing is fine: say why, with evidence.
+          </div>
+        )}
         {reviews.length ? reviews.map(({ review: r, reviewer }) => (
-          <div className="review" key={r.id}>
+          <div className="review" key={r.id} id={`review-${r.id}`}>
+            {r.status === "completed" && !isPublicReview(r, now) && <div className="pendingnote">Private until {r.publicAt!.toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit", timeZone: "America/New_York" })} ET · only the author{isAuthor ? " (you)" : ""} and the reviewer can see it</div>}
             <div className="row">
               {r.isSigned ? <><Avatar name={reviewer.displayName} handle={reviewer.handle} size="sm" /><div><Link href={`/u/${reviewer.handle}`}><b><Name name={reviewer.displayName} verified /></b></Link> <span className="hint">· {reviewer.field}</span></div></> : <div><b>Verified reviewer</b> <span className="hint">· identity protected</span></div>}
               <span style={{ marginLeft: "auto" }} className={`pillst ${r.status === "completed" ? "done" : ""}`}>{r.status === "completed" ? "Completed" : "In progress"}</span>
@@ -89,6 +102,31 @@ export default async function PostPage({ params }: Params) {
             {r.summary ? <p>{r.summary}</p> : <p className="muted">Review underway.</p>}
             {Object.keys(r.checklist).length > 0 && <ul className="hint" style={{ margin: "8px 0 0", paddingLeft: 18 }}>{Object.keys(r.checklist).map((c) => <li key={c}>{c}</li>)}</ul>}
             <div className="meta">{r.isSigned ? "Signed review" : "Identity verified by Lyncei and protected"} · Conflicts: {r.conflicts} · Reviewed version {r.postVersion}{r.completedAt ? ` · ${timeAgo(r.completedAt)} ago` : ""}</div>
+            {(r.ledToRevision || (r.helpfulness ?? 0) >= 4) && (
+              <div className="impact">
+                {r.ledToRevision && <span className="chip ok">Led the author to revise the post</span>}
+                {(r.helpfulness ?? 0) >= 4 && <span className="chip">The author found it {r.helpfulness === 5 ? "very useful" : "useful"}</span>}
+              </div>
+            )}
+            {r.status === "completed" && isPublicReview(r, now) && (
+              <details className="cite">
+                <summary>Cite this review</summary>
+                <p className="citetext">{citation(r, reviewer)}</p>
+                <CopyText text={citation(r, reviewer)} label="Copy citation" />
+              </details>
+            )}
+            {isAuthor && r.status === "completed" && (
+              <form action={rateReviewAction} className="rate">
+                <input type="hidden" name="reviewId" value={r.id} />
+                <span className="hint">How useful was this review to you?</span>
+                <div className="rate-row">
+                  {[1, 2, 3, 4, 5].map((n) => <label key={n} className="chip"><input type="radio" name="helpfulness" value={n} defaultChecked={r.helpfulness === n} required />{n}</label>)}
+                  <label className="rate-rev"><input type="checkbox" name="ledToRevision" defaultChecked={r.ledToRevision} /> I changed my post because of it</label>
+                  <button className="btn sm">{r.authorRatedAt ? "Update rating" : "Rate"}</button>
+                </div>
+                <span className="hint">Only you can rate it. Ratings, not the number of reviews, build reviewers' reputation.</span>
+              </form>
+            )}
           </div>
         )) : <Empty title="No reviews yet">{!post.source ? "Posts need a source before they can be reviewed." : isReviewer(user) ? "Be the first to review this post." : "Verified reviewers in this field can review it."}</Empty>}
 
@@ -98,6 +136,7 @@ export default async function PostPage({ params }: Params) {
             <ActionForm action={respondAction}>
               <input type="hidden" name="postId" value={post.id} />
               <label className="f" style={{ marginTop: 12 }}>Your response<textarea name="response" rows={4} defaultValue={post.authorResponse ?? ""} /></label>
+              {pending.length > 0 && <p className="hint" style={{ margin: 0 }}>Publishing your response also makes the {pending.length === 1 ? "review" : "reviews"} public now, so readers see both together.</p>}
               <Submit>Publish response</Submit>
             </ActionForm>
           </details>

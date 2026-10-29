@@ -12,6 +12,8 @@ const STATUS: Record<string, { bg: string; fg: string }> = {
   source_linked: { bg: "#EEF0FF", fg: "#2B3FD8" },
   unreviewed: { bg: "#2A2736", fg: "#CFCBD6" },
   disputed: { bg: "#FDF3E2", fg: "#A15C07" },
+  contested: { bg: "#FDF3E2", fg: "#A15C07" },
+  concerns: { bg: "#FDECEC", fg: "#B42318" },
   retracted: { bg: "#FDECEC", fg: "#B42318" },
 };
 

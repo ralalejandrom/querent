@@ -143,6 +143,13 @@ export const reviews = pgTable("reviews", {
   orcidPutCode: text("orcid_put_code"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   completedAt: timestamp("completed_at", { withTimezone: true }),
+  /** Right of reply: a completed review stays visible only to the author and reviewer until this time (or the author's response). */
+  publicAt: timestamp("public_at", { withTimezone: true }),
+  /** The post author's rating of how useful the review was, 1 to 5. */
+  helpfulness: integer("helpfulness"),
+  /** The author changed the post because of this review. */
+  ledToRevision: boolean("led_to_revision").notNull().default(false),
+  authorRatedAt: timestamp("author_rated_at", { withTimezone: true }),
 }, (t) => [
   index("reviews_post_idx").on(t.postId),
   uniqueIndex("reviews_one_per_type_uq").on(t.postId, t.reviewerId, t.type),

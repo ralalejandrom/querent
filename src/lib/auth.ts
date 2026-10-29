@@ -7,6 +7,7 @@ import { and, count, eq, gt, isNull, sql } from "drizzle-orm";
 import { db, schema } from "@/db";
 import { slugify } from "./text";
 import { sendEmail } from "./email";
+import { emailHtml } from "./email-layout";
 import { adminEmailList, applyGrant, canSignIn } from "./access";
 
 const SESSION_COOKIE = "querent_session";
@@ -32,15 +33,13 @@ const MAX_LINKS_PER_EMAIL = 5; // per LOGIN_TOKEN_MINUTES window
 
 const esc = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 function loginEmailHtml(link: string): string {
-  return `<!doctype html><html><body style="margin:0;background:#F4F5F7;font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;color:#16141F">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="padding:32px 16px"><tr><td align="center">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:480px;background:#fff;border-radius:14px;padding:32px">
-<tr><td style="font-size:22px;font-weight:600;letter-spacing:-.02em;padding-bottom:20px">Lyncei</td></tr>
-<tr><td style="font-family:Georgia,serif;font-size:24px;line-height:1.25;padding-bottom:12px">Your sign-in link</td></tr>
-<tr><td style="font-size:15px;line-height:1.55;color:#3B4452;padding-bottom:24px">Use the button below to sign in. It works once and expires in ${LOGIN_TOKEN_MINUTES} minutes.</td></tr>
-<tr><td style="padding-bottom:24px"><a href="${esc(link)}" style="display:inline-block;background:#16141F;color:#fff;text-decoration:none;font-weight:600;font-size:15px;padding:12px 22px;border-radius:999px">Sign in to Lyncei</a></td></tr>
-<tr><td style="font-size:13px;line-height:1.5;color:#6B6878">If you didn't ask for this email, you can ignore it. Nobody can sign in without the link.</td></tr>
-</table></td></tr></table></body></html>`;
+  return emailHtml({
+    heading: "Your sign-in link",
+    preview: `Sign in to Lyncei. The link works once and expires in ${LOGIN_TOKEN_MINUTES} minutes.`,
+    paragraphs: [`Use the button below to sign in. It works once and expires in ${LOGIN_TOKEN_MINUTES} minutes.`],
+    button: { label: "Sign in to Lyncei", href: link },
+    footnote: "If you didn't ask for this email, you can ignore it. Nobody can sign in without the link.",
+  });
 }
 
 /**
