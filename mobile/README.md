@@ -22,7 +22,7 @@ GitHub → Actions → **Mobile apps** → **Run workflow**.
 | Secret | Where it comes from |
 |---|---|
 | `APPLE_TEAM_ID` | developer.apple.com → Membership → Team ID |
-| `APP_STORE_CONNECT_KEY_ID` | App Store Connect → Users and Access → Integrations → App Store Connect API → generate a key with the **App Manager** role |
+| `APP_STORE_CONNECT_KEY_ID` | App Store Connect → Users and Access → Integrations → App Store Connect API → generate a key with the **Admin** role (Xcode needs Admin to create the distribution certificate in the cloud) |
 | `APP_STORE_CONNECT_ISSUER_ID` | Same page, "Issuer ID" above the keys |
 | `APP_STORE_CONNECT_KEY` | Full text of the downloaded `AuthKey_XXXX.p8` file |
 | `ANDROID_KEYSTORE_BASE64` | Optional, for Google Play: `base64 -w0 lyncei.keystore` of an upload keystore |
