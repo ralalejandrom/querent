@@ -9,9 +9,12 @@ import { REVIEW_TYPE_LABELS, type ReviewType } from "@/lib/rigor";
 import { Avatar, Empty, Icon, PostCard, Name } from "@/components/ui";
 import { Rail } from "@/components/rail";
 import { toggleBlockAction, toggleFollowAction, signOutAction } from "@/app/actions";
+import { startConversationAction } from "@/app/dm-actions";
+import { followsUser } from "@/lib/dm";
 
-export default async function Profile({ params }: { params: Promise<{ handle: string }> }) {
+export default async function Profile({ params, searchParams }: { params: Promise<{ handle: string }>; searchParams: Promise<{ dm?: string }> }) {
   const { handle } = await params;
+  const dmNote = (await searchParams).dm;
   const viewer = await getCurrentUser();
   const [u] = await db.select().from(schema.users).where(sql`lower(${schema.users.handle}) = ${handle.toLowerCase()}`).limit(1);
   if (!u || u.deletedAt) notFound();
@@ -45,6 +48,8 @@ export default async function Profile({ params }: { params: Promise<{ handle: st
   const totalReviews = Number(reviewTotal);
   const hiddenReviews = totalReviews - reviews.length;
   const reviewer = roles.find((r) => r.role === "reviewer");
+  // The Message button shows only when this person accepts messages from the viewer.
+  const canMessage = !!viewer && !isMe && !blocked && (u.dmPolicy === "everyone" || (u.dmPolicy === "following" && (await followsUser(u.id, viewer.id))));
   return (
     <>
       <main className="main" id="main">
@@ -64,6 +69,7 @@ export default async function Profile({ params }: { params: Promise<{ handle: st
             : viewer && (
               <div className="ownacts">
                 {!blocked && <form action={toggleFollowAction.bind(null, "user", u.id)}><button className={`btn ${following ? "" : "pri"}`}>{following ? "Following" : "Follow"}</button></form>}
+                {canMessage && <form action={startConversationAction.bind(null, u.id)}><button className="btn"><Icon name="mail" />Message</button></form>}
                 {(iBlocked || !blocked) && (
                   <details className="moremenu">
                     <summary className="btn" aria-label="More options">···</summary>
@@ -76,6 +82,7 @@ export default async function Profile({ params }: { params: Promise<{ handle: st
               </div>
             )}
         </div>
+        {dmNote && <div className="msg err" style={{ marginTop: 14 }}>{dmNote.slice(0, 200)}</div>}
         {blocked && <div className="notice" style={{ marginTop: 14 }}>{iBlocked ? "You blocked this account. Their posts and comments are hidden from you." : "You can't see this account's posts."}</div>}
         {u.bio && <p style={{ color: "var(--ink-2)", margin: "14px 0 4px" }}>{u.bio}</p>}
         {u.currentWork && <p className="muted" style={{ margin: 0 }}><b style={{ color: "var(--ink)" }}>Working on:</b> {u.currentWork}</p>}

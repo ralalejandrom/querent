@@ -369,3 +369,39 @@ html.native .appfoot{padding-bottom:calc(90px + env(safe-area-inset-bottom,0px))
 .goodpractice ul{margin:6px 0 6px;padding-left:18px;font-size:13.5px;line-height:1.55;color:var(--ink-2)}
 .coreview{margin-top:8px;font-size:13px;color:var(--ink-2)}
 .coreview .btn{margin-left:8px}
+
+/* Direct messages */
+.dmlist{display:grid;border-top:1px solid var(--rule)}
+.dmrow{display:flex;align-items:center;gap:12px;padding:14px 6px;border-bottom:1px solid var(--rule);text-decoration:none;color:var(--ink)}
+.dmrow:hover{background:var(--sunk)}
+.dmrow-main{flex:1;min-width:0}
+.dmrow-top{display:flex;justify-content:space-between;gap:10px}
+.dmrow-last{color:var(--muted);font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.dmrow.unread .dmrow-last{color:var(--ink);font-weight:600}
+.dmdot{min-width:22px;height:22px;border-radius:11px;background:var(--accent);color:var(--surface);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 6px}
+.tabs .ct{margin-left:6px;background:var(--accent);color:var(--surface);font-size:11px;font-weight:700;border-radius:999px;padding:1px 7px}
+.dmmain{display:flex;flex-direction:column;min-height:calc(100dvh - 140px)}
+.dmhead{display:flex;align-items:center;gap:10px;padding-bottom:12px;border-bottom:1px solid var(--rule);position:sticky;top:0;background:var(--bg);z-index:2}
+.dmhead .back{margin:0;padding:6px}
+.dmhead-who{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.25}
+.dmhead-who a{color:var(--ink);text-decoration:none}
+.dmmenu .moremenu-body{right:0}
+.dmrequest{margin:14px 0 0}
+.dmthread{flex:1;display:flex;flex-direction:column;gap:10px;padding:16px 0}
+.dmempty{text-align:center;margin:24px 0}
+.dmmsg{display:flex;flex-direction:column;max-width:78%}
+.dmmsg.mine{align-self:flex-end;align-items:flex-end}
+.dmmsg.theirs{align-self:flex-start;align-items:flex-start}
+.dmbubble{padding:10px 14px;border-radius:18px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.45}
+.dmmsg.mine .dmbubble{background:var(--accent);color:var(--surface);border-bottom-right-radius:6px}
+.dmmsg.theirs .dmbubble{background:var(--sunk);color:var(--ink);border-bottom-left-radius:6px}
+.dmbubble.gone{background:transparent!important;color:var(--muted)!important;border:1px dashed var(--rule);font-style:italic}
+.dmmeta{display:flex;gap:10px;align-items:center;font-size:12px;color:var(--muted);margin-top:4px}
+.dmmeta form{display:inline}
+.dmlink,.dmreport{background:none;border:0;padding:0;font:inherit;font-size:12px;color:var(--muted);cursor:pointer;text-decoration:underline}
+.dmreportbox{max-width:420px}
+.dmcompose{position:sticky;bottom:0;display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;padding:12px 0 calc(12px + env(safe-area-inset-bottom));background:var(--bg);border-top:1px solid var(--rule)}
+.dmcompose textarea{flex:1;min-width:0;resize:none;max-height:160px;border-radius:20px;padding:10px 16px;field-sizing:content}
+.dmcompose .msg{flex-basis:100%;margin:0}
+.dmhint{margin:0 0 6px}
+@media (max-width: 760px){.dmmain{min-height:calc(100dvh - 120px)}.dmmsg{max-width:88%}.dmcompose{bottom:calc(60px + env(safe-area-inset-bottom))}}

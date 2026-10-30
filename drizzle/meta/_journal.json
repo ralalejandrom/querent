@@ -78,6 +78,13 @@
       "when": 1793328024776,
       "tag": "0010_transparency_and_coreview",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1793334053078,
+      "tag": "0011_direct_messages",
+      "breakpoints": true
     }
   ]
 }

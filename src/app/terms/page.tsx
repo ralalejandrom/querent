@@ -35,9 +35,10 @@ export default function Terms() {
       <h2>Zero tolerance for objectionable content and abusive users</h2>
       <p>Lyncei has no tolerance for objectionable content or abusive behavior. That includes hate speech or slurs, threats, harassment, sexual content, content that encourages self-harm, and spam. Posting it can lead to immediate removal of the content and of your account.</p>
       <ul>
-        <li><b>Filter.</b> Posts and comments that match our content filter wait for a moderator before anyone else sees them.</li>
-        <li><b>Report.</b> Anyone signed in can report a post or a comment. Moderators review every report within 24 hours and remove content that breaks these terms.</li>
-        <li><b>Block.</b> You can block any account from its profile. Neither of you will see the other's posts or comments, and they can't reply to you or follow you.</li>
+        <li><b>Filter.</b> Posts and comments that match our content filter wait for a moderator before anyone else sees them. Direct messages that match it aren't sent.</li>
+        <li><b>Report.</b> Anyone signed in can report a post, a comment or a direct message. Moderators review every report within 24 hours and remove content that breaks these terms; abuse in messages can lead to losing the ability to send messages, or the account.</li>
+        <li><b>Block.</b> You can block any account from its profile or from a conversation. Neither of you will see the other's posts or comments, and they can't reply to you, follow you or message you.</li>
+        <li><b>Message requests.</b> Messages from people you don't follow arrive as requests, and you choose who can message you in Settings.</li>
       </ul>
 
       <h2>Reviews and labels</h2>

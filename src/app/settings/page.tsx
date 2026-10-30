@@ -5,6 +5,7 @@ import { ActionForm, PasswordInput, Submit } from "@/components/client";
 import { changePasswordAction } from "@/app/auth-actions";
 import { MIN_PASSWORD } from "@/lib/password";
 import { deleteAccountAction, signOutAction, toggleBlockAction, updateProfileAction } from "@/app/actions";
+import { updateDmPolicyAction } from "@/app/dm-actions";
 import Link from "next/link";
 
 export const metadata = { title: "Settings" };
@@ -48,6 +49,17 @@ export default async function Settings({ searchParams }: { searchParams: Promise
           : orcidReady ? <><p style={{ marginTop: 0 }}>Connect your ORCID iD to show it on your profile and link your reviews. Connecting proves you own the iD; it doesn't grant reviewer status on its own.</p><a className="btn pri" href="/auth/orcid/start">Connect ORCID</a></>
           : <p className="hint" style={{ margin: 0 }}>ORCID sign-in isn't configured on this server yet (set ORCID_CLIENT_ID and ORCID_CLIENT_SECRET).</p>}
       </div>
+      <div className="sec"><h2>Messages</h2></div>
+      <ActionForm action={updateDmPolicyAction}>
+        <fieldset className="checks" style={{ border: 0, padding: 0, margin: 0 }}>
+          <legend className="hint" style={{ marginBottom: 6 }}>Who can send you a new message</legend>
+          <label><input type="radio" name="dmPolicy" value="everyone" defaultChecked={u.dmPolicy === "everyone"} /> Everyone. Messages from people you don't follow arrive as requests.</label>
+          <label><input type="radio" name="dmPolicy" value="following" defaultChecked={u.dmPolicy === "following"} /> Only people you follow</label>
+          <label><input type="radio" name="dmPolicy" value="none" defaultChecked={u.dmPolicy === "none"} /> No one</label>
+        </fieldset>
+        <p className="hint" style={{ margin: 0 }}>Conversations you've already accepted stay open. Messages aren't end-to-end encrypted; moderators read a message only when it's reported.</p>
+        <Submit>Save</Submit>
+      </ActionForm>
       <div className="sec"><h2>Blocked accounts</h2></div>
       {blocked.length ? (
         <div className="blocklist">

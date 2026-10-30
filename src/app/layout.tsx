@@ -9,6 +9,7 @@ import { getCurrentUser, isModerator } from "@/lib/auth";
 import { Icon, Mark } from "@/components/ui";
 import { GuestSignIn, NativeBridge, NavLink } from "@/components/client";
 import { signOutAction } from "./actions";
+import { dmCounts } from "@/lib/dm";
 
 const TAGLINE = "The future of science, reviewed in the open";
 const PITCH = "The social network for science, with expert review built in. Share research, follow the questions you care about, and see what experts think.";
@@ -27,6 +28,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const unread = user
     ? Number((await db.select({ n: count() }).from(schema.notifications).where(and(eq(schema.notifications.recipientId, user.id), isNull(schema.notifications.readAt))))[0]?.n ?? 0)
     : 0;
+  const dm = user ? await dmCounts(user.id) : { unread: 0, requests: 0 };
+  const dmBadge = dm.unread + dm.requests;
 
   return (
     <html lang="en">
@@ -36,7 +39,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body>
         <div className={user ? "mtop" : "mtop guest"}>
           <Link className="brand" href="/"><Mark size={28} /><span className="word">Lyncei</span></Link>
-          {user ? <div className="mtop-acts"><Link className="btn sm" href="/notifications" aria-label="Notifications"><Icon name="bell" />{unread > 0 && unread}</Link><Link className="btn sm" href="/settings" aria-label="Settings and sign out"><Icon name="settings" /></Link></div> : <div className="mtop-acts"><GuestSignIn /></div>}
+          {user ? <div className="mtop-acts"><Link className="btn sm" href="/messages" aria-label="Messages"><Icon name="mail" />{dmBadge > 0 && dmBadge}</Link><Link className="btn sm" href="/notifications" aria-label="Notifications"><Icon name="bell" />{unread > 0 && unread}</Link><Link className="btn sm" href="/settings" aria-label="Settings and sign out"><Icon name="settings" /></Link></div> : <div className="mtop-acts"><GuestSignIn /></div>}
         </div>
         {process.env.DEMO_LOGIN === "1" && <div className="notice" style={{ margin: 0, borderRadius: 0, textAlign: "center" }}>Demo version of Lyncei. People, studies and DOIs are fictional; anyone can sign in to the demo accounts.</div>}
         <div className={user ? "shell" : "shell guest"}>
@@ -48,6 +51,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               <NavLink href="/questions"><Icon name="q" />Questions</NavLink>
               <NavLink href="/reviews"><Icon name="review" />Reviews</NavLink>
               {user && <NavLink href="/library"><Icon name="book" />My Library</NavLink>}
+              {user && <NavLink href="/messages"><Icon name="mail" />Messages{dmBadge > 0 && <span className="ct">{dmBadge}</span>}</NavLink>}
               {user && <NavLink href="/notifications"><Icon name="bell" />Notifications{unread > 0 && <span className="ct">{unread}</span>}</NavLink>}
               {user && <NavLink href={`/u/${user.handle}`}><Icon name="user" />Profile</NavLink>}
               {isModerator(user) && <NavLink href="/moderation"><Icon name="shield" />Moderation</NavLink>}

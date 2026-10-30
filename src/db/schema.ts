@@ -38,6 +38,10 @@ export const users = pgTable("users", {
   termsAcceptedAt: timestamp("terms_accepted_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   deletedAt: timestamp("deleted_at", { withTimezone: true }),
+  /** Who can send this person a new message: "everyone" (as a request), "following" (people they follow) or "none". */
+  dmPolicy: text("dm_policy").notNull().default("everyone"),
+  /** Set by a moderator after abuse in messages: the person can no longer send messages. */
+  messagingDisabledAt: timestamp("messaging_disabled_at", { withTimezone: true }),
 }, (t) => [
   uniqueIndex("users_handle_uq").on(sql`lower(${t.handle})`),
   uniqueIndex("users_email_uq").on(sql`lower(${t.email})`),
@@ -341,3 +345,51 @@ export const pageViews = pgTable("page_views", {
   device: text("device").notNull().default("desktop"),
   visitor: text("visitor").notNull(),
 }, (t) => [index("page_views_at_idx").on(t.at)]);
+
+/* ------------------------------------------------------- direct messages */
+/** A one-to-one conversation. `pairKey` (the two user ids, sorted) keeps it to one conversation per pair. */
+export const conversations = pgTable("conversations", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  pairKey: text("pair_key").notNull().unique(),
+  createdBy: uuid("created_by").notNull().references(() => users.id),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  lastMessageAt: timestamp("last_message_at", { withTimezone: true }),
+});
+
+/**
+ * Each person's side of a conversation. `state`: "active" (in their inbox), "request" (a message
+ * request from someone they don't follow, until they accept or reply) or "declined".
+ * `clearedAt`: they deleted the chat; earlier messages stay hidden for them.
+ */
+export const conversationMembers = pgTable("conversation_members", {
+  conversationId: uuid("conversation_id").notNull().references(() => conversations.id, { onDelete: "cascade" }),
+  userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  state: text("state").notNull().default("active"),
+  lastReadAt: timestamp("last_read_at", { withTimezone: true }),
+  clearedAt: timestamp("cleared_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [primaryKey({ columns: [t.conversationId, t.userId] }), index("conversation_members_user_idx").on(t.userId)]);
+
+export const messages = pgTable("messages", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  conversationId: uuid("conversation_id").notNull().references(() => conversations.id, { onDelete: "cascade" }),
+  senderId: uuid("sender_id").notNull().references(() => users.id),
+  body: text("body").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  /** The sender deleted it; the text is erased. */
+  deletedAt: timestamp("deleted_at", { withTimezone: true }),
+  /** A moderator removed it after a report. */
+  removedAt: timestamp("removed_at", { withTimezone: true }),
+}, (t) => [index("messages_conversation_idx").on(t.conversationId, t.createdAt)]);
+
+/** Reports about a message. `snapshot` keeps the reported text, so deleting the message can't hide it from moderators. */
+export const messageReports = pgTable("message_reports", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  messageId: uuid("message_id").notNull().references(() => messages.id, { onDelete: "cascade" }),
+  reporterId: uuid("reporter_id").notNull().references(() => users.id),
+  reason: text("reason").notNull(),
+  details: text("details").notNull().default(""),
+  snapshot: text("snapshot").notNull(),
+  status: reportStatusEnum("status").notNull().default("open"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});

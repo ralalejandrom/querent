@@ -22,6 +22,9 @@ export default function Privacy() {
       <h2>What's public</h2>
       <p>Your profile, posts, signed reviews and comments are public. Your email address is never shown. If you review anonymously, your name isn't shown publicly, but the Lyncei team can see who wrote the review so we can check conflicts of interest and handle reports.</p>
 
+      <h2>Direct messages</h2>
+      <p>Messages you send are visible to you and the person you message. They're stored on our servers and are not end-to-end encrypted. Lyncei staff don't read them, except when one is reported: then a moderator sees the reported message and the few messages before it, to decide on the report. A reported message is kept with its report even if the sender deletes it. When you delete a message, its text is erased for both of you. When you delete your account, the text of every message you sent is erased.</p>
+
       <h2>How we use it</h2>
       <ul>
         <li>To run Lyncei: signing in, password resets, your profile, the feed and notifications.</li>

@@ -512,6 +512,9 @@ export async function deleteAccountAction(fd: FormData) {
     await tx.delete(schema.sessions).where(eq(schema.sessions.userId, user.id));
     await tx.delete(schema.deviceTokens).where(eq(schema.deviceTokens.userId, user.id));
     await tx.delete(schema.blocks).where(sql`${schema.blocks.blockerId} = ${user.id} or ${schema.blocks.blockedId} = ${user.id}`);
+    // Direct messages: the text they sent is erased. The other person keeps the conversation, shown as "Deleted account".
+    await tx.update(schema.messages).set({ body: "", deletedAt: new Date() }).where(eq(schema.messages.senderId, user.id));
+    await tx.update(schema.conversationMembers).set({ state: "declined", clearedAt: new Date() }).where(eq(schema.conversationMembers.userId, user.id));
     await audit(tx, { actorId: user.id, entityType: "user", entityId: user.id, action: "account.deleted" });
   });
   await endSession();

@@ -6,6 +6,7 @@ import { createContext, startTransition, useActionState, useContext, useEffect, 
 import { useFormStatus } from "react-dom";
 import type { ActionState } from "@/app/actions";
 import { reportPostAction } from "@/app/actions";
+import { reportMessageAction, sendMessageAction } from "@/app/dm-actions";
 
 type Action = (state: ActionState, fd: FormData) => Promise<ActionState>;
 
@@ -336,4 +337,69 @@ export function NativeBridge({ signedIn }: { signedIn: boolean }) {
     return () => { subs.forEach((s) => s.then((l) => l.remove()).catch(() => {})); };
   }, [signedIn, router]);
   return null;
+}
+
+/* --------------------------------------------------------- direct messages */
+/** Re-renders the conversation every few seconds while the tab is visible, so new messages appear. */
+export function AutoRefresh({ seconds = 5 }: { seconds?: number }) {
+  const router = useRouter();
+  useEffect(() => {
+    const t = setInterval(() => { if (document.visibilityState === "visible") router.refresh(); }, seconds * 1000);
+    const onFocus = () => router.refresh();
+    window.addEventListener("focus", onFocus);
+    return () => { clearInterval(t); window.removeEventListener("focus", onFocus); };
+  }, [router, seconds]);
+  return null;
+}
+
+/** Keeps the newest message in view when the list grows. */
+export function ScrollToEnd({ count }: { count: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => { ref.current?.scrollIntoView({ block: "end" }); }, [count]);
+  return <div ref={ref} aria-hidden="true" />;
+}
+
+/** Message box: Enter sends, Shift+Enter adds a line. */
+export function MessageComposer({ conversationId, placeholder = "Write a message…" }: { conversationId: string; placeholder?: string }) {
+  const [state, formAction, pending] = useActionState(sendMessageAction, {});
+  const ref = useRef<HTMLFormElement>(null);
+  const [text, setText] = useState("");
+  useEffect(() => { if (state.ok) setText(""); }, [state]);
+  const submit = () => { if (!ref.current || !text.trim() || pending) return; const fd = new FormData(ref.current); startTransition(() => formAction(fd)); };
+  return (
+    <form ref={ref} className="dmcompose" onSubmit={(e) => { e.preventDefault(); submit(); }}>
+      <input type="hidden" name="conversationId" value={conversationId} />
+      <label className="sr" htmlFor="dm-body">Message</label>
+      <textarea id="dm-body" name="body" rows={1} maxLength={2000} placeholder={placeholder} value={text}
+        onChange={(e) => setText(e.target.value)}
+        onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); submit(); } }} />
+      <button className="btn pri" type="submit" disabled={pending || !text.trim()}>{pending ? "Sending…" : "Send"}</button>
+      {state.error && <div className="msg err" role="alert">{state.error}</div>}
+    </form>
+  );
+}
+
+export function ReportMessage({ messageId }: { messageId: string }) {
+  const [open, setOpen] = useState(false);
+  if (!open) return <button type="button" className="dmreport" onClick={() => setOpen(true)}>Report</button>;
+  return (
+    <div className="cmtreportbox dmreportbox">
+      <ActionForm action={reportMessageAction}>
+        <input type="hidden" name="messageId" value={messageId} />
+        <label className="f">Why are you reporting this message?
+          <select name="reason" defaultValue="harassment">
+            <option value="harassment">Harassment or threats</option>
+            <option value="offensive">Hateful, sexual or otherwise offensive</option>
+            <option value="spam">Spam or advertising</option>
+            <option value="scam">Scam or fraud</option>
+            <option value="unsafe_medical_advice">Unsafe medical advice</option>
+            <option value="other">Something else</option>
+          </select>
+        </label>
+        <label className="f">Details <small>Optional</small><textarea name="details" rows={2} /></label>
+        <div className="checks"><label><input type="checkbox" name="block" /> Also block this person</label></div>
+        <div className="row"><Submit className="btn sm pri">Send report</Submit><button type="button" className="btn sm" onClick={() => setOpen(false)}>Cancel</button></div>
+      </ActionForm>
+    </div>
+  );
 }

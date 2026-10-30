@@ -18,6 +18,7 @@ const PATHS: Record<string, ReactNode> = {
   heart: <path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" />,
   bulb: <path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z" />,
   chat: <path d="M4 5h16v11H9l-5 4z" />,
+  mail: <><rect x="3.5" y="5.5" width="17" height="13" rx="2" /><path d="M4.5 7.5l7.5 5.5 7.5-5.5" /></>,
   bookmark: <path d="M6 4h12v16l-6-4-6 4z" />,
   flag: <path d="M5 21V4M5 4h11l-2 4 2 4H5" />,
   left: <path d="M15 5l-7 7 7 7" />,
@@ -57,9 +58,18 @@ const demoPhoto = (handle: string) =>
     ? `https://images.unsplash.com/${DEMO_PHOTOS[handle]}?w=144&h=144&fit=facearea&facepad=2.4&q=75&fm=jpg`
     : null;
 
-export function Avatar({ name, handle, size = "" }: { name: string; handle: string; size?: "" | "sm" | "lg" }) {
+export function Avatar({ name, handle, size = "", link = true }: { name: string; handle: string; size?: "" | "sm" | "lg"; link?: boolean }) {
   const color = AV_COLORS[[...handle].reduce((a, c) => a + c.charCodeAt(0), 0) % AV_COLORS.length];
   const photo = demoPhoto(handle);
+  // Inside another link (a conversation row), render a plain span: links can't nest.
+  if (!link) {
+    return (
+      <span className={`av ${size}`} style={{ background: color }} aria-hidden="true">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        {photo ? <img src={photo} alt="" loading="lazy" decoding="async" /> : initials(name)}
+      </span>
+    );
+  }
   if (photo) {
     return (
       <Link href={`/u/${handle}`} className={`av ${size}`} style={{ background: color }} aria-label={name}>
