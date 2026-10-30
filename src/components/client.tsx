@@ -284,7 +284,7 @@ export function ReportComment({ postId, contributionId }: { postId: string; cont
 }
 
 /* ------------------------------------------------------------------ iOS app */
-// Capacitor injects window.Capacitor into the page when it runs inside the Lyncei iOS app.
+// Capacitor injects window.Capacitor into the page when it runs inside the Lyncei iOS or Android app.
 type Listener = { remove: () => void };
 type NativePlugins = {
   App?: { addListener: (e: string, cb: (x: { url: string }) => void) => Promise<Listener> };
@@ -297,10 +297,12 @@ type NativePlugins = {
     addListener: (e: string, cb: (x: { value?: string; notification?: { data?: { url?: string } } }) => void) => Promise<Listener>;
   };
 };
+type Cap = { isNativePlatform?: () => boolean; getPlatform?: () => string; Plugins?: NativePlugins };
 function nativePlugins(): NativePlugins | null {
-  const cap = (globalThis as { Capacitor?: { isNativePlatform?: () => boolean; Plugins?: NativePlugins } }).Capacitor;
+  const cap = (globalThis as { Capacitor?: Cap }).Capacitor;
   return cap?.isNativePlatform?.() ? cap.Plugins ?? null : null;
 }
+const nativePlatform = () => (globalThis as { Capacitor?: Cap }).Capacitor?.getPlatform?.() ?? "web";
 
 /**
  * Glue for the iOS app; does nothing in a browser. Opens lyncei.com links (from Mail, Messages or a
@@ -323,7 +325,8 @@ export function NativeBridge({ signedIn }: { signedIn: boolean }) {
     };
     if (p.App) subs.push(p.App.addListener("appUrlOpen", (e) => go(e.url)));
     p.SplashScreen?.hide().catch(() => {});
-    const push = p.PushNotifications;
+    // Push is set up for iOS (APNs). Android needs Firebase first, so it skips registration for now.
+    const push = nativePlatform() === "ios" ? p.PushNotifications : undefined;
     if (signedIn && push) {
       subs.push(push.addListener("registration", (t) => {
         if (t.value) fetch("/api/v1/push", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ token: t.value }) }).catch(() => {});

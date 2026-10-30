@@ -1,0 +1,114 @@
+name: Mobile apps
+# Builds the Lyncei Android and iOS apps in the cloud, so no Mac or Android Studio is needed.
+# Android: a debug APK anyone can install for testing, and, when signing secrets exist, a signed
+#          App Bundle (.aab) for Google Play.
+# iOS:     compiles the app for the simulator on every run, and, when App Store Connect secrets
+#          exist, archives, signs and uploads a build to TestFlight.
+on:
+  push:
+    branches: [main]
+    paths: ["mobile/**", ".github/workflows/mobile.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    env:
+      KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+      ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+      ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: gradle
+      - name: Install and sync
+        working-directory: mobile
+        run: npm ci && npx cap sync android
+      - name: Build debug APK
+        working-directory: mobile/android
+        run: ./gradlew --no-daemon assembleDebug -PversionCode=${{ github.run_number }}
+      - name: Name the APK
+        run: cp mobile/android/app/build/outputs/apk/debug/app-debug.apk Lyncei-android-${{ github.run_number }}.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Lyncei-android-apk
+          path: Lyncei-android-${{ github.run_number }}.apk
+      - name: Publish the APK as a release download
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: android-${{ github.run_number }}
+          name: Lyncei for Android (test build ${{ github.run_number }})
+          body: Test build of the Lyncei Android app. On an Android phone, download the APK and open it; allow installing from this source when asked.
+          prerelease: true
+          files: Lyncei-android-${{ github.run_number }}.apk
+      - name: Signed App Bundle for Google Play
+        if: ${{ env.KEYSTORE_B64 != '' }}
+        working-directory: mobile/android
+        run: |
+          echo "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/lyncei.keystore"
+          ANDROID_KEYSTORE_PATH="$RUNNER_TEMP/lyncei.keystore" ./gradlew --no-daemon bundleRelease -PversionCode=${{ github.run_number }}
+      - uses: actions/upload-artifact@v4
+        if: ${{ hashFiles('mobile/android/app/build/outputs/bundle/release/*.aab') != '' }}
+        with:
+          name: Lyncei-android-aab
+          path: mobile/android/app/build/outputs/bundle/release/*.aab
+
+  ios:
+    runs-on: macos-15
+    env:
+      ASC_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+      ASC_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+      ASC_KEY: ${{ secrets.APP_STORE_CONNECT_KEY }}
+      TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+      - name: Install and sync
+        working-directory: mobile
+        run: npm ci && npx cap sync ios
+      - name: Build for the simulator (no signing)
+        working-directory: mobile/ios/App
+        run: |
+          xcodebuild -project App.xcodeproj -scheme App -configuration Debug \
+            -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO build | tail -n 30
+      - name: Archive, sign and upload to TestFlight
+        if: ${{ env.ASC_KEY_ID != '' && env.ASC_ISSUER_ID != '' && env.ASC_KEY != '' && env.TEAM_ID != '' }}
+        working-directory: mobile/ios/App
+        run: |
+          KEY_PATH="$RUNNER_TEMP/AuthKey_${ASC_KEY_ID}.p8"
+          printf '%s' "$ASC_KEY" > "$KEY_PATH"
+          AUTH="-allowProvisioningUpdates -authenticationKeyPath $KEY_PATH -authenticationKeyID $ASC_KEY_ID -authenticationKeyIssuerID $ASC_ISSUER_ID"
+          xcodebuild -project App.xcodeproj -scheme App -configuration Release \
+            -destination 'generic/platform=iOS' -archivePath "$RUNNER_TEMP/Lyncei.xcarchive" \
+            DEVELOPMENT_TEAM="$TEAM_ID" CODE_SIGN_STYLE=Automatic CURRENT_PROJECT_VERSION=${{ github.run_number }} \
+            $AUTH archive | tail -n 30
+          cat > "$RUNNER_TEMP/ExportOptions.plist" <<PLIST
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>destination</key><string>upload</string>
+            <key>teamID</key><string>${TEAM_ID}</string>
+            <key>signingStyle</key><string>automatic</string>
+            <key>manageAppVersionAndBuildNumber</key><false/>
+          </dict></plist>
+          PLIST
+          xcodebuild -exportArchive -archivePath "$RUNNER_TEMP/Lyncei.xcarchive" \
+            -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" -exportPath "$RUNNER_TEMP/export" $AUTH | tail -n 30

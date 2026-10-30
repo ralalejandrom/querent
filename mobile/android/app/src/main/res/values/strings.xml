@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Lyncei</string>
+    <string name="title_activity_main">Lyncei</string>
+    <string name="package_name">com.lyncei.app</string>
+    <string name="custom_url_scheme">com.lyncei.app</string>
+</resources>

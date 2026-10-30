@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from "@capacitor/cli";
 
 /**
- * The Lyncei iOS app loads lyncei.com inside a native shell, so the app and the website are always
+ * The Lyncei iOS and Android apps load lyncei.com inside a native shell, so the apps and the website are always
  * the same version: every deploy of the website updates the app without a new App Store release.
  * Native parts: push notifications, the share sheet, links that open in the app, splash screen,
  * and an offline screen. Links to other sites (DOIs, journals) open in Safari.
@@ -20,6 +20,11 @@ const config: CapacitorConfig = {
     backgroundColor: "#ffffff",
     allowsLinkPreview: false,
     scheme: "Lyncei",
+  },
+  android: {
+    appendUserAgent: "LynceiApp/1.0",
+    backgroundColor: "#ffffff",
+    allowMixedContent: false,
   },
   plugins: {
     SplashScreen: {

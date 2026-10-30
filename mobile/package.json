@@ -1,14 +1,17 @@
 {
-  "name": "lyncei-ios",
+  "name": "lyncei-mobile",
   "version": "1.0.0",
   "private": true,
-  "description": "The Lyncei iOS app: a native shell around lyncei.com built with Capacitor.",
+  "description": "The Lyncei iOS and Android apps: a native shell around lyncei.com built with Capacitor.",
   "scripts": {
-    "sync": "cap sync ios",
+    "sync": "cap sync",
+    "sync:ios": "cap sync ios",
+    "sync:android": "cap sync android",
     "open": "cap open ios",
-    "assets": "capacitor-assets generate --ios"
+    "assets": "capacitor-assets generate"
   },
   "dependencies": {
+    "@capacitor/android": "^7.6.10",
     "@capacitor/app": "^7.1.2",
     "@capacitor/core": "^7.6.10",
     "@capacitor/ios": "^7.6.10",
