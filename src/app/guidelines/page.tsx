@@ -28,7 +28,7 @@ export default function Guidelines() {
       <ul>
         <li>Review only in your field, and only one type of review at a time.</li>
         <li>Declare any conflict of interest first: funding, collaborations, competing work, and any payment for the review itself, from anyone. "None" is a valid answer only when it's true.</li>
-        <li>Lyncei never sells reviews and never pays for a verdict. A review someone else paid you to write must say so.</li>
+        <li>Money never buys a verdict. When an organization commissions a review, it never picks the reviewer, Lyncei pays the reviewer a fee that doesn't depend on the verdict, and the sponsorship is shown on the review. Any other payment for a review, from anyone, must be declared as a conflict.</li>
         <li>You can't review your own posts or the posts of people you work with.</li>
       </ul>
 
