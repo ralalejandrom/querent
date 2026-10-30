@@ -131,11 +131,16 @@ export function PostCard({ p, full = false, signedIn }: { p: PostView; full?: bo
         {p.studyType && <span className="design">{DESIGN_LABELS[p.studyType] ?? p.studyType}</span>}
         {isPreprint(p.source?.sourceType) && <span className="design pre">Preprint · not peer-reviewed</span>}
         {p.revisedAfterReview && <span className="design rev" title="The author changed this post after a reviewer's feedback.">Revised after review</span>}
+        {hasConflict(p) && <span className="design coi" title={`The author declared: ${p.conflicts}`}>Conflict declared</span>}
         {p.author.example && <span className="design ex" title="This person, study and DOI are made up to show how Lyncei works.">Example · fictional</span>}
       </div>
       <h2 className="ptitle">{full ? p.title : <Link href={`/p/${p.id}`}>{p.title}</Link>}</h2>
       {body && <p className="pbody">{body}</p>}
       {p.mediaUrl && <video className="pvideo" src={p.mediaUrl} poster={posterFor(p.mediaUrl)} controls playsInline preload="metadata" aria-label={`Video: ${p.title}`} />}
+      {p.mediaCredit && <p className="credit">Credit: {p.mediaCredit}</p>}
+      {p.limitations && (full
+        ? <div className="limits"><b>What this doesn't show</b><p>{p.limitations}</p></div>
+        : <p className="caveat"><b>Caveat:</b> {p.limitations.length > 160 ? p.limitations.slice(0, 160) + "…" : p.limitations}</p>)}
       {p.why && !full && <p className="why">{p.why}</p>}
       {p.source ? (
         <a className="study" href={doiUrl ?? "#"} target="_blank" rel="noopener noreferrer">
@@ -148,6 +153,7 @@ export function PostCard({ p, full = false, signedIn }: { p: PostView; full?: bo
           </div>
         </a>
       ) : <div className="study missing">No source linked</div>}
+      {full && p.conflicts && <p className="disclose"><b>Author's conflicts of interest:</b> {p.conflicts}</p>}
       {p.question && <Link className="qlink" href={`/q/${p.question.slug}`}><Icon name="q" />{p.question.text}</Link>}
       <ReviewStrip p={p} />
       <div className="signals">
@@ -172,6 +178,9 @@ export function PostCard({ p, full = false, signedIn }: { p: PostView; full?: bo
   );
 }
 
+/** True when the author declared a conflict of interest (anything other than "None declared"). */
+export const hasConflict = (p: Pick<PostView, "conflicts">) => !!p.conflicts && p.conflicts !== "None declared";
+
 /** Demo videos ship with a poster frame next to them; uploaded videos show their first frame. */
 function posterFor(url: string) {
   return url.startsWith("/media/") ? url.replace(/\.mp4$/, ".jpg") : undefined;
@@ -192,7 +201,9 @@ export function ReelCard({ p }: { p: PostView }) {
           {p.author.example && <span className="design ex">Example · fictional</span>}
           <RigorChip rigor={p.rigor} />
           {p.studyType && <span className="design">{DESIGN_LABELS[p.studyType] ?? p.studyType}</span>}
+          {hasConflict(p) && <span className="design coi">Conflict declared</span>}
         </div>
+        {p.limitations && <p className="reelc-cav"><b>Caveat:</b> {p.limitations.length > 110 ? p.limitations.slice(0, 110) + "…" : p.limitations}</p>}
         {p.source && <Link className="reelc-src" href={`/p/${p.id}`}><Icon name="book" />{p.source.title}</Link>}
       </div>
     </article>

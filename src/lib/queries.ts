@@ -21,6 +21,10 @@ export interface PostView {
   source: { doi: string | null; title: string; venue: string | null; publishedYear: number | null; correctionStatus: string; sourceType: string | null } | null;
   studyType: string | null;
   mediaUrl: string | null;
+  /** Author's declared conflicts ("None declared"), limitations and media credit. Null on posts made before they were asked. */
+  conflicts: string | null;
+  limitations: string | null;
+  mediaCredit: string | null;
   question: { id: string; slug: string; text: string } | null;
   topic: string | null;
   topicId: number | null;
@@ -91,6 +95,7 @@ export async function loadPosts(opts: { where?: SQL; viewerId?: string | null; l
       source: source ? { doi: source.doi, title: source.title, venue: source.venue, publishedYear: source.publishedYear, correctionStatus: source.correctionStatus, sourceType: source.sourceType } : null,
       studyType: post.studyType,
       mediaUrl: post.mediaUrl,
+      conflicts: post.conflicts, limitations: post.limitations, mediaCredit: post.mediaCredit,
       question: question ? { id: question.id, slug: question.slug, text: question.text } : null,
       topic: topic?.label ?? null, topicId: topic?.id ?? null,
       likes: reactMap.get(key(post.id, "like")) ?? 0,
@@ -167,6 +172,11 @@ export async function getPostDetail(id: string, viewerId: string | null) {
       .where(and(eq(contributions.postId, id), viewerId ? or(eq(contributions.status, "visible"), and(eq(contributions.status, "held"), eq(contributions.authorId, viewerId))) : eq(contributions.status, "visible"), notBlockedFor(viewerId, contributions.authorId)))
       .orderBy(contributions.createdAt),
   ]);
+  // Mentored reviews: the people who reviewed alongside the reviewer.
+  const coIds = [...new Set(reviewRows.map((r) => r.review.coReviewerId).filter((x): x is string => !!x))];
+  const coUsers = coIds.length ? await db.select({ id: users.id, handle: users.handle, displayName: users.displayName, field: users.field }).from(users).where(inArray(users.id, coIds)) : [];
+  const coById = new Map(coUsers.map((u) => [u.id, u]));
+  const reviewsWithCo = reviewRows.map((r) => ({ ...r, coReviewer: r.review.coReviewerId ? coById.get(r.review.coReviewerId) ?? null : null }));
   type C = (typeof commentRows)[number] & { replies: (typeof commentRows)[number][] };
   const top: C[] = [];
   const byId = new Map<string, C>();
@@ -176,7 +186,7 @@ export async function getPostDetail(id: string, viewerId: string | null) {
     if (r.c.parentId && byId.has(r.c.parentId)) byId.get(r.c.parentId)!.replies.push(r);
     else top.push(node);
   }
-  return { post, reviews: reviewRows, comments: top };
+  return { post, reviews: reviewsWithCo, comments: top };
 }
 
 export async function getQuestions(viewerId: string | null) {

@@ -8,13 +8,14 @@ import { timeAgo } from "@/lib/text";
 import { Avatar, Empty, Icon, PostCard, Name } from "@/components/ui";
 import { ActionForm, ComposerFields, CopyText, ReplyToggle, ReportComment, Submit } from "@/components/client";
 import { Rail } from "@/components/rail";
-import { addContributionAction, rateReviewAction, reportPostAction, respondAction } from "@/app/actions";
+import { addContributionAction, coReviewAction, rateReviewAction, reportPostAction, respondAction } from "@/app/actions";
 import { after } from "next/server";
 import { ensureSourceSummary, loadSourcePreviews, needsSummary } from "@/lib/source-preview";
 import { RefPreview } from "@/components/ref-preview";
 import { ShareButton } from "@/components/client";
 
 type Params = { params: Promise<{ id: string }> };
+const AI_USE_LABELS: Record<string, string> = { none: "none", language: "language only", assist: "to help check" };
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const d = await getPostDetail((await params).id, null);
@@ -32,11 +33,11 @@ export default async function PostPage({ params }: Params) {
   const isAuthor = user?.id === post.author.id;
   // Right of reply: a review in its private window is shown only to the post's author, its reviewer and moderators.
   const now = new Date();
-  const reviews = d.reviews.filter(({ review: r }) => r.status !== "completed" || isPublicReview(r, now) || isAuthor || r.reviewerId === user?.id || isModerator(user));
+  const reviews = d.reviews.filter(({ review: r }) => r.status !== "completed" || isPublicReview(r, now) || isAuthor || r.reviewerId === user?.id || (!!user && r.coReviewerId === user.id) || isModerator(user));
   const pending = reviews.filter(({ review: r }) => r.status === "completed" && !isPublicReview(r, now));
   const citeYear = (dt: Date | null) => (dt ?? now).getUTCFullYear();
-  const citation = (r: (typeof reviews)[number]["review"], reviewer: (typeof reviews)[number]["reviewer"]) =>
-    `${r.isSigned ? reviewer.displayName : "Anonymous verified reviewer"} (${citeYear(r.completedAt)}). ${REVIEW_TYPE_LABELS[r.type as ReviewType]} of “${post.title}”. Lyncei. ${appUrl()}/p/${post.id}#review-${r.id}`;
+  const citation = (r: (typeof reviews)[number]["review"], reviewer: (typeof reviews)[number]["reviewer"], co: (typeof reviews)[number]["coReviewer"]) =>
+    `${r.isSigned ? reviewer.displayName + (co && r.coReviewerConfirmedAt ? ` and ${co.displayName}` : "") : "Anonymous verified reviewer"} (${citeYear(r.completedAt)}). ${REVIEW_TYPE_LABELS[r.type as ReviewType]} of “${post.title}”. Lyncei. ${appUrl()}/p/${post.id}#review-${r.id}`;
   // Cited papers: the post's source and any DOIs cited in the discussion.
   const citedDois = [post.source?.doi, ...comments.flatMap(({ c, replies }) => [c.sourceDoi, ...replies.map((r) => r.c.sourceDoi)])].filter((d): d is string => !!d);
   const previews = await loadSourcePreviews(citedDois);
@@ -91,9 +92,9 @@ export default async function PostPage({ params }: Params) {
             <b>You read {pending.length === 1 ? "this review" : "these reviews"} first.</b> {pending.length === 1 ? "It goes" : "They go"} public on {pending.map(({ review: r }) => r.publicAt!).sort((a, b) => a.getTime() - b.getTime())[0].toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit", timeZone: "America/New_York" })} ET, or as soon as you publish your response below. Disagreeing is fine: say why, with evidence.
           </div>
         )}
-        {reviews.length ? reviews.map(({ review: r, reviewer }) => (
+        {reviews.length ? reviews.map(({ review: r, reviewer, coReviewer: co }) => (
           <div className="review" key={r.id} id={`review-${r.id}`}>
-            {r.status === "completed" && !isPublicReview(r, now) && <div className="pendingnote">Private until {r.publicAt!.toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit", timeZone: "America/New_York" })} ET · only the author{isAuthor ? " (you)" : ""} and the reviewer can see it</div>}
+            {r.status === "completed" && !isPublicReview(r, now) && <div className="pendingnote">Private until {r.publicAt!.toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit", timeZone: "America/New_York" })} ET · only the author{isAuthor ? " (you)" : ""}, the reviewer{co ? " and the co-reviewer" : ""} can see it</div>}
             <div className="row">
               {r.isSigned ? <><Avatar name={reviewer.displayName} handle={reviewer.handle} size="sm" /><div><Link href={`/u/${reviewer.handle}`}><b><Name name={reviewer.displayName} verified /></b></Link> <span className="hint">· {reviewer.field}</span></div></> : <div><b>Verified reviewer</b> <span className="hint">· identity protected</span></div>}
               <span style={{ marginLeft: "auto" }} className={`pillst ${r.status === "completed" ? "done" : ""}`}>{r.status === "completed" ? "Completed" : "In progress"}</span>
@@ -101,7 +102,22 @@ export default async function PostPage({ params }: Params) {
             <div className="rtype" style={{ marginTop: 8 }}>{REVIEW_TYPE_LABELS[r.type as ReviewType]}{r.recommendation ? ` · ${r.recommendation}` : ""}</div>
             {r.summary ? <p>{r.summary}</p> : <p className="muted">Review underway.</p>}
             {Object.keys(r.checklist).length > 0 && <ul className="hint" style={{ margin: "8px 0 0", paddingLeft: 18 }}>{Object.keys(r.checklist).map((c) => <li key={c}>{c}</li>)}</ul>}
-            <div className="meta">{r.isSigned ? "Signed review" : "Identity verified by Lyncei and protected"} · Conflicts: {r.conflicts} · Reviewed version {r.postVersion}{r.completedAt ? ` · ${timeAgo(r.completedAt)} ago` : ""}</div>
+            {co && (r.coReviewerConfirmedAt || co.id === user?.id || r.reviewerId === user?.id) && (
+              <div className="coreview">
+                {r.isSigned || co.id === user?.id || r.reviewerId === user?.id
+                  ? <>Co-reviewed with <Link href={`/u/${co.handle}`}>{co.displayName}</Link>{co.field ? ` · ${co.field}` : ""}</>
+                  : <>Written with a co-reviewer, credited privately</>}
+                {!r.coReviewerConfirmedAt && <span className="hint"> · waiting for {co.id === user?.id ? "you" : co.displayName} to confirm</span>}
+                {co.id === user?.id && !r.coReviewerConfirmedAt && (
+                  <form action={coReviewAction} style={{ display: "inline" }}>
+                    <input type="hidden" name="reviewId" value={r.id} />
+                    <button className="btn pri sm" name="decision" value="confirm">Confirm, I co-reviewed this</button>
+                    <button className="btn sm" name="decision" value="decline">Not me</button>
+                  </form>
+                )}
+              </div>
+            )}
+            <div className="meta">{r.isSigned ? "Signed review" : "Identity verified by Lyncei and protected"} · Conflicts: {r.conflicts}{r.aiUse ? ` · AI use: ${AI_USE_LABELS[r.aiUse] ?? r.aiUse}` : ""} · Reviewed version {r.postVersion}{r.completedAt ? ` · ${timeAgo(r.completedAt)} ago` : ""}</div>
             {(r.ledToRevision || (r.helpfulness ?? 0) >= 4) && (
               <div className="impact">
                 {r.ledToRevision && <span className="chip ok">Led the author to revise the post</span>}
@@ -111,8 +127,8 @@ export default async function PostPage({ params }: Params) {
             {r.status === "completed" && isPublicReview(r, now) && (
               <details className="cite">
                 <summary>Cite this review</summary>
-                <p className="citetext">{citation(r, reviewer)}</p>
-                <CopyText text={citation(r, reviewer)} label="Copy citation" />
+                <p className="citetext">{citation(r, reviewer, co)}</p>
+                <CopyText text={citation(r, reviewer, co)} label="Copy citation" />
               </details>
             )}
             {isAuthor && r.status === "completed" && (

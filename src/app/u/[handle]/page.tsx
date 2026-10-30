@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { isExampleEmail, showExamples } from "@/lib/examples";
 import { notFound } from "next/navigation";
-import { and, count, desc, eq, lte, sql } from "drizzle-orm";
+import { and, count, desc, eq, isNotNull, lte, sql } from "drizzle-orm";
 import { db, schema } from "@/db";
 import { getCurrentUser } from "@/lib/auth";
 import { loadPosts } from "@/lib/queries";
@@ -21,7 +21,7 @@ export default async function Profile({ params }: { params: Promise<{ handle: st
   const blockRows = viewer && !isMe ? await db.select().from(schema.blocks).where(sql`(${schema.blocks.blockerId} = ${viewer.id} and ${schema.blocks.blockedId} = ${u.id}) or (${schema.blocks.blockerId} = ${u.id} and ${schema.blocks.blockedId} = ${viewer.id})`) : [];
   const iBlocked = blockRows.some((b) => b.blockerId === viewer?.id);
   const blocked = blockRows.length > 0;
-  const [roles, list, reviews, [{ n: followers }], following, [{ n: reviewTotal }], [impact]] = await Promise.all([
+  const [roles, list, reviews, [{ n: followers }], following, [{ n: reviewTotal }], [impact], coReviews] = await Promise.all([
     db.select().from(schema.userRoles).where(eq(schema.userRoles.userId, u.id)),
     loadPosts({ where: eq(schema.posts.authorId, u.id), viewerId: viewer?.id ?? null }),
     db.select({ r: schema.reviews, title: schema.posts.title }).from(schema.reviews).innerJoin(schema.posts, eq(schema.posts.id, schema.reviews.postId))
@@ -36,6 +36,11 @@ export default async function Profile({ params }: { params: Promise<{ handle: st
       revisedOwn: sql<number>`count(distinct ${schema.reviews.postId}) filter (where ${schema.posts.authorId} = ${u.id} and ${schema.reviews.ledToRevision})`.mapWith(Number),
     }).from(schema.reviews).innerJoin(schema.posts, eq(schema.posts.id, schema.reviews.postId))
       .where(and(eq(schema.reviews.status, "completed"), lte(schema.reviews.publicAt, new Date()))),
+    // Mentored reviews this person confirmed. Listed publicly only when the lead reviewer signed the review.
+    db.select({ r: schema.reviews, title: schema.posts.title, lead: schema.users.displayName }).from(schema.reviews)
+      .innerJoin(schema.posts, eq(schema.posts.id, schema.reviews.postId)).innerJoin(schema.users, eq(schema.users.id, schema.reviews.reviewerId))
+      .where(and(eq(schema.reviews.coReviewerId, u.id), isNotNull(schema.reviews.coReviewerConfirmedAt), eq(schema.reviews.status, "completed"), isMeOrSigned(isMe), isMe ? sql`true` : lte(schema.reviews.publicAt, new Date())))
+      .orderBy(desc(schema.reviews.completedAt)),
   ]);
   const totalReviews = Number(reviewTotal);
   const hiddenReviews = totalReviews - reviews.length;
@@ -79,6 +84,7 @@ export default async function Profile({ params }: { params: Promise<{ handle: st
           <div><b>{totalReviews}</b><span>Reviews written</span></div>
           <div><b>{impact.improved}</b><span>Posts improved by their reviews</span></div>
           <div><b>{impact.useful}</b><span>Reviews rated useful</span></div>
+          {coReviews.length > 0 && <div><b>{coReviews.length}</b><span>Co-reviews</span></div>}
           <div><b>{Number(followers)}</b><span>Followers</span></div>
         </div>
         <div className="sec"><h2>Posts</h2></div>
@@ -88,6 +94,15 @@ export default async function Profile({ params }: { params: Promise<{ handle: st
           <div className="card" key={r.id}><div className="rtype">{REVIEW_TYPE_LABELS[r.type as ReviewType]} · {r.recommendation}</div><h2 className="ptitle" style={{ fontSize: 17, marginTop: 4 }}><Link href={`/p/${r.postId}`}>{title}</Link></h2><p className="hint" style={{ margin: 0 }}>{r.isSigned ? "Signed" : "Identity protected (only you see it here)"} · Conflicts: {r.conflicts}</p></div>
         )) : <p className="muted">{isMe ? "Every review you write is credited here, including those with your identity protected." : hiddenReviews > 0 ? "" : "No reviews yet."}</p>}
         {hiddenReviews > 0 && <p className="muted">{hiddenReviews} more {hiddenReviews === 1 ? "review" : "reviews"} with identity protected, credited but not listed.</p>}
+        {coReviews.length > 0 && (
+          <>
+            <div className="sec"><h2>Co-reviews</h2></div>
+            <p className="hint" style={{ marginTop: -4 }}>Reviews written alongside a verified reviewer, as part of learning to review.</p>
+            {coReviews.map(({ r, title, lead }) => (
+              <div className="card" key={r.id}><div className="rtype">{REVIEW_TYPE_LABELS[r.type as ReviewType]} · {r.recommendation}</div><h2 className="ptitle" style={{ fontSize: 17, marginTop: 4 }}><Link href={`/p/${r.postId}#review-${r.id}`}>{title}</Link></h2><p className="hint" style={{ margin: 0 }}>{r.isSigned ? `With ${lead}` : "With a reviewer whose identity is protected (only you see it here)"}</p></div>
+            ))}
+          </>
+        )}
       </main>
       <Rail />
     </>

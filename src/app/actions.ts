@@ -120,19 +120,26 @@ const postSchema = z.object({
   ai: z.boolean(),
   studyType: z.union([z.enum(schema.studyTypeEnum.enumValues), z.literal("")]),
   mediaUrl: z.union([z.string().max(500).refine(isOurVideoUrl, "That video link isn't valid. Upload the video again."), z.literal("")]),
+  conflicts: z.string().min(1, "Declare your conflicts of interest, or write “None”.").max(500),
+  limitations: z.string().max(1500),
+  mediaCredit: z.string().max(300),
 });
+/** "None", "none.", "n/a" and similar all read as no conflict. */
+const noConflict = (s: string) => /^(none|no|n\/?a|nothing)\.?$/i.test(s.trim());
 
 export async function createPostAction(_: ActionState, fd: FormData): Promise<ActionState> {
   const user = await requireUser("/new");
   const parsed = postSchema.safeParse({
     kind: str(fd, "kind"), title: str(fd, "title"), body: str(fd, "body"), doi: str(fd, "doi"),
     questionId: str(fd, "questionId"), topicId: str(fd, "topicId"), ai: fd.get("ai") === "on", studyType: str(fd, "studyType"),
-    mediaUrl: str(fd, "mediaUrl"),
+    mediaUrl: str(fd, "mediaUrl"), conflicts: str(fd, "conflicts"), limitations: str(fd, "limitations"), mediaCredit: str(fd, "mediaCredit"),
   });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Check the form and try again." };
   const p = parsed.data;
   if (fd.get("noPatientData") !== "on") return { error: "Confirm that no patient or participant can be identified from this post." };
   if (p.kind === "video" && !p.mediaUrl) return { error: "Add your video, or pick another format." };
+  if (p.doi && p.limitations.length < 15) return { error: "Say what the study can't show, in at least a sentence. Readers need the caveats as much as the finding." };
+  const conflicts = noConflict(p.conflicts) ? "None declared" : p.conflicts;
 
   let sourceId: string | null = null;
   if (p.doi) {
@@ -140,13 +147,14 @@ export async function createPostAction(_: ActionState, fd: FormData): Promise<Ac
     if ("error" in s) return { error: s.error };
     sourceId = s.id;
   }
-  const held = needsModeration(p.title, p.body);
+  const held = needsModeration(p.title, p.body, p.limitations, p.mediaCredit, conflicts);
   const [post] = await db.transaction(async (tx) => {
     const inserted = await tx.insert(schema.posts).values({
       authorId: user.id, kind: p.kind, title: p.title, body: p.body, sourceId, status: held ? "held" : "visible",
       questionId: p.questionId || null, topicId: p.topicId === "" ? null : p.topicId, aiAssisted: p.ai, studyType: p.studyType || null, mediaUrl: p.mediaUrl || null,
+      conflicts, limitations: p.limitations || null, mediaCredit: p.mediaCredit || null,
     }).returning({ id: schema.posts.id });
-    await audit(tx, { actorId: user.id, entityType: "post", entityId: inserted[0].id, action: "post.created", after: { title: p.title, sourceId, mediaUrl: p.mediaUrl || null, held } });
+    await audit(tx, { actorId: user.id, entityType: "post", entityId: inserted[0].id, action: "post.created", after: { title: p.title, sourceId, mediaUrl: p.mediaUrl || null, conflicts, held } });
     if (held) await tx.insert(schema.reports).values({ postId: inserted[0].id, reporterId: user.id, reason: "auto_filter", details: "Held automatically before publishing: the text matched the content filter." });
     return inserted;
   });
@@ -238,6 +246,7 @@ export async function addContributionAction(_: ActionState, fd: FormData): Promi
 const REPLY_HOURS = Math.max(0, Number(process.env.REVIEW_REPLY_HOURS ?? 48)) || 48;
 const RECS = ["Sound", "Sound with caveats", "Faithful to source", "Major concerns", "Not faithful to source"] as const;
 const LEVELS = ["High", "Moderate", "Low"] as const;
+const AI_USES = ["none", "language", "assist"] as const;
 const reviewSchema = z.object({
   postId: uuid,
   type: z.enum(schema.reviewTypeEnum.enumValues),
@@ -246,6 +255,8 @@ const reviewSchema = z.object({
   recommendation: z.enum(RECS),
   conflicts: z.string().min(1, "Declare your conflicts of interest, or write “None”.").max(500),
   signed: z.boolean(),
+  aiUse: z.enum(AI_USES, { message: "Say whether you used AI tools for this review." }),
+  coReviewer: z.string().max(60),
 });
 const ratingsSchema = z.object({
   rigor: z.enum(LEVELS), bias: z.enum(["Low", "Moderate", "High"]), relevance: z.enum(LEVELS),
@@ -258,6 +269,7 @@ export async function submitReviewAction(_: ActionState, fd: FormData): Promise<
   const parsed = reviewSchema.safeParse({
     postId: str(fd, "postId"), type: str(fd, "type"), checklist: fd.getAll("checklist").map(String),
     summary: str(fd, "summary"), recommendation: str(fd, "recommendation"), conflicts: str(fd, "conflicts"), signed: fd.get("signed") === "on",
+    aiUse: str(fd, "aiUse"), coReviewer: str(fd, "coReviewer"),
   });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Check the review form." };
   const r = parsed.data;
@@ -275,6 +287,18 @@ export async function submitReviewAction(_: ActionState, fd: FormData): Promise<
   if (!post.source) return { error: "Posts without a source can't be reviewed." };
   if (post.source.provenance.provider === "unresolved") return { error: "This post's DOI hasn't been verified yet, so it can't be reviewed." };
 
+  // Mentored review: the co-reviewer is named by handle and credited only after they confirm.
+  let coReviewer: { id: string; displayName: string } | null = null;
+  const coHandle = r.coReviewer.trim().replace(/^@/, "").toLowerCase();
+  if (coHandle) {
+    const [u] = await db.select({ id: schema.users.id, displayName: schema.users.displayName, deletedAt: schema.users.deletedAt }).from(schema.users).where(sql`lower(${schema.users.handle}) = ${coHandle}`).limit(1);
+    if (!u || u.deletedAt) return { error: `There's no Lyncei member with the handle @${coHandle}.` };
+    if (u.id === user.id) return { error: "Name someone else as co-reviewer, or leave it empty." };
+    if (u.id === post.post.authorId) return { error: "The post's author can't co-review their own post." };
+    if (await blockedBetween(user.id, u.id)) return { error: `You can't name @${coHandle} as co-reviewer.` };
+    coReviewer = u;
+  }
+
   try {
     // Right of reply: the author reads the review first. It goes public after REVIEW_REPLY_HOURS, or as soon as the author responds.
     const now = new Date();
@@ -282,10 +306,11 @@ export async function submitReviewAction(_: ActionState, fd: FormData): Promise<
     await db.transaction(async (tx) => {
       const [row] = await tx.insert(schema.reviews).values({
         postId: r.postId, reviewerId: user.id, type: r.type, status: "completed", recommendation: r.recommendation, summary: r.summary,
-        checklist: Object.fromEntries(r.checklist.map((k) => [k, true])), ratings, conflicts: /^none\.?$/i.test(r.conflicts) ? "None declared" : r.conflicts,
-        isSigned: r.signed, postVersion: post.post.version, completedAt: now, publicAt,
+        checklist: Object.fromEntries(r.checklist.map((k) => [k, true])), ratings, conflicts: noConflict(r.conflicts) ? "None declared" : r.conflicts,
+        isSigned: r.signed, postVersion: post.post.version, completedAt: now, publicAt, aiUse: r.aiUse, coReviewerId: coReviewer?.id ?? null,
       }).returning({ id: schema.reviews.id });
-      await audit(tx, { actorId: user.id, entityType: "review", entityId: row.id, action: "review.completed", after: { postId: r.postId, type: r.type, recommendation: r.recommendation, publicAt } });
+      await audit(tx, { actorId: user.id, entityType: "review", entityId: row.id, action: "review.completed", after: { postId: r.postId, type: r.type, recommendation: r.recommendation, publicAt, aiUse: r.aiUse, coReviewerId: coReviewer?.id ?? null } });
+      if (coReviewer) await notify(tx, coReviewer.id, `${user.displayName} named you as co-reviewer of “${post.post.title.slice(0, 60)}”. Confirm to have it credited on your profile.`, `/p/${r.postId}#review-${row.id}`);
       await notify(tx, post.post.authorId, `${r.signed ? user.displayName : "A reviewer"} completed a ${REVIEW_TYPE_LABELS[r.type].toLowerCase()} on “${post.post.title.slice(0, 60)}”. You see it first: it goes public in ${REPLY_HOURS} hours, or as soon as you reply.`, `/p/${r.postId}#review-${row.id}`);
     });
     revalidatePath(`/p/${r.postId}`);
@@ -320,6 +345,34 @@ export async function rateReviewAction(fd: FormData) {
   });
   revalidatePath(`/p/${row.post.id}`);
   revalidatePath("/");
+}
+
+/**
+ * The person named as co-reviewer confirms (credit on their profile and in the review's citation) or declines (their name is removed).
+ * Nobody is credited, or named, on a review they didn't agree to.
+ */
+export async function coReviewAction(fd: FormData) {
+  const user = await requireUser();
+  const reviewId = str(fd, "reviewId");
+  const decision = str(fd, "decision");
+  if (!uuid.safeParse(reviewId).success || (decision !== "confirm" && decision !== "decline")) return;
+  const [row] = await db.select({ review: schema.reviews, post: schema.posts }).from(schema.reviews)
+    .innerJoin(schema.posts, eq(schema.posts.id, schema.reviews.postId)).where(eq(schema.reviews.id, reviewId)).limit(1);
+  if (!row || row.review.coReviewerId !== user.id) return;
+  if (decision === "confirm" && row.review.coReviewerConfirmedAt) return;
+  const title = row.post.title.slice(0, 60);
+  await db.transaction(async (tx) => {
+    if (decision === "confirm") {
+      await tx.update(schema.reviews).set({ coReviewerConfirmedAt: new Date() }).where(eq(schema.reviews.id, reviewId));
+      await notify(tx, row.review.reviewerId, `${user.displayName} confirmed co-reviewing “${title}” with you.`, `/p/${row.post.id}#review-${reviewId}`);
+    } else {
+      await tx.update(schema.reviews).set({ coReviewerId: null, coReviewerConfirmedAt: null }).where(eq(schema.reviews.id, reviewId));
+      await notify(tx, row.review.reviewerId, `${user.displayName} declined to be named as co-reviewer of “${title}”. Their name was removed from the review.`, `/p/${row.post.id}#review-${reviewId}`);
+    }
+    await audit(tx, { actorId: user.id, entityType: "review", entityId: reviewId, action: decision === "confirm" ? "review.coreviewer_confirmed" : "review.coreviewer_declined", after: { coReviewerId: user.id } });
+  });
+  revalidatePath(`/p/${row.post.id}`);
+  revalidatePath(`/u/${user.handle}`);
 }
 
 /* ------------------------------------------------------------ moderation */

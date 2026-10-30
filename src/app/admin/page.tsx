@@ -12,7 +12,7 @@ const ago = (d: Date) => { const t = timeAgo(d); return t === "now" ? "just now"
 export default async function Admin() {
   const user = await requireUser("/admin");
   if (!isPlatformAdmin(user)) notFound();
-  const { reviewers, waitlist, users, statusOf } = await loadSignups();
+  const { reviewers, waitlist, users, statusOf, coReviewsOf } = await loadSignups();
   const individuals = waitlist.filter((w) => w.interest === "individual");
   const partners = waitlist.filter((w) => w.interest === "institutional");
 
@@ -35,11 +35,11 @@ export default async function Admin() {
 
       <Section title="Founding reviewer applications" csv="reviewers" count={reviewers.length}>
         <table className="atbl">
-          <thead><tr><th>Name</th><th>Field</th><th>Institution</th><th>Stage</th><th>Reviews/mo</th><th>ORCID</th><th>When</th><th>Access</th></tr></thead>
+          <thead><tr><th>Name</th><th>Field</th><th>Institution</th><th>Stage</th><th>Reviews/mo</th><th title="Reviews co-written with a verified reviewer, confirmed">Co-reviews</th><th>ORCID</th><th>When</th><th>Access</th></tr></thead>
           <tbody>{reviewers.map((r) => (
             <tr key={r.id}>
               <td><b>{r.name}</b><small>{r.email}</small></td><td>{r.field}</td><td>{r.institution}</td>
-              <td>{STAGE_LABELS[r.careerStage] ?? r.careerStage}</td><td className="num">{r.reviewsPerMonth}</td>
+              <td>{STAGE_LABELS[r.careerStage] ?? r.careerStage}</td><td className="num">{r.reviewsPerMonth}</td><td className="num">{coReviewsOf(r.email) || "—"}</td>
               <td className="when">{r.orcidId ? <a href={`https://orcid.org/${r.orcidId}`} target="_blank" rel="noopener noreferrer">{r.orcidId}</a> : "—"}</td>
               <td className="when">{ago(r.createdAt)}</td>
               <td>{statusOf(r.email) === "reviewer" ? <span className="astat ok">Approved reviewer</span> : (

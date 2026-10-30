@@ -71,6 +71,13 @@
       "when": 1793325315438,
       "tag": "0009_passwords_blocks_push",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1793328024776,
+      "tag": "0010_transparency_and_coreview",
+      "breakpoints": true
     }
   ]
 }

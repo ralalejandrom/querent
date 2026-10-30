@@ -147,6 +147,12 @@ export const posts = pgTable("posts", {
   /** Study design of the cited research, chosen by the author. */
   studyType: studyTypeEnum("study_type"),
   aiAssisted: boolean("ai_assisted").notNull().default(false),
+  /** The author's own conflicts of interest ("None declared" when they have none). Null on posts made before it was asked. */
+  conflicts: text("conflicts"),
+  /** What the study can't show: the author's own statement of limitations and caveats. */
+  limitations: text("limitations"),
+  /** Who made the video, figure or image, when it isn't the author's own. */
+  mediaCredit: text("media_credit"),
   status: postStatusEnum("status").notNull().default("visible"),
   disputedReason: text("disputed_reason"),
   authorResponse: text("author_response"),
@@ -182,6 +188,11 @@ export const reviews = pgTable("reviews", {
   /** The author changed the post because of this review. */
   ledToRevision: boolean("led_to_revision").notNull().default(false),
   authorRatedAt: timestamp("author_rated_at", { withTimezone: true }),
+  /** How AI tools were used: "none", "language" (wording, translation) or "assist" (finding references, checking calculations). Null on older reviews. */
+  aiUse: text("ai_use"),
+  /** Mentored review: someone who reviewed alongside the reviewer, often a student or early-career researcher. Credited once they confirm. */
+  coReviewerId: uuid("co_reviewer_id").references(() => users.id),
+  coReviewerConfirmedAt: timestamp("co_reviewer_confirmed_at", { withTimezone: true }),
 }, (t) => [
   index("reviews_post_idx").on(t.postId),
   uniqueIndex("reviews_one_per_type_uq").on(t.postId, t.reviewerId, t.type),

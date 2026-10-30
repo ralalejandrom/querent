@@ -24,6 +24,13 @@ const DEMO_VIDEOS: Record<string, string> = {
 };
 const ago = (h: number) => new Date(Date.now() - h * 3_600_000);
 
+/** Fictional limitations and conflicts for the fictional example posts: [title, what it doesn't show, conflicts]. */
+const DEMO_DISCLOSURES: [string, string, string][] = [
+  ["Early results from a multicenter trial on SGLT2 inhibitors in heart failure with preserved ejection fraction", "Interim results from one trial. The benefit comes mostly from fewer hospitalizations, not deaths, and patients over 80 were few.", "I was a site investigator in this trial."],
+  ["Updated meta-analysis on neoadjuvant immunotherapy in early-stage NSCLC", "Overall survival data are still immature, and the trials used different drugs and schedules, so the pooled estimate hides real differences.", "None declared"],
+  ["Why our sleep study surprised us", "A lab study in 48 young adults over one night. It can't say whether the effect lasts or applies to older people.", "I'm an author of this study."],
+];
+
 async function main() {
   if (process.env.NODE_ENV === "production" && process.env.ALLOW_DEMO_SEED !== "1") throw new Error("Refusing to seed production. Set ALLOW_DEMO_SEED=1 for a demo deployment.");
   if (process.env.ALLOW_DEMO_SEED === "0") { console.log("ALLOW_DEMO_SEED=0; skipping seed."); return; }
@@ -46,6 +53,12 @@ async function main() {
   await db.execute(sql`update reviews r set helpfulness = 5, led_to_revision = true
     from posts p where p.id = r.post_id and r.type = 'statistical' and r.led_to_revision = false
       and p.title = 'Early results from a multicenter trial on SGLT2 inhibitors in heart failure with preserved ejection fraction'`);
+
+  // Example posts show the author's limitations and conflicts the way real posts now do.
+  for (const [title, limitations, conflicts] of DEMO_DISCLOSURES) {
+    await db.execute(sql`update posts p set limitations = coalesce(p.limitations, ${limitations}), conflicts = coalesce(p.conflicts, ${conflicts})
+      from users a where a.id = p.author_id and a.email like '%@example.com' and p.title = ${title}`);
+  }
 
   const [{ n }] = await db.select({ n: count() }).from(schema.users);
   if (Number(n) > 0) { console.log("Database already has users; skipping seed."); return; }
