@@ -21,8 +21,19 @@ const CSP = [
   "upgrade-insecure-requests",
 ].join("; ");
 
+/** Other domains that point at this project and send everyone to lyncei.com, keeping the path. */
+const REDIRECT_HOSTS = ["lincei.com", "www.lincei.com", "lincei.app", "www.lincei.app"];
+
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  async redirects() {
+    return REDIRECT_HOSTS.map((host) => ({
+      source: "/:path*",
+      has: [{ type: "host" as const, value: host }],
+      destination: "https://lyncei.com/:path*",
+      permanent: true,
+    }));
+  },
   async rewrites() {
     return [
       { source: "/welcome", destination: "/welcome.html" },
