@@ -9,6 +9,7 @@ import { slugify } from "./text";
 import { sendEmail } from "./email";
 import { emailHtml } from "./email-layout";
 import { adminEmailList, applyGrant, canSignIn } from "./access";
+import { burnPasswordCheck, verifyPassword } from "./password";
 
 const SESSION_COOKIE = "querent_session";
 const SESSION_DAYS = 30;
@@ -29,9 +30,104 @@ export interface CurrentUser {
   roles: Set<Role>;
 }
 
-const MAX_LINKS_PER_EMAIL = 5; // per LOGIN_TOKEN_MINUTES window
+const MAX_LINKS_PER_EMAIL = 5; // per 15-minute window, per purpose
 
-const esc = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+/** One-time email tokens. "login" signs in, "verify" confirms a new account, "reset" sets a new password. */
+export type TokenPurpose = "login" | "verify" | "reset";
+const TOKEN_MINUTES: Record<TokenPurpose, number> = { login: LOGIN_TOKEN_MINUTES, verify: 24 * 60, reset: 30 };
+
+/** Creates a token, or returns null when this address already asked for too many in the last 15 minutes. */
+async function issueEmailToken(email: string, purpose: TokenPurpose): Promise<string | null> {
+  const address = email.toLowerCase();
+  const since = new Date(Date.now() - 15 * 60_000);
+  const [{ n }] = await db.select({ n: count() }).from(schema.loginTokens)
+    .where(and(eq(schema.loginTokens.email, address), eq(schema.loginTokens.purpose, purpose), gt(schema.loginTokens.createdAt, since)));
+  if (n >= MAX_LINKS_PER_EMAIL) return null;
+  const token = newToken();
+  await db.insert(schema.loginTokens).values({
+    tokenHash: hashToken(token), email: address, purpose,
+    expiresAt: new Date(Date.now() + TOKEN_MINUTES[purpose] * 60_000),
+  });
+  return token;
+}
+
+/** The email of an unused, unexpired token (without using it up), or null. */
+export async function peekEmailToken(token: string, purpose: TokenPurpose): Promise<string | null> {
+  if (!token) return null;
+  const [row] = await db.select({ email: schema.loginTokens.email }).from(schema.loginTokens)
+    .where(and(eq(schema.loginTokens.tokenHash, hashToken(token)), eq(schema.loginTokens.purpose, purpose), isNull(schema.loginTokens.usedAt), gt(schema.loginTokens.expiresAt, new Date())))
+    .limit(1);
+  return row?.email ?? null;
+}
+
+/** Uses up a token and returns its email, or null when it's invalid, used or expired. */
+export async function consumeEmailToken(token: string, purpose: TokenPurpose): Promise<string | null> {
+  const now = new Date();
+  const [row] = await db.update(schema.loginTokens).set({ usedAt: now })
+    .where(and(eq(schema.loginTokens.tokenHash, hashToken(token)), eq(schema.loginTokens.purpose, purpose), isNull(schema.loginTokens.usedAt), gt(schema.loginTokens.expiresAt, now)))
+    .returning({ email: schema.loginTokens.email });
+  return row?.email ?? null;
+}
+
+const safePath = (next: string) => (next.startsWith("/") && !next.startsWith("//") ? next : "/");
+
+/** Confirmation email for a new account. Silently does nothing past the rate limit. */
+export async function sendVerifyEmail(email: string, next = "/"): Promise<void> {
+  const token = await issueEmailToken(email, "verify");
+  if (!token) return;
+  const link = `${appUrl()}/auth/confirm?token=${encodeURIComponent(token)}&next=${encodeURIComponent(safePath(next))}`;
+  await sendEmail({
+    to: email,
+    subject: "Confirm your Lyncei account",
+    text: `Welcome to Lyncei. Confirm your email to finish creating your account:\n\n${link}\n\nThe link expires in 24 hours. If you didn't sign up, you can ignore this email.`,
+    html: emailHtml({
+      heading: "Confirm your email",
+      preview: "One step left to finish creating your Lyncei account.",
+      paragraphs: ["Welcome to Lyncei. Confirm your email to finish creating your account. The link expires in 24 hours."],
+      button: { label: "Confirm my email", href: link },
+      footnote: "If you didn't sign up for Lyncei, you can ignore this email and no account will be created.",
+    }),
+  });
+}
+
+/** Password reset email. Silently does nothing past the rate limit. */
+export async function sendResetEmail(email: string): Promise<void> {
+  const token = await issueEmailToken(email, "reset");
+  if (!token) return;
+  const link = `${appUrl()}/reset?token=${encodeURIComponent(token)}`;
+  await sendEmail({
+    to: email,
+    subject: "Reset your Lyncei password",
+    text: `Choose a new password for Lyncei:\n\n${link}\n\nThe link works once and expires in 30 minutes. If you didn't ask for this, you can ignore this email; your password stays the same.`,
+    html: emailHtml({
+      heading: "Reset your password",
+      preview: "Choose a new password. The link expires in 30 minutes.",
+      paragraphs: ["Use the button below to choose a new password. The link works once and expires in 30 minutes."],
+      button: { label: "Choose a new password", href: link },
+      footnote: "If you didn't ask to reset your password, you can ignore this email. Your password stays the same.",
+    }),
+  });
+}
+
+/** Sent when someone signs up with an email that already has an account, instead of revealing that on screen. */
+export async function sendAccountExistsEmail(email: string): Promise<void> {
+  const token = await issueEmailToken(email, "reset");
+  if (!token) return;
+  const link = `${appUrl()}/reset?token=${encodeURIComponent(token)}`;
+  await sendEmail({
+    to: email,
+    subject: "You already have a Lyncei account",
+    text: `Someone tried to create a Lyncei account with this email, but you already have one. Sign in at ${appUrl()}/login, or choose a new password here:\n\n${link}\n\nIf it wasn't you, you can ignore this email.`,
+    html: emailHtml({
+      heading: "You already have an account",
+      preview: "Sign in, or choose a new password if you forgot it.",
+      paragraphs: ["Someone tried to create a Lyncei account with this email, but you already have one. Sign in as usual, or choose a new password if you forgot it."],
+      button: { label: "Choose a new password", href: link },
+      footnote: "If it wasn't you, you can ignore this email. Nothing has changed on your account.",
+    }),
+  });
+}
+
 function loginEmailHtml(link: string): string {
   return emailHtml({
     heading: "Your sign-in link",
@@ -48,17 +144,8 @@ function loginEmailHtml(link: string): string {
  */
 export async function sendLoginLink(email: string, next = "/"): Promise<void> {
   const address = email.toLowerCase();
-  const since = new Date(Date.now() - LOGIN_TOKEN_MINUTES * 60_000);
-  const [{ n }] = await db.select({ n: count() }).from(schema.loginTokens)
-    .where(and(eq(schema.loginTokens.email, address), gt(schema.loginTokens.createdAt, since)));
-  if (n >= MAX_LINKS_PER_EMAIL) return;
-
-  const token = newToken();
-  await db.insert(schema.loginTokens).values({
-    tokenHash: hashToken(token),
-    email: address,
-    expiresAt: new Date(Date.now() + LOGIN_TOKEN_MINUTES * 60_000),
-  });
+  const token = await issueEmailToken(address, "login");
+  if (!token) return;
   const safeNext = next.startsWith("/") && !next.startsWith("//") ? next : "/";
   const link = `${appUrl()}/auth/verify?token=${encodeURIComponent(token)}&next=${encodeURIComponent(safeNext)}`;
   await sendEmail({
@@ -98,7 +185,7 @@ export async function consumeLoginToken(token: string): Promise<{ id: string; is
   const [row] = await db
     .update(schema.loginTokens)
     .set({ usedAt: now })
-    .where(and(eq(schema.loginTokens.tokenHash, hashToken(token)), isNull(schema.loginTokens.usedAt), gt(schema.loginTokens.expiresAt, now)))
+    .where(and(eq(schema.loginTokens.tokenHash, hashToken(token)), eq(schema.loginTokens.purpose, "login"), isNull(schema.loginTokens.usedAt), gt(schema.loginTokens.expiresAt, now)))
     .returning();
   if (!row) return null;
 
@@ -110,16 +197,49 @@ export async function consumeLoginToken(token: string): Promise<{ id: string; is
     await applyGrant(existing.id, row.email);
     return { id: existing.id, isNew: false, email: row.email };
   }
-  if (!(await canSignIn(row.email))) return null; // early access: only invited emails get a new account
-  const local = row.email.split("@")[0] ?? "member";
-  const [created] = await db
-    .insert(schema.users)
-    .values({ email: row.email, handle: await uniqueHandle(local), displayName: local, emailVerifiedAt: now })
-    .returning({ id: schema.users.id });
+  if (!(await canSignIn(row.email))) return null; // invite-only mode: only invited emails get a new account
+  const id = await createAccount({ email: row.email, verified: true });
+  return { id, isNew: true, email: row.email };
+}
+
+/** Creates an account with the member role. Verified accounts get founder roles and access grants right away. */
+export async function createAccount(input: { email: string; displayName?: string; passwordHash?: string; field?: string; verified: boolean; termsAccepted?: boolean }): Promise<string> {
+  const email = input.email.toLowerCase();
+  const local = email.split("@")[0] ?? "member";
+  const now = new Date();
+  const [created] = await db.insert(schema.users).values({
+    email, handle: await uniqueHandle(input.displayName || local), displayName: input.displayName || local,
+    field: input.field ?? "", emailVerifiedAt: input.verified ? now : null,
+    passwordHash: input.passwordHash ?? null, passwordUpdatedAt: input.passwordHash ? now : null,
+    termsAcceptedAt: input.termsAccepted ? now : null,
+  }).returning({ id: schema.users.id });
   await db.insert(schema.userRoles).values({ userId: created.id, role: "member" }).onConflictDoNothing();
-  await grantFounderRoles(created.id, row.email);
-  await applyGrant(created.id, row.email);
-  return { id: created.id, isNew: true, email: row.email };
+  if (input.verified) await onVerifiedSignIn(created.id, email);
+  return created.id;
+}
+
+/** Roles that depend on the email: the founding team's, and reviewer access granted from /admin. */
+export async function onVerifiedSignIn(userId: string, email: string): Promise<void> {
+  await grantFounderRoles(userId, email);
+  await applyGrant(userId, email);
+}
+
+export const findUserByEmail = async (email: string) =>
+  (await db.select().from(schema.users).where(and(sql`lower(${schema.users.email}) = ${email.toLowerCase()}`, isNull(schema.users.deletedAt))).limit(1))[0] ?? null;
+
+export type PasswordSignIn = { ok: true; id: string } | { ok: false; reason: "invalid" | "unverified"; email?: string };
+
+/** Checks an email and password. Takes the same time whether or not the account exists. */
+export async function passwordSignIn(email: string, password: string): Promise<PasswordSignIn> {
+  const user = await findUserByEmail(email);
+  if (!user?.passwordHash) {
+    await burnPasswordCheck(password);
+    return { ok: false, reason: "invalid" };
+  }
+  if (!(await verifyPassword(password, user.passwordHash))) return { ok: false, reason: "invalid" };
+  if (!user.emailVerifiedAt) return { ok: false, reason: "unverified", email: user.email };
+  await onVerifiedSignIn(user.id, user.email);
+  return { ok: true, id: user.id };
 }
 
 export async function startSession(userId: string): Promise<void> {
@@ -135,10 +255,26 @@ export async function startSession(userId: string): Promise<void> {
   });
 }
 
+/** Signs the account out everywhere except this device (after a password change). */
+export async function endOtherSessions(userId: string): Promise<void> {
+  const token = (await cookies()).get(SESSION_COOKIE)?.value;
+  const keep = token ? hashToken(token) : "";
+  await db.delete(schema.sessions).where(and(eq(schema.sessions.userId, userId), sql`${schema.sessions.tokenHash} <> ${keep}`));
+  await db.delete(schema.deviceTokens).where(and(eq(schema.deviceTokens.userId, userId), sql`coalesce(${schema.deviceTokens.sessionHash}, '') <> ${keep}`));
+}
+
+export async function endAllSessions(userId: string): Promise<void> {
+  await db.delete(schema.sessions).where(eq(schema.sessions.userId, userId));
+  await db.delete(schema.deviceTokens).where(eq(schema.deviceTokens.userId, userId));
+}
+
 export async function endSession(): Promise<void> {
   const jar = await cookies();
   const token = jar.get(SESSION_COOKIE)?.value;
-  if (token) await db.delete(schema.sessions).where(eq(schema.sessions.tokenHash, hashToken(token)));
+  if (token) {
+    await db.delete(schema.sessions).where(eq(schema.sessions.tokenHash, hashToken(token)));
+    await db.delete(schema.deviceTokens).where(eq(schema.deviceTokens.sessionHash, hashToken(token))); // this phone stops getting notifications
+  }
   jar.delete(SESSION_COOKIE);
 }
 

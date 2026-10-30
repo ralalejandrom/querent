@@ -10,9 +10,11 @@ export default function Privacy() {
 
       <h2>What we collect</h2>
       <ul>
-        <li><b>Your account:</b> your email address, and the name, field, bio, current work and ORCID iD you choose to add.</li>
+        <li><b>Your account:</b> your email address, your password (stored only as a one-way scrypt hash, so nobody at Lyncei can read it), and the name, field, bio, current work and ORCID iD you choose to add.</li>
+        <li><b>The Lyncei app:</b> if you allow notifications on your phone, a push token from Apple so we can send them. It identifies the app on your device, not you, and is deleted when you sign out or delete your account.</li>
+        <li><b>Safety:</b> the accounts you block, your reports, and failed sign-in attempts (kept for a day) to stop password guessing.</li>
         <li><b>What you do on Lyncei:</b> your posts, videos, reviews, comments, reactions, saves and follows.</li>
-        <li><b>Forms on lyncei.com:</b> what you enter when you ask for early access, apply as a reviewer or request a partnership (for example your name, email, field, institution, career stage and ORCID iD).</li>
+        <li><b>Forms on lyncei.com:</b> what you enter when you contact support, apply as a reviewer or request a partnership (for example your name, email, field, institution, career stage and ORCID iD).</li>
         <li><b>Technical data:</b> a cookie that keeps you signed in, and the standard request logs our hosting provider keeps (such as IP address and browser) to run and protect the service.</li>
         <li><b>Visit counts:</b> we count page views without cookies, using Vercel Web Analytics and our own counter. For each view we keep the page, the approximate place (country, region and city, from an IP lookup by our hosting provider), the site that linked to it, the type of device, and a code that changes every day so a visitor counts once per day. We don't store IP addresses and we don't follow you across days or other websites.</li>
       </ul>
@@ -22,8 +24,8 @@ export default function Privacy() {
 
       <h2>How we use it</h2>
       <ul>
-        <li>To run Lyncei: sign-in links, your profile, the feed and notifications.</li>
-        <li>To contact you about your early access, reviewer application or partnership request.</li>
+        <li>To run Lyncei: signing in, password resets, your profile, the feed and notifications.</li>
+        <li>To reply to you about your account, support request, reviewer application or partnership request.</li>
         <li>To keep reviews fair and the platform safe: conflicts of interest, moderation and abuse prevention.</li>
         <li>To understand, in aggregate, how Lyncei is used.</li>
       </ul>
@@ -33,6 +35,7 @@ export default function Privacy() {
         <li><b>Vercel</b> hosts the site, stores uploaded videos and counts visits.</li>
         <li><b>Neon</b> runs our database.</li>
         <li><b>Resend</b> sends our emails.</li>
+        <li><b>Apple Push Notification service</b> delivers notifications to the Lyncei app, if you allow them.</li>
         <li><b>Crossref</b> receives the DOIs you cite, to look up the paper.</li>
         <li><b>Anthropic</b> receives the public abstract of a cited paper to write an AI-assisted preview. No personal data is sent.</li>
         <li><b>Unsplash</b> serves the portrait photos of our fictional example accounts.</li>

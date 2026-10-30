@@ -779,9 +779,9 @@ a.inl:hover{text-decoration:underline}
       <a href="#how">How review works</a>
       <a href="#example">Example</a>
       <a href="#partners">Partners</a>
-      <a href="#join">Early access</a>
+      <a href="#join">Join</a>
     </nav>
-    <div style="display:flex;gap:10px;align-items:center"><a href="/login" style="text-decoration:none;font-weight:600;font-size:15px">Sign in</a><a class="pill" href="#join">Get early access</a></div>
+    <div style="display:flex;gap:10px;align-items:center"><a href="/login" style="text-decoration:none;font-weight:600;font-size:15px">Sign in</a><a class="pill" href="/signup">Create account</a></div>
   </div>
 </header>
 
@@ -791,7 +791,7 @@ a.inl:hover{text-decoration:underline}
       <div>
         <h1>The future of science, <em>reviewed in the open.</em></h1>
         <p class="lede">The social network for science, with expert review built in.</p>
-        <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center"><a class="pill lg" href="#join">Get early access <span aria-hidden="true">→</span></a><a href="/?tab=foryou" style="font-weight:600;text-decoration:none;border-bottom:1px solid currentColor">See example posts</a></div>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center"><a class="pill lg" href="/signup">Create your account <span aria-hidden="true">→</span></a><a href="/?tab=foryou" style="font-weight:600;text-decoration:none;border-bottom:1px solid currentColor">See example posts</a></div>
       </div>
 
       <div class="devices" role="img" aria-label="Illustrative product preview: a post on a laptop and a phone, with its source check and review status">
@@ -1232,19 +1232,14 @@ a.inl:hover{text-decoration:underline}
 
   <section class="sec alt" id="join" aria-labelledby="join-h">
     <div class="wrap">
-      <p class="eyebrow">Early access</p>
-      <h2 id="join-h">Get early access</h2>
+      <p class="eyebrow">Join Lyncei</p>
+      <h2 id="join-h">Create your free account</h2>
       <div class="two">
         <div class="jcard">
           <h3>For researchers</h3>
-          <p>Be among the first to post and review. <a href="#apply" class="inl">Want to review? Apply here →</a></p>
-          <form class="form" data-interest="individual" novalidate>
-            <label for="email-ind" class="sr">Email address</label>
-            <input id="email-ind" type="email" name="email" placeholder="you@university.edu" autocomplete="email" required aria-describedby="note-ind">
-            <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
-            <button class="pill lg" type="submit">Get early access</button>
-          </form>
-          <p class="note" id="note-ind" aria-live="polite"></p>
+          <p>Post, discuss and follow research. Reviewing takes a separate approval. <a href="#apply" class="inl">Want to review? Apply here →</a></p>
+          <a class="pill lg" href="/signup" style="margin-top:16px">Create account <span aria-hidden="true">→</span></a>
+          <p class="note" style="margin-top:12px">Free. Already have an account? <a href="/login" class="inl">Sign in</a></p>
         </div>
         <div class="jcard">
           <h3>For universities, institutes and journals</h3>
@@ -1252,7 +1247,7 @@ a.inl:hover{text-decoration:underline}
           <a class="pill lg ghost" href="#partners" style="margin-top:16px">See partnerships <span aria-hidden="true">→</span></a>
         </div>
       </div>
-      <p class="small muted">We only ask for what’s in these forms, and we’ll use it only to contact you about early access and partnerships.</p>
+      <p class="small muted">We only ask for what’s in these forms, and we’ll use it only to contact you about reviewing and partnerships.</p>
     </div>
   </section>
 </main>

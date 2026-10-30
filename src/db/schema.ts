@@ -32,6 +32,10 @@ export const users = pgTable("users", {
   bio: text("bio").notNull().default(""),
   currentWork: text("current_work").notNull().default(""),
   analyticsConsent: boolean("analytics_consent").notNull().default(false),
+  /** scrypt hash ("scrypt$N$r$p$salt$hash"); null for accounts that only use email links. */
+  passwordHash: text("password_hash"),
+  passwordUpdatedAt: timestamp("password_updated_at", { withTimezone: true }),
+  termsAcceptedAt: timestamp("terms_accepted_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   deletedAt: timestamp("deleted_at", { withTimezone: true }),
 }, (t) => [
@@ -55,13 +59,41 @@ export const sessions = pgTable("sessions", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 }, (t) => [index("sessions_user_idx").on(t.userId)]);
 
+/** One-time email tokens. purpose: "login" (sign-in link), "verify" (confirm a new account), "reset" (new password). */
 export const loginTokens = pgTable("login_tokens", {
   tokenHash: text("token_hash").primaryKey(),
   email: text("email").notNull(),
+  purpose: text("purpose").notNull().default("login"),
   expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
   usedAt: timestamp("used_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
+
+/** Failed sign-ins and other rate-limited auth requests, keyed by email or IP. Old rows are pruned as new ones arrive. */
+export const authAttempts = pgTable("auth_attempts", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  key: text("key").notNull(),
+  kind: text("kind").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [index("auth_attempts_key_idx").on(t.kind, t.key, t.createdAt)]);
+
+/** A person who blocked another: neither sees the other's posts or comments, and the blocked one can't reply or follow. */
+export const blocks = pgTable("blocks", {
+  blockerId: uuid("blocker_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  blockedId: uuid("blocked_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [primaryKey({ columns: [t.blockerId, t.blockedId] }), index("blocks_blocked_idx").on(t.blockedId)]);
+
+/** Push notification tokens from the iOS app. */
+export const deviceTokens = pgTable("device_tokens", {
+  token: text("token").primaryKey(),
+  userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  platform: text("platform").notNull().default("ios"),
+  /** The session that registered it, so signing out on that phone stops its notifications. */
+  sessionHash: text("session_hash"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  lastSeenAt: timestamp("last_seen_at", { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [index("device_tokens_user_idx").on(t.userId)]);
 
 /* -------------------------------------------------------- knowledge graph */
 export const topics = pgTable("topics", {
@@ -201,6 +233,8 @@ export const follows = pgTable("follows", {
 export const reports = pgTable("reports", {
   id: uuid("id").primaryKey().defaultRandom(),
   postId: uuid("post_id").notNull().references(() => posts.id, { onDelete: "cascade" }),
+  /** Set when the report is about a comment on the post rather than the post itself. */
+  contributionId: uuid("contribution_id").references((): AnyPgColumn => contributions.id, { onDelete: "cascade" }),
   reporterId: uuid("reporter_id").notNull().references(() => users.id),
   reason: text("reason").notNull(),
   details: text("details").notNull().default(""),

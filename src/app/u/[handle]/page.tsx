@@ -8,7 +8,7 @@ import { loadPosts } from "@/lib/queries";
 import { REVIEW_TYPE_LABELS, type ReviewType } from "@/lib/rigor";
 import { Avatar, Empty, Icon, PostCard, Name } from "@/components/ui";
 import { Rail } from "@/components/rail";
-import { toggleFollowAction, signOutAction } from "@/app/actions";
+import { toggleBlockAction, toggleFollowAction, signOutAction } from "@/app/actions";
 
 export default async function Profile({ params }: { params: Promise<{ handle: string }> }) {
   const { handle } = await params;
@@ -18,6 +18,9 @@ export default async function Profile({ params }: { params: Promise<{ handle: st
   const example = isExampleEmail(u.email);
   if (example && !showExamples()) notFound();
   const isMe = viewer?.id === u.id;
+  const blockRows = viewer && !isMe ? await db.select().from(schema.blocks).where(sql`(${schema.blocks.blockerId} = ${viewer.id} and ${schema.blocks.blockedId} = ${u.id}) or (${schema.blocks.blockerId} = ${u.id} and ${schema.blocks.blockedId} = ${viewer.id})`) : [];
+  const iBlocked = blockRows.some((b) => b.blockerId === viewer?.id);
+  const blocked = blockRows.length > 0;
   const [roles, list, reviews, [{ n: followers }], following, [{ n: reviewTotal }], [impact]] = await Promise.all([
     db.select().from(schema.userRoles).where(eq(schema.userRoles.userId, u.id)),
     loadPosts({ where: eq(schema.posts.authorId, u.id), viewerId: viewer?.id ?? null }),
@@ -53,8 +56,22 @@ export default async function Profile({ params }: { params: Promise<{ handle: st
             </div>
           </div>
           {isMe ? <div className="ownacts"><Link className="btn" href="/settings">Edit profile</Link><form action={signOutAction}><button className="btn">Sign out</button></form></div>
-            : viewer && <form action={toggleFollowAction.bind(null, "user", u.id)}><button className={`btn ${following ? "" : "pri"}`}>{following ? "Following" : "Follow"}</button></form>}
+            : viewer && (
+              <div className="ownacts">
+                {!blocked && <form action={toggleFollowAction.bind(null, "user", u.id)}><button className={`btn ${following ? "" : "pri"}`}>{following ? "Following" : "Follow"}</button></form>}
+                {(iBlocked || !blocked) && (
+                  <details className="moremenu">
+                    <summary className="btn" aria-label="More options">···</summary>
+                    <div className="moremenu-body">
+                      <form action={toggleBlockAction.bind(null, u.id)}><button className="btn sm danger">{iBlocked ? "Unblock" : "Block"} {u.displayName}</button></form>
+                      <p className="hint">{iBlocked ? "You'll see each other's posts and comments again." : "You won't see each other's posts or comments, and they can't reply to you or follow you. They aren't told."}</p>
+                    </div>
+                  </details>
+                )}
+              </div>
+            )}
         </div>
+        {blocked && <div className="notice" style={{ marginTop: 14 }}>{iBlocked ? "You blocked this account. Their posts and comments are hidden from you." : "You can't see this account's posts."}</div>}
         {u.bio && <p style={{ color: "var(--ink-2)", margin: "14px 0 4px" }}>{u.bio}</p>}
         {u.currentWork && <p className="muted" style={{ margin: 0 }}><b style={{ color: "var(--ink)" }}>Working on:</b> {u.currentWork}</p>}
         <div className="stats">

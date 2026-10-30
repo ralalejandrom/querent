@@ -7,7 +7,7 @@ import "./globals.css";
 import { db, schema } from "@/db";
 import { getCurrentUser, isModerator } from "@/lib/auth";
 import { Icon, Mark } from "@/components/ui";
-import { GuestSignIn, NavLink } from "@/components/client";
+import { GuestSignIn, NativeBridge, NavLink } from "@/components/client";
 import { signOutAction } from "./actions";
 
 const TAGLINE = "The future of science, reviewed in the open";
@@ -64,7 +64,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           </aside>}
           {children}
         </div>
-        <footer className="appfoot">Lyncei is for discussing research, not medical advice. Never post anything that could identify a patient. <Link href="/guidelines">Review guidelines</Link> · <Link href="/terms">Terms</Link> · <Link href="/privacy">Privacy</Link></footer>
+        <footer className="appfoot">Lyncei is for discussing research, not medical advice. Never post anything that could identify a patient. <Link href="/guidelines">Community rules</Link> · <Link href="/terms">Terms</Link> · <Link href="/privacy">Privacy</Link> · <Link href="/support">Support</Link></footer>
         {user && <nav className="dock" aria-label="Mobile navigation">
           <NavLink href="/?tab=foryou" exact className=""><Icon name="home" />Home</NavLink>
           <NavLink href="/questions" className=""><Icon name="q" />Questions</NavLink>
@@ -75,6 +75,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         {/* Vercel Web Analytics: cookie-free, aggregate page views. Active once enabled in the Vercel project. */}
         <Script src="/_vercel/insights/script.js" strategy="afterInteractive" />
         <VisitBeacon />
+        <NativeBridge signedIn={!!user} />
       </body>
     </html>
   );

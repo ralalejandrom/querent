@@ -1,5 +1,7 @@
 import "server-only";
+import { after } from "next/server";
 import { db, schema } from "@/db";
+import { pushConfigured, sendPush } from "./push";
 
 type Tx = Parameters<Parameters<typeof db.transaction>[0]>[0];
 
@@ -14,6 +16,12 @@ export async function audit(
   });
 }
 
+/** In-app notification, plus a push notification on the person's phones when the iOS app is set up. */
 export async function notify(tx: Tx | typeof db, recipientId: string, text: string, link: string) {
   await tx.insert(schema.notifications).values({ recipientId, text, link });
+  if (pushConfigured()) {
+    try {
+      after(() => sendPush(recipientId, { body: text, url: link }).catch((err) => console.error("push failed", err)));
+    } catch { /* outside a request (seed scripts): no push */ }
+  }
 }

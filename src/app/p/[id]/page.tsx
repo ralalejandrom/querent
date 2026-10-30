@@ -6,7 +6,7 @@ import { getPostDetail, isPublicReview } from "@/lib/queries";
 import { REVIEW_TYPE_LABELS, type ReviewType } from "@/lib/rigor";
 import { timeAgo } from "@/lib/text";
 import { Avatar, Empty, Icon, PostCard, Name } from "@/components/ui";
-import { ActionForm, ComposerFields, CopyText, ReplyToggle, Submit } from "@/components/client";
+import { ActionForm, ComposerFields, CopyText, ReplyToggle, ReportComment, Submit } from "@/components/client";
 import { Rail } from "@/components/rail";
 import { addContributionAction, rateReviewAction, reportPostAction, respondAction } from "@/app/actions";
 import { after } from "next/server";
@@ -148,10 +148,14 @@ export default async function PostPage({ params }: Params) {
           <div className="cmt" key={c.id}>
             <div className="ph" style={{ margin: 0 }}><Avatar name={author.displayName} handle={author.handle} size="sm" /><div className="who"><Link href={`/u/${author.handle}`}>{author.displayName}</Link><small>{author.field} · {timeAgo(c.createdAt)}</small></div><span className={`tag ${c.type}`} style={{ marginLeft: "auto" }}>{c.type}</span></div>
             <div className="body">{c.body}{c.sourceDoi && (preview(c.sourceDoi) ? <RefPreview source={preview(c.sourceDoi)!} compact /> : <a className="study" style={{ margin: "8px 0 0" }} href={`https://doi.org/${c.sourceDoi}`} target="_blank" rel="noopener noreferrer"><div><b>Cited evidence</b><span className="doi">doi:{c.sourceDoi}</span></div></a>)}</div>
+            {c.status === "held" && <p className="pendingnote">Only you can see this until a moderator checks it.</p>}
+            {user && user.id !== author.id && <ReportComment postId={post.id} contributionId={c.id} />}
             {replies.map(({ c: r, author: ra }) => (
               <div className="cmt reply" key={r.id}>
                 <div className="ph" style={{ margin: 0 }}><Avatar name={ra.displayName} handle={ra.handle} size="sm" /><div className="who"><Link href={`/u/${ra.handle}`}>{ra.displayName}</Link><small>{ra.field} · {timeAgo(r.createdAt)}</small></div><span className={`tag ${r.type}`} style={{ marginLeft: "auto" }}>{r.type}</span></div>
                 <div className="body">{r.body}{r.sourceDoi && (preview(r.sourceDoi) ? <RefPreview source={preview(r.sourceDoi)!} compact /> : <span className="doi" style={{ display: "block", marginTop: 6 }}>doi:{r.sourceDoi}</span>)}</div>
+                {r.status === "held" && <p className="pendingnote">Only you can see this until a moderator checks it.</p>}
+                {user && user.id !== ra.id && <ReportComment postId={post.id} contributionId={r.id} />}
               </div>
             ))}
             {user && <div style={{ marginLeft: 30 }}><ReplyToggle>{composer(c.id)}</ReplyToggle></div>}
@@ -164,12 +168,12 @@ export default async function PostPage({ params }: Params) {
             <ActionForm action={reportPostAction}>
               <input type="hidden" name="postId" value={post.id} />
               <div className="checks" style={{ marginTop: 12 }}>
-                {[["misrepresents_source", "The post misrepresents its source"], ["source_corrected_or_retracted", "The source has been corrected or retracted"], ["unsafe_medical_advice", "Unsafe medical advice"], ["harassment", "Harassment or personal attack"], ["undisclosed_ai", "Undisclosed AI-generated content"]].map(([v, l], i) => (
+                {[["misrepresents_source", "The post misrepresents its source"], ["source_corrected_or_retracted", "The source has been corrected or retracted"], ["unsafe_medical_advice", "Unsafe medical advice"], ["harassment", "Harassment or personal attack"], ["offensive", "Hateful, sexual or otherwise offensive content"], ["spam", "Spam or advertising"], ["undisclosed_ai", "Undisclosed AI-generated content"], ["other", "Something else"]].map(([v, l], i) => (
                   <label key={v}><input type="radio" name="reason" value={v} defaultChecked={i === 0} /> {l}</label>
                 ))}
               </div>
               <label className="f">Details <small>Optional</small><textarea name="details" rows={3} /></label>
-              <p className="hint" style={{ margin: 0 }}>A moderator reviews every report. If a post is marked Disputed, the reason and full history stay visible.</p>
+              <p className="hint" style={{ margin: 0 }}>A moderator reviews every report within 24 hours. Posts that break the rules are removed; if a post is marked Disputed instead, the reason and full history stay visible.</p>
               <Submit>Send report</Submit>
             </ActionForm>
           </details>

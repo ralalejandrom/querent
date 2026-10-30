@@ -1,5 +1,6 @@
 import "server-only";
-import { and, count, desc, eq, inArray, ne, notLike, sql, type SQL } from "drizzle-orm";
+import { and, count, desc, eq, inArray, ne, notLike, or, sql, type SQL } from "drizzle-orm";
+import { notBlockedFor } from "./safety";
 import { isExampleEmail, showExamples } from "./examples";
 import { db, schema } from "@/db";
 import { computeRigor, type Rigor, type ReviewType } from "./rigor";
@@ -43,6 +44,8 @@ export async function loadPosts(opts: { where?: SQL; viewerId?: string | null; l
   const conds: SQL[] = [eq(posts.status, "visible")];
   if (!showExamples()) conds.push(notLike(users.email, "%@example.com"));
   if (opts.where) conds.push(opts.where);
+  const unblocked = notBlockedFor(opts.viewerId, posts.authorId);
+  if (unblocked) conds.push(unblocked);
   if (opts.ids) {
     if (!opts.ids.length) return [];
     conds.push(inArray(posts.id, opts.ids));
@@ -160,7 +163,9 @@ export async function getPostDetail(id: string, viewerId: string | null) {
   const [reviewRows, commentRows] = await Promise.all([
     db.select({ review: reviews, reviewer: users }).from(reviews).innerJoin(users, eq(users.id, reviews.reviewerId)).where(eq(reviews.postId, id)).orderBy(reviews.createdAt),
     db.select({ c: contributions, author: users }).from(contributions).innerJoin(users, eq(users.id, contributions.authorId))
-      .where(and(eq(contributions.postId, id), ne(contributions.status, "removed"))).orderBy(contributions.createdAt),
+      // Visible comments, plus the viewer's own comments still waiting for a moderator; never from blocked people.
+      .where(and(eq(contributions.postId, id), viewerId ? or(eq(contributions.status, "visible"), and(eq(contributions.status, "held"), eq(contributions.authorId, viewerId))) : eq(contributions.status, "visible"), notBlockedFor(viewerId, contributions.authorId)))
+      .orderBy(contributions.createdAt),
   ]);
   type C = (typeof commentRows)[number] & { replies: (typeof commentRows)[number][] };
   const top: C[] = [];

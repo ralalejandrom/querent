@@ -24,7 +24,10 @@ const CSP = [
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   async rewrites() {
-    return [{ source: "/welcome", destination: "/welcome.html" }];
+    return [
+      { source: "/welcome", destination: "/welcome.html" },
+      { source: "/.well-known/apple-app-site-association", destination: "/api/aasa" },
+    ];
   },
   async headers() {
     return [

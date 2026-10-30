@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 import { getCurrentUser } from "@/lib/auth";
 import { getFeed, type FeedTab } from "@/lib/queries";
 import { Empty, Icon, PostCard, ReelCard } from "@/components/ui";
@@ -11,8 +12,8 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ t
   const sp = await searchParams;
   const tab = (TABS.find(([k]) => k === sp.tab)?.[0] ?? "foryou") as FeedTab;
   const user = await getCurrentUser();
-  // First-time visitors see the product story; the feed is one click away.
-  if (!user && !sp.tab && !sp.q) redirect("/welcome");
+  // First-time visitors see the product story (in the iOS app, a short welcome screen); the feed is one tap away.
+  if (!user && !sp.tab && !sp.q) redirect(((await headers()).get("user-agent") ?? "").includes("LynceiApp") ? "/start" : "/welcome");
   const list = await getFeed(user?.id ?? null, tab, sp.q);
   const href = (t: string) => `/?tab=${t}${sp.q ? `&q=${encodeURIComponent(sp.q)}` : ""}`;
   return (

@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { createContext, startTransition, useActionState, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { useFormStatus } from "react-dom";
 import type { ActionState } from "@/app/actions";
+import { reportPostAction } from "@/app/actions";
 
 type Action = (state: ActionState, fd: FormData) => Promise<ActionState>;
 
@@ -34,11 +35,23 @@ export function ActionForm({ action, children, className = "form", resetOnOk = f
   );
 }
 
-/** Guests' top-bar sign-in button; hidden on the sign-in page itself. */
+/** Guests' top-bar button: "Create account" on the sign-in page, "Sign in" everywhere else. */
 export function GuestSignIn() {
   const path = usePathname();
-  if (path.startsWith("/login")) return null;
+  if (path.startsWith("/start")) return null;
+  if (path.startsWith("/login")) return <Link className="btn sm pri" href="/signup">Create account</Link>;
   return <Link className="btn sm pri" href="/login">Sign in</Link>;
+}
+
+/** Password field with a Show/Hide button, so people can check what they typed on a phone. */
+export function PasswordInput({ name, autoComplete, minLength }: { name: string; autoComplete: string; minLength?: number }) {
+  const [shown, setShown] = useState(false);
+  return (
+    <span className="pwd">
+      <input type={shown ? "text" : "password"} name={name} autoComplete={autoComplete} minLength={minLength} autoCapitalize="none" autoCorrect="off" spellCheck={false} required />
+      <button type="button" className="pwdtoggle" onClick={() => setShown((v) => !v)} aria-label={shown ? "Hide password" : "Show password"} aria-pressed={shown}>{shown ? "Hide" : "Show"}</button>
+    </span>
+  );
 }
 
 export function NavLink({ href, children, className = "navb", exact = false }: { href: string; children: ReactNode; className?: string; exact?: boolean }) {
@@ -152,6 +165,8 @@ export function ShareButton({ url, title }: { url: string; title: string }) {
   async function share() {
     const full = new URL(url, window.location.origin).toString();
     try {
+      const nativeShare = nativePlugins()?.Share;
+      if (nativeShare) { await nativeShare.share({ title, url: full, dialogTitle: "Share" }); return; }
       if (navigator.share && window.matchMedia("(pointer: coarse)").matches) { await navigator.share({ title, url: full }); return; }
       await navigator.clipboard.writeText(full);
       setState("copied");
@@ -240,4 +255,85 @@ export function ReelVideo({ src, poster, label }: { src: string; poster?: string
     return () => io.disconnect();
   }, []);
   return <video ref={ref} className="reelv" src={src} poster={poster} muted loop playsInline controls preload="metadata" aria-label={label} />;
+}
+
+/** "Report" link under a comment: a short form that files a report with the moderators. */
+export function ReportComment({ postId, contributionId }: { postId: string; contributionId: string }) {
+  const [open, setOpen] = useState(false);
+  if (!open) return <button type="button" className="cmtreport" onClick={() => setOpen(true)}>Report</button>;
+  return (
+    <div className="cmtreportbox">
+      <ActionForm action={reportPostAction}>
+        <input type="hidden" name="postId" value={postId} />
+        <input type="hidden" name="contributionId" value={contributionId} />
+        <label className="f">Why are you reporting this comment?
+          <select name="reason" defaultValue="harassment">
+            <option value="harassment">Harassment or personal attack</option>
+            <option value="offensive">Hateful, sexual or otherwise offensive</option>
+            <option value="unsafe_medical_advice">Unsafe medical advice</option>
+            <option value="spam">Spam or advertising</option>
+            <option value="other">Something else</option>
+          </select>
+        </label>
+        <label className="f">Details <small>Optional</small><textarea name="details" rows={2} /></label>
+        <div className="row"><Submit className="btn sm pri">Send report</Submit><button type="button" className="btn sm" onClick={() => setOpen(false)}>Cancel</button></div>
+      </ActionForm>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ iOS app */
+// Capacitor injects window.Capacitor into the page when it runs inside the Lyncei iOS app.
+type Listener = { remove: () => void };
+type NativePlugins = {
+  App?: { addListener: (e: string, cb: (x: { url: string }) => void) => Promise<Listener> };
+  SplashScreen?: { hide: () => Promise<void> };
+  Share?: { share: (o: { title: string; url: string; dialogTitle?: string }) => Promise<unknown> };
+  PushNotifications?: {
+    checkPermissions: () => Promise<{ receive: string }>;
+    requestPermissions: () => Promise<{ receive: string }>;
+    register: () => Promise<void>;
+    addListener: (e: string, cb: (x: { value?: string; notification?: { data?: { url?: string } } }) => void) => Promise<Listener>;
+  };
+};
+function nativePlugins(): NativePlugins | null {
+  const cap = (globalThis as { Capacitor?: { isNativePlatform?: () => boolean; Plugins?: NativePlugins } }).Capacitor;
+  return cap?.isNativePlatform?.() ? cap.Plugins ?? null : null;
+}
+
+/**
+ * Glue for the iOS app; does nothing in a browser. Opens lyncei.com links (from Mail, Messages or a
+ * notification) inside the app, hides the splash screen, and, once signed in, asks to send
+ * notifications and registers the phone for them.
+ */
+export function NativeBridge({ signedIn }: { signedIn: boolean }) {
+  const router = useRouter();
+  useEffect(() => {
+    const p = nativePlugins();
+    if (!p) return;
+    document.documentElement.classList.add("native");
+    const subs: Promise<Listener>[] = [];
+    const go = (raw?: string) => {
+      if (!raw) return;
+      try {
+        const u = new URL(raw, window.location.origin);
+        if (u.origin === window.location.origin || /(^|\.)lyncei\.(com|app)$/.test(u.hostname)) router.push(u.pathname + u.search + u.hash);
+      } catch { /* not a link we handle */ }
+    };
+    if (p.App) subs.push(p.App.addListener("appUrlOpen", (e) => go(e.url)));
+    p.SplashScreen?.hide().catch(() => {});
+    const push = p.PushNotifications;
+    if (signedIn && push) {
+      subs.push(push.addListener("registration", (t) => {
+        if (t.value) fetch("/api/v1/push", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ token: t.value }) }).catch(() => {});
+      }));
+      subs.push(push.addListener("pushNotificationActionPerformed", (a) => go(a.notification?.data?.url ?? "/notifications")));
+      push.checkPermissions()
+        .then((perm) => (perm.receive === "prompt" ? push.requestPermissions() : perm))
+        .then((perm) => { if (perm.receive === "granted") return push.register(); })
+        .catch(() => {});
+    }
+    return () => { subs.forEach((s) => s.then((l) => l.remove()).catch(() => {})); };
+  }, [signedIn, router]);
+  return null;
 }

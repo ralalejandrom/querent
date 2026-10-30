@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Mark } from "@/components/ui";
 import { confirmLoginAction } from "@/app/actions";
 
 export const metadata = { title: "Confirm sign-in", robots: { index: false } };
@@ -14,7 +13,6 @@ export default async function Verify({ searchParams }: { searchParams: Promise<{
   return (
     <main className="main" id="main">
       <div className="auth">
-        <Link className="brand" href="/" style={{ padding: "0 0 24px" }}><Mark /><span className="word">Lyncei</span></Link>
         <h1 className="pg">Confirm sign-in</h1>
         {token ? (
           <>

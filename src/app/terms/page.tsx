@@ -14,11 +14,11 @@ export default function Terms() {
       <h2>Never post patient information</h2>
       <p>Don't post anything that could identify a patient or study participant: names, photos, dates, record numbers, images of medical records or scans with identifiers, or details of a rare case that could point to a specific person. We remove this content when we find it, and repeated cases can lead to losing your account.</p>
 
-      <h2>Early access and accounts</h2>
+      <h2>Accounts</h2>
       <ul>
-        <li>Lyncei is in early access. The founding team decides who can sign in and who is approved as a reviewer.</li>
+        <li>Anyone 18 or older can create an account. Reviewing posts requires a separate approval by the Lyncei team, based on your expertise.</li>
         <li>Use your real name and describe your field and role accurately. One account per person.</li>
-        <li>You must be at least 18 years old.</li>
+        <li>Keep your password private. If you think someone else knows it, <Link href="/forgot">reset it</Link>; that signs you out everywhere.</li>
         <li>You can delete your account at any time in <Link href="/settings">Settings</Link>.</li>
       </ul>
 
@@ -32,6 +32,14 @@ export default function Terms() {
         <li>No harassment, impersonation, fabricated data, spam or content that breaks the law.</li>
       </ul>
 
+      <h2>Zero tolerance for objectionable content and abusive users</h2>
+      <p>Lyncei has no tolerance for objectionable content or abusive behavior. That includes hate speech or slurs, threats, harassment, sexual content, content that encourages self-harm, and spam. Posting it can lead to immediate removal of the content and of your account.</p>
+      <ul>
+        <li><b>Filter.</b> Posts and comments that match our content filter wait for a moderator before anyone else sees them.</li>
+        <li><b>Report.</b> Anyone signed in can report a post or a comment. Moderators review every report within 24 hours and remove content that breaks these terms.</li>
+        <li><b>Block.</b> You can block any account from its profile. Neither of you will see the other's posts or comments, and they can't reply to you or follow you.</li>
+      </ul>
+
       <h2>Reviews and labels</h2>
       <p>A review shows what a reviewer checked and what they concluded. It's a professional opinion, not a guarantee that a finding is true. Labels such as “Source-checked” or “Expert-reviewed” describe the review process a post went through. Likes and shares never change these labels; only reviews and documented corrections do.</p>
 
@@ -42,10 +50,10 @@ export default function Terms() {
       <p>Posts marked “Example · fictional” were written by the Lyncei team to show how the platform works. The people, studies and DOIs in them are made up.</p>
 
       <h2>Moderation</h2>
-      <p>We can hold, label or remove content and suspend accounts that break these terms. You can report a post, and the author can respond to a review or a label.</p>
+      <p>We can hold, label or remove content and suspend or remove accounts that break these terms. Every moderation decision is logged with its reason and sent to the author, who can respond to a review or a label. To appeal a decision, <Link href="/support">contact us</Link>.</p>
 
       <h2>The service</h2>
-      <p>Lyncei is provided as it is, and features may change while it's in early access. To the extent the law allows, we aren't liable for decisions made based on content posted by users. We'll update these terms as Lyncei grows and change the date at the top when we do.</p>
+      <p>Lyncei is provided as it is, and features may change as it grows. To the extent the law allows, we aren't liable for decisions made based on content posted by users. We'll update these terms as Lyncei grows and change the date at the top when we do.</p>
 
       <ContactLine>Questions about these terms:</ContactLine>
     </LegalPage>

@@ -7,16 +7,18 @@ import { headers } from "next/headers";
 import { and, eq, inArray, sql } from "drizzle-orm";
 import { z } from "zod";
 import { db, schema } from "@/db";
-import { consumeLoginToken, endSession, isModerator, isReviewer, requireUser, sendLoginLink, startSession } from "@/lib/auth";
+import { consumeLoginToken, endSession, findUserByEmail, isModerator, isReviewer, requireUser, sendLoginLink, startSession } from "@/lib/auth";
 import { audit, notify } from "@/lib/audit";
 import { fetchCrossref, normalizeDoi } from "@/lib/doi";
 import { computeRigor, REVIEW_TYPE_LABELS, type ReviewType } from "@/lib/rigor";
 import { slugify } from "@/lib/text";
 import { notifyAdmins } from "@/lib/notify";
-import { canSignIn } from "@/lib/access";
+import { accessIsOpen, isInvited } from "@/lib/access";
 import { isExampleEmail } from "@/lib/examples";
 import { after } from "next/server";
 import { ensureSourceSummary } from "@/lib/source-preview";
+import { blockedBetween, needsModeration } from "@/lib/safety";
+import { clientIp, attemptsSince, recordAttempt } from "@/lib/ratelimit";
 
 export type ActionState = { error?: string; ok?: string };
 
@@ -53,20 +55,20 @@ export async function requestLoginAction(_: ActionState, fd: FormData): Promise<
   if (!process.env.RESEND_API_KEY && process.env.NODE_ENV === "production") {
     return { error: "Email sign-in isn't set up on this server yet." };
   }
-  // Early access: emails without access join the list instead. The reply is the same either way,
-  // so the form can't be used to find out who has an account.
+  // Links go to existing accounts and invited emails. New people create an account (and accept the Terms) on /signup.
+  // The reply is the same either way, so the form can't be used to find out who has an account.
   const address = email.data.toLowerCase();
-  if (await canSignIn(address)) {
+  if ((await findUserByEmail(address)) || (await isInvited(address))) {
     try {
       await sendLoginLink(address, str(fd, "next") || "/");
     } catch {
       return { error: "We couldn't send the email right now. Try again in a minute." };
     }
-  } else if (!isExampleEmail(address)) {
+  } else if (!accessIsOpen() && !isExampleEmail(address)) {
     const added = await db.insert(schema.waitlist).values({ email: address, interest: "individual" }).onConflictDoNothing().returning({ id: schema.waitlist.id });
     if (added.length) notifyAdmins(`Lyncei: new waitlist sign-up (${address})`, [`Email: ${address}`, "Came from the sign-in page without access yet."]);
   }
-  return { ok: "If this email has access, your sign-in link is on its way (it expires in 15 minutes). If not, it's now on the early-access list and we'll email you when your access is ready." };
+  return { ok: "If this email has a Lyncei account, your sign-in link is on its way (it expires in 15 minutes). New here? Create an account instead." };
 }
 
 /** Separate demo deployments only (DEMO_LOGIN=1): one-click sign-in to the fictional example accounts (…@example.com). */
@@ -138,14 +140,17 @@ export async function createPostAction(_: ActionState, fd: FormData): Promise<Ac
     if ("error" in s) return { error: s.error };
     sourceId = s.id;
   }
+  const held = needsModeration(p.title, p.body);
   const [post] = await db.transaction(async (tx) => {
     const inserted = await tx.insert(schema.posts).values({
-      authorId: user.id, kind: p.kind, title: p.title, body: p.body, sourceId,
+      authorId: user.id, kind: p.kind, title: p.title, body: p.body, sourceId, status: held ? "held" : "visible",
       questionId: p.questionId || null, topicId: p.topicId === "" ? null : p.topicId, aiAssisted: p.ai, studyType: p.studyType || null, mediaUrl: p.mediaUrl || null,
     }).returning({ id: schema.posts.id });
-    await audit(tx, { actorId: user.id, entityType: "post", entityId: inserted[0].id, action: "post.created", after: { title: p.title, sourceId, mediaUrl: p.mediaUrl || null } });
+    await audit(tx, { actorId: user.id, entityType: "post", entityId: inserted[0].id, action: "post.created", after: { title: p.title, sourceId, mediaUrl: p.mediaUrl || null, held } });
+    if (held) await tx.insert(schema.reports).values({ postId: inserted[0].id, reporterId: user.id, reason: "auto_filter", details: "Held automatically before publishing: the text matched the content filter." });
     return inserted;
   });
+  if (held) return { error: "Your post is waiting for a moderator before it appears, because some words matched our content filter. You'll get a notification when it's reviewed." };
   revalidatePath("/");
   redirect(`/p/${post.id}`);
 }
@@ -215,15 +220,18 @@ export async function addContributionAction(_: ActionState, fd: FormData): Promi
   }
   const [post] = await db.select({ id: schema.posts.id, authorId: schema.posts.authorId, title: schema.posts.title }).from(schema.posts).where(eq(schema.posts.id, c.postId)).limit(1);
   if (!post) return { error: "This post no longer exists." };
+  if (await blockedBetween(user.id, post.authorId)) return { error: "You can't reply to this post." };
   if (doi) await resolveSource(doi); // store the cited paper's metadata so the thread can show a preview
 
+  const held = needsModeration(c.body);
   await db.transaction(async (tx) => {
-    const [row] = await tx.insert(schema.contributions).values({ postId: c.postId, parentId: c.parentId || null, authorId: user.id, type: c.type, body: c.body, sourceDoi: doi }).returning({ id: schema.contributions.id });
-    await audit(tx, { actorId: user.id, entityType: "contribution", entityId: row.id, action: "contribution.created", after: { type: c.type } });
-    if (post.authorId !== user.id) await notify(tx, post.authorId, `${user.displayName} added ${c.type === "evidence" ? "evidence" : `a ${c.type}`} to “${post.title.slice(0, 60)}”.`, `/p/${post.id}`);
+    const [row] = await tx.insert(schema.contributions).values({ postId: c.postId, parentId: c.parentId || null, authorId: user.id, type: c.type, body: c.body, sourceDoi: doi, status: held ? "held" : "visible" }).returning({ id: schema.contributions.id });
+    await audit(tx, { actorId: user.id, entityType: "contribution", entityId: row.id, action: "contribution.created", after: { type: c.type, held } });
+    if (held) await tx.insert(schema.reports).values({ postId: c.postId, contributionId: row.id, reporterId: user.id, reason: "auto_filter", details: "Held automatically before publishing: the text matched the content filter." });
+    else if (post.authorId !== user.id) await notify(tx, post.authorId, `${user.displayName} added ${c.type === "evidence" ? "evidence" : `a ${c.type}`} to “${post.title.slice(0, 60)}”.`, `/p/${post.id}`);
   });
   revalidatePath(`/p/${c.postId}`);
-  return { ok: "Posted." };
+  return held ? { ok: "Sent. A moderator will check it before others see it, because some words matched our content filter." } : { ok: "Posted." };
 }
 
 /* ---------------------------------------------------------------- review */
@@ -315,31 +323,60 @@ export async function rateReviewAction(fd: FormData) {
 }
 
 /* ------------------------------------------------------------ moderation */
-const REPORT_REASONS = ["misrepresents_source", "source_corrected_or_retracted", "unsafe_medical_advice", "harassment", "undisclosed_ai"] as const;
+const REPORT_REASONS = ["misrepresents_source", "source_corrected_or_retracted", "unsafe_medical_advice", "harassment", "offensive", "spam", "undisclosed_ai", "other"] as const;
 
+/** Reports a post, or one comment on it when contributionId is given. Moderators are emailed. */
 export async function reportPostAction(_: ActionState, fd: FormData): Promise<ActionState> {
   const user = await requireUser();
   const postId = str(fd, "postId");
+  const contributionId = str(fd, "contributionId") || null;
   const reason = z.enum(REPORT_REASONS).safeParse(str(fd, "reason"));
-  if (!uuid.safeParse(postId).success || !reason.success) return { error: "Choose a reason for the report." };
+  if (!uuid.safeParse(postId).success || !reason.success || (contributionId && !uuid.safeParse(contributionId).success)) return { error: "Choose a reason for the report." };
+  if (contributionId) {
+    const [c] = await db.select({ id: schema.contributions.id }).from(schema.contributions).where(and(eq(schema.contributions.id, contributionId), eq(schema.contributions.postId, postId))).limit(1);
+    if (!c) return { error: "That comment no longer exists." };
+  }
   await db.transaction(async (tx) => {
-    const [row] = await tx.insert(schema.reports).values({ postId, reporterId: user.id, reason: reason.data, details: str(fd, "details").slice(0, 2000) }).returning({ id: schema.reports.id });
-    await audit(tx, { actorId: user.id, entityType: "report", entityId: row.id, action: "report.created", after: { postId, reason: reason.data } });
+    const [row] = await tx.insert(schema.reports).values({ postId, contributionId, reporterId: user.id, reason: reason.data, details: str(fd, "details").slice(0, 2000) }).returning({ id: schema.reports.id });
+    await audit(tx, { actorId: user.id, entityType: "report", entityId: row.id, action: "report.created", after: { postId, contributionId, reason: reason.data } });
   });
-  return { ok: "Report sent. A moderator will review it." };
+  notifyAdmins(`Lyncei: new report (${reason.data.replace(/_/g, " ")})`, [`A ${contributionId ? "comment" : "post"} was reported.`, `Reason: ${reason.data.replace(/_/g, " ")}`, "Open the moderation queue to review it within 24 hours."]);
+  return { ok: "Report sent. A moderator will review it within 24 hours." };
 }
 
 export async function moderateAction(_: ActionState, fd: FormData): Promise<ActionState> {
   const user = await requireUser("/moderation");
   if (!isModerator(user)) return { error: "Only moderators can act on reports." };
   const reportId = str(fd, "reportId");
-  const decision = z.enum(["dispute", "dismiss", "clear"]).safeParse(str(fd, "decision"));
+  const decision = z.enum(["dispute", "dismiss", "clear", "remove", "approve"]).safeParse(str(fd, "decision"));
   const rationale = str(fd, "rationale");
   if (!decision.success) return { error: "Choose a decision." };
   if (rationale.length < 10) return { error: "Explain the decision in at least 10 characters. Authors and readers can see it." };
   const [report] = await db.select().from(schema.reports).where(eq(schema.reports.id, reportId)).limit(1);
   if (!report) return { error: "Report not found." };
   const [post] = await db.select().from(schema.posts).where(eq(schema.posts.id, report.postId)).limit(1);
+
+  // Removing or approving content (a post, or one comment), including items the filter held back.
+  if (decision.data === "remove" || decision.data === "approve") {
+    const status = decision.data === "remove" ? "removed" : "visible";
+    await db.transaction(async (tx) => {
+      if (report.contributionId) {
+        const [c] = await tx.update(schema.contributions).set({ status }).where(eq(schema.contributions.id, report.contributionId)).returning({ authorId: schema.contributions.authorId });
+        if (c) await notify(tx, c.authorId, decision.data === "remove" ? `A moderator removed your comment on “${post.title.slice(0, 60)}”: ${rationale}` : `Your comment on “${post.title.slice(0, 60)}” was approved and is now visible.`, `/p/${post.id}`);
+      } else {
+        await tx.update(schema.posts).set({ status, updatedAt: new Date() }).where(eq(schema.posts.id, post.id));
+        await notify(tx, post.authorId, decision.data === "remove" ? `A moderator removed your post “${post.title.slice(0, 60)}”: ${rationale}` : `Your post “${post.title.slice(0, 60)}” was approved and is now visible.`, `/p/${post.id}`);
+      }
+      await tx.update(schema.reports).set({ status: "actioned" }).where(eq(schema.reports.id, reportId));
+      await tx.insert(schema.moderationActions).values({ reportId, postId: post.id, moderatorId: user.id, action: report.contributionId ? `comment.${decision.data}` : decision.data, rationale });
+      await audit(tx, { actorId: user.id, entityType: report.contributionId ? "contribution" : "post", entityId: report.contributionId ?? post.id, action: `moderation.${decision.data}`, after: { rationale } });
+    });
+    revalidatePath("/moderation");
+    revalidatePath(`/p/${post.id}`);
+    revalidatePath("/");
+    return { ok: "Decision recorded." };
+  }
+  if (report.contributionId && decision.data !== "dismiss") return { error: "For a comment, choose Remove or Dismiss." };
 
   await db.transaction(async (tx) => {
     const disputedReason = decision.data === "dispute" ? rationale : decision.data === "clear" ? null : post.disputedReason;
@@ -361,6 +398,7 @@ export async function moderateAction(_: ActionState, fd: FormData): Promise<Acti
 export async function toggleFollowAction(targetType: "user" | "question" | "topic", targetId: string) {
   const user = await requireUser();
   if (targetType === "user" && targetId === user.id) return;
+  if (targetType === "user" && (await blockedBetween(user.id, targetId))) return;
   const where = and(eq(schema.follows.userId, user.id), eq(schema.follows.targetType, targetType), eq(schema.follows.targetId, targetId));
   const deleted = await db.delete(schema.follows).where(where).returning();
   if (!deleted.length) await db.insert(schema.follows).values({ userId: user.id, targetType, targetId }).onConflictDoNothing();
@@ -416,11 +454,46 @@ export async function deleteAccountAction(fd: FormData) {
     await tx.update(schema.posts).set({ status: "removed" }).where(eq(schema.posts.authorId, user.id));
     await tx.update(schema.users).set({
       deletedAt: new Date(), email: `deleted+${user.id}@invalid`, displayName: "Deleted account", handle: `deleted-${user.id.slice(0, 8)}`,
-      bio: "", currentWork: "", field: "", orcidId: null,
+      bio: "", currentWork: "", field: "", orcidId: null, passwordHash: null,
     }).where(eq(schema.users.id, user.id));
     await tx.delete(schema.sessions).where(eq(schema.sessions.userId, user.id));
+    await tx.delete(schema.deviceTokens).where(eq(schema.deviceTokens.userId, user.id));
+    await tx.delete(schema.blocks).where(sql`${schema.blocks.blockerId} = ${user.id} or ${schema.blocks.blockedId} = ${user.id}`);
     await audit(tx, { actorId: user.id, entityType: "user", entityId: user.id, action: "account.deleted" });
   });
   await endSession();
   redirect("/welcome");
+}
+
+/* ---------------------------------------------------------------- safety */
+/** Blocks or unblocks someone. Blocking also ends follows in both directions. */
+export async function toggleBlockAction(targetId: string) {
+  const user = await requireUser();
+  if (!uuid.safeParse(targetId).success || targetId === user.id) return;
+  const removed = await db.delete(schema.blocks).where(and(eq(schema.blocks.blockerId, user.id), eq(schema.blocks.blockedId, targetId))).returning();
+  if (!removed.length) {
+    await db.transaction(async (tx) => {
+      await tx.insert(schema.blocks).values({ blockerId: user.id, blockedId: targetId }).onConflictDoNothing();
+      await tx.delete(schema.follows).where(and(eq(schema.follows.targetType, "user"), sql`(${schema.follows.userId} = ${user.id} and ${schema.follows.targetId} = ${targetId}) or (${schema.follows.userId} = ${targetId} and ${schema.follows.targetId} = ${user.id})`));
+      await audit(tx, { actorId: user.id, entityType: "user", entityId: targetId, action: "user.blocked" });
+    });
+  }
+  revalidatePath("/", "layout");
+}
+
+/** Contact form on /support. Emails the team; the person's address goes in the message so the team can reply. */
+export async function supportAction(_: ActionState, fd: FormData): Promise<ActionState> {
+  const parsed = z.object({
+    email: z.string().email("Enter a valid email so we can reply.").max(254),
+    topic: z.enum(["account", "report", "privacy", "bug", "other"]),
+    message: z.string().min(10, "Tell us a bit more (at least 10 characters).").max(4000),
+  }).safeParse({ email: str(fd, "email"), topic: str(fd, "topic") || "other", message: str(fd, "message") });
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Check the form." };
+  if (str(fd, "website")) return { ok: "Thanks. We'll reply by email." }; // honeypot
+  const ip = await clientIp();
+  if ((await attemptsSince("support_ip", ip, 60)) >= 5) return { error: "Too many messages from this network. Try again in an hour." };
+  await recordAttempt("support_ip", ip);
+  if (!process.env.RESEND_API_KEY && process.env.NODE_ENV === "production") return { error: "The contact form isn't available right now." };
+  notifyAdmins(`Lyncei: support request (${parsed.data.topic})`, [`From: ${parsed.data.email}`, `Topic: ${parsed.data.topic}`, `Message: ${parsed.data.message.replace(/\s+/g, " ")}`]);
+  return { ok: "Thanks. We read every message and reply by email, usually within 2 business days." };
 }

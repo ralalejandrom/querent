@@ -4,11 +4,11 @@ import { db, schema } from "@/db";
 import { isExampleEmail } from "./examples";
 
 /**
- * Early access. With ACCESS_MODE=open anyone can create an account; otherwise (the default)
- * only these emails can sign in: the founding team (ADMIN_EMAILS), people who already have an
- * account, and emails the team granted access to from /admin.
+ * Who can create an account. Open by default: anyone can sign up. With ACCESS_MODE=invite only these
+ * emails can: the founding team (ADMIN_EMAILS), people who already have an account, and emails the
+ * team granted access to from /admin. Reviewer status always needs approval, in either mode.
  */
-export const accessIsOpen = () => process.env.ACCESS_MODE === "open";
+export const accessIsOpen = () => process.env.ACCESS_MODE !== "invite";
 
 export function adminEmailList(): string[] {
   return (process.env.ADMIN_EMAILS ?? "").split(",").map((e) => e.trim().toLowerCase()).filter(Boolean);
@@ -21,6 +21,15 @@ export async function canSignIn(email: string): Promise<boolean> {
   const [user] = await db.select({ id: schema.users.id }).from(schema.users)
     .where(and(sql`lower(${schema.users.email}) = ${address}`, isNull(schema.users.deletedAt))).limit(1);
   if (user) return true;
+  const [grant] = await db.select({ id: schema.accessGrants.id }).from(schema.accessGrants)
+    .where(sql`lower(${schema.accessGrants.email}) = ${address}`).limit(1);
+  return !!grant;
+}
+
+/** Invited by the team: an ADMIN_EMAILS address or one with a grant from /admin. */
+export async function isInvited(email: string): Promise<boolean> {
+  const address = email.trim().toLowerCase();
+  if (adminEmailList().includes(address)) return true;
   const [grant] = await db.select({ id: schema.accessGrants.id }).from(schema.accessGrants)
     .where(sql`lower(${schema.accessGrants.email}) = ${address}`).limit(1);
   return !!grant;

@@ -1,0 +1,23 @@
+{
+  "name": "lyncei-ios",
+  "version": "1.0.0",
+  "private": true,
+  "description": "The Lyncei iOS app: a native shell around lyncei.com built with Capacitor.",
+  "scripts": {
+    "sync": "cap sync ios",
+    "open": "cap open ios",
+    "assets": "capacitor-assets generate --ios"
+  },
+  "dependencies": {
+    "@capacitor/app": "^7.1.2",
+    "@capacitor/core": "^7.6.10",
+    "@capacitor/ios": "^7.6.10",
+    "@capacitor/push-notifications": "^7.0.7",
+    "@capacitor/share": "^7.0.4",
+    "@capacitor/splash-screen": "^7.0.5",
+    "@capacitor/status-bar": "^7.0.6"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.6.10"
+  }
+}
