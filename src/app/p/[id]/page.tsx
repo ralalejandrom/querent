@@ -34,7 +34,7 @@ export default async function PostPage({ params }: Params) {
   // Right of reply: a review in its private window is shown only to the post's author, its reviewer and moderators.
   const now = new Date();
   const reviews = d.reviews.filter(({ review: r }) => r.status !== "completed" || isPublicReview(r, now) || isAuthor || r.reviewerId === user?.id || (!!user && r.coReviewerId === user.id) || isModerator(user));
-  const pending = reviews.filter(({ review: r }) => r.status === "completed" && !isPublicReview(r, now));
+  const pending = reviews.filter(({ review: r }) => r.status === "completed" && !!r.publicAt && !isPublicReview(r, now));
   const citeYear = (dt: Date | null) => (dt ?? now).getUTCFullYear();
   const citation = (r: (typeof reviews)[number]["review"], reviewer: (typeof reviews)[number]["reviewer"], co: (typeof reviews)[number]["coReviewer"]) =>
     `${r.isSigned ? reviewer.displayName + (co && r.coReviewerConfirmedAt ? ` and ${co.displayName}` : "") : "Anonymous verified reviewer"} (${citeYear(r.completedAt)}). ${REVIEW_TYPE_LABELS[r.type as ReviewType]} of “${post.title}”. Lyncei. ${appUrl()}/p/${post.id}#review-${r.id}`;
@@ -94,7 +94,7 @@ export default async function PostPage({ params }: Params) {
         )}
         {reviews.length ? reviews.map(({ review: r, reviewer, coReviewer: co }) => (
           <div className="review" key={r.id} id={`review-${r.id}`}>
-            {r.status === "completed" && !isPublicReview(r, now) && <div className="pendingnote">Private until {r.publicAt!.toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit", timeZone: "America/New_York" })} ET · only the author{isAuthor ? " (you)" : ""}, the reviewer{co ? " and the co-reviewer" : ""} can see it</div>}
+            {r.status === "completed" && !!r.publicAt && !isPublicReview(r, now) && <div className="pendingnote">Private until {r.publicAt!.toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit", timeZone: "America/New_York" })} ET · only the author{isAuthor ? " (you)" : ""}, the reviewer{co ? " and the co-reviewer" : ""} can see it</div>}
             <div className="row">
               {r.isSigned ? <><Avatar name={reviewer.displayName} handle={reviewer.handle} size="sm" /><div><Link href={`/u/${reviewer.handle}`}><b><Name name={reviewer.displayName} verified /></b></Link> <span className="hint">· {reviewer.field}</span></div></> : <div><b>Verified reviewer</b> <span className="hint">· identity protected</span></div>}
               <span style={{ marginLeft: "auto" }} className={`pillst ${r.status === "completed" ? "done" : ""}`}>{r.status === "completed" ? "Completed" : "In progress"}</span>

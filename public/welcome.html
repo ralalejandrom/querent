@@ -95,7 +95,9 @@ svg{display:block}
 .laptop .base::after{content:"";display:block;width:16%;height:6px;margin:0 auto;background:#8A8F96;border-radius:0 0 8px 8px}
 .app{background:var(--surface);border-radius:8px;display:grid;grid-template-columns:150px minmax(0,1fr) 190px;flex:1;min-height:0;overflow:hidden;font-size:12px;color:var(--ink)}
 .app .side{border-right:1px solid var(--rule);padding:14px 10px;display:flex;flex-direction:column;gap:4px}
-.app .side .lg{font-family:"DM Sans",var(--sans);font-weight:500;letter-spacing:-.02em;font-size:18px;padding:2px 8px 14px}
+.app .side .lg{font-family:"DM Sans",var(--sans);font-weight:500;letter-spacing:-.02em;font-size:18px;padding:2px 8px 14px;display:flex;align-items:center;gap:6px}
+.app .side .lg svg.mk{width:17px;height:17px;stroke:none;fill:none;color:var(--ink);flex:none}
+.app .side a .ct{margin-left:auto;background:var(--ink);color:var(--surface);font-size:9.5px;font-weight:700;line-height:1;padding:3px 6px;border-radius:9px}
 .app .side a{display:flex;gap:9px;align-items:center;padding:7px 8px;border-radius:7px;text-decoration:none;color:var(--ink-2)}
 .app .side a.on{background:color-mix(in srgb,var(--blue) 12%,transparent);color:var(--ink);font-weight:600}
 .app .side svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.7}
@@ -168,7 +170,10 @@ img.av{object-fit:cover;background:#E4E7EC}
 @media (prefers-reduced-motion:reduce){.phone.live .feedtrack,.phone.live .mreel .mbar i{animation:none}}
 .phone .notch{width:34%;height:24px;background:#1C1F24;border-radius:14px;margin:0 auto 14px;flex:none}
 .phone .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.phone .top b{font-family:"DM Sans",var(--sans);font-weight:500;letter-spacing:-.02em;font-size:17px}
+.phone .top b{font-family:"DM Sans",var(--sans);font-weight:500;letter-spacing:-.02em;font-size:17px;display:flex;align-items:center;gap:5px}
+.phone .top svg.mk{width:15px;height:15px;color:var(--ink);flex:none}
+.phone .tacts{display:flex;gap:9px}
+.phone .tacts svg{width:14px;height:14px;stroke:var(--ink);fill:none;stroke-width:1.8}
 .phone .tabs{gap:10px;font-size:10px}
 .phone .ptitle{font-size:13.5px}
 .chart{height:64px;border:1px solid var(--rule);border-radius:7px;margin-bottom:8px;background:
@@ -184,6 +189,8 @@ img.av{object-fit:cover;background:#E4E7EC}
 .dock div{display:grid;justify-items:center;gap:2px}
 .dock svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8}
 .dock .on{color:var(--ink)}
+.dock .plus{align-self:center;width:26px;height:22px;border-radius:5px;background:var(--ink);color:var(--surface);display:grid;place-items:center}
+.dock .plus svg{width:12px;height:12px;stroke-width:2.2}
 
 /* ---------- features ---------- */
 .features{border-top:1px solid var(--rule);background:var(--bg)}
@@ -746,6 +753,8 @@ a.inl:hover{text-decoration:underline}
     <symbol id="i-proj" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="16" rx="2"/><path d="M9 9h6M9 13h6M9 17h3"/></symbol>
     <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></symbol>
     <symbol id="i-plus" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M8 12h8"/></symbol>
+    <symbol id="i-q" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.5a2.5 2.5 0 1 1 3.4 2.3c-.7.3-1 .8-1 1.5v.4M12 16.6h.01"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="M4.5 7.5l7.5 5.5 7.5-5.5"/></symbol>
     <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20h4"/></symbol>
     <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="9" r="4"/><path d="M5 20c1.5-3.5 4-5 7-5s5.5 1.5 7 5"/></symbol>
     <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 5-3.2 8.3-7 10-3.8-1.7-7-5-7-10V6z"/><path d="M8.8 12l2.2 2.2 4.2-4.4"/></symbol>
@@ -799,18 +808,18 @@ a.inl:hover{text-decoration:underline}
           <div class="screen">
             <div class="app">
               <aside class="side">
-                <div class="lg">Lyncei</div>
+                <div class="lg"><svg class="mk"><use href="#mark"/></svg>Lyncei</div>
                 <a class="on"><svg><use href="#i-home"/></svg>Home</a>
-                <a><svg><use href="#i-explore"/></svg>Explore</a>
-                <a><svg><use href="#i-book"/></svg>My Library</a>
+                <a><svg><use href="#i-q"/></svg>Questions</a>
                 <a><svg><use href="#i-review"/></svg>Reviews</a>
-                <a><svg><use href="#i-msg"/></svg>Messages</a>
-                <a><svg><use href="#i-proj"/></svg>Projects</a>
-                <span class="create">Create Post</span>
+                <a><svg><use href="#i-book"/></svg>My Library</a>
+                <a><svg><use href="#i-mail"/></svg>Messages<span class="ct">2</span></a>
+                <a><svg><use href="#i-bell"/></svg>Notifications</a>
+                <span class="create">Create post</span>
               </aside>
               <div class="main">
                 <div class="search"><svg><use href="#i-search"/></svg>Search studies, topics, people…</div>
-                <div class="tabs"><span class="on">For you</span><span>Latest research</span><span>Clinical practice</span><span>Methodology</span><span>Your network</span></div>
+                <div class="tabs"><span class="on">For you</span><span>Videos</span><span>Following</span><span>Reviewed</span><span>Open questions</span></div>
                 <div class="post-h"><img class="av" src="https://images.unsplash.com/photo-1758691737587-7630b4d31d16?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><div><b>Dr. Sarah <span class="nw">Whitfield<svg class="vf" role="img" aria-label="Verified"><use href="#i-verified"/></svg></span></b><small>Cardiologist</small></div><span class="t">2h</span></div>
                 <div class="ptitle">Early results from a multicenter trial on SGLT2 inhibitors in heart failure with preserved ejection fraction</div>
                 <div class="pbody">The trial reports a reduction in the composite primary outcome. Here's a summary of the key findings, the limitations and what they could mean for practice.</div>
@@ -842,8 +851,8 @@ a.inl:hover{text-decoration:underline}
         <div class="phone" aria-hidden="true">
           <div class="scr">
             <div class="notch"></div>
-            <div class="top"><b>Lyncei</b><svg width="14" height="14" style="stroke:var(--ink);fill:none;stroke-width:2"><use href="#i-search"/></svg></div>
-            <div class="tabs"><span class="on">For you</span><span>Following</span><span>Clinical</span></div>
+            <div class="top"><b><svg class="mk"><use href="#mark"/></svg>Lyncei</b><span class="tacts"><svg><use href="#i-mail"/></svg><svg><use href="#i-bell"/></svg></span></div>
+            <div class="tabs"><span class="on">For you</span><span>Videos</span><span>Following</span></div>
             <div class="feedwin"><div class="feedtrack">
             <div class="post-h"><img class="av" src="https://images.unsplash.com/photo-1771904866914-93f97b30db88?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><div><b>Dr. Daniel <span class="nw">Hoffman<svg class="vf" role="img" aria-label="Verified"><use href="#i-verified"/></svg></span></b><small>Oncologist</small></div><span class="t">4h</span></div>
             <div class="ptitle">Updated meta-analysis on neoadjuvant immunotherapy in early-stage NSCLC</div>
@@ -871,9 +880,9 @@ a.inl:hover{text-decoration:underline}
             </div></div>
             <div class="dock">
               <div class="on"><svg><use href="#i-home"/></svg>Home</div>
-              <div><svg><use href="#i-search"/></svg>Explore</div>
-              <div><svg><use href="#i-plus"/></svg>Create</div>
-              <div><svg><use href="#i-bell"/></svg>Alerts</div>
+              <div><svg><use href="#i-q"/></svg>Questions</div>
+              <div class="plus"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></div>
+              <div><svg><use href="#i-review"/></svg>Reviews</div>
               <div><svg><use href="#i-user"/></svg>Profile</div>
             </div>
           </div>

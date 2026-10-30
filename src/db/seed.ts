@@ -45,6 +45,9 @@ async function main() {
     await db.update(schema.posts).set({ mediaUrl }).where(and(eq(schema.posts.title, title), isNull(schema.posts.mediaUrl)));
   }
 
+  // Example reviews seeded before reviews had a public date: they are public from completion.
+  await db.execute(sql`update reviews set public_at = completed_at where status = 'completed' and public_at is null and completed_at is not null`);
+
   // Example reviews get the author ratings that real reviews receive, so the examples show how usefulness and revisions appear.
   await db.execute(sql`update reviews r set helpfulness = 4, author_rated_at = now()
     from users rv, posts p, users a
@@ -112,11 +115,11 @@ async function main() {
   const [p1, p2, p3] = posts;
 
   await db.insert(schema.reviews).values([
-    { postId: p1.id, reviewerId: U.rafaelgomez, type: "methodological", status: "completed", recommendation: "Sound", summary: "Randomized, double-blind design appropriate for the question. Primary outcome prespecified. Attrition balanced between arms.", checklist: { "Design is appropriate for the question": true, "Outcomes were prespecified": true }, ratings: { rigor: "High", bias: "Low", relevance: "Moderate", reproducibility: "Pending further evidence" }, conflicts: "None declared", postVersion: 1, completedAt: ago(2) },
-    { postId: p1.id, reviewerId: U.michaelbrennan, type: "statistical", status: "completed", recommendation: "Sound with caveats", summary: "Analysis follows the registered plan. The subgroup by ejection fraction should be read as exploratory; no multiplicity correction was applied.", checklist: { "Analysis matches the prespecified plan": true, "Effect sizes come with confidence intervals": true }, conflicts: "None declared", postVersion: 1, completedAt: ago(1.5) },
-    { postId: p2.id, reviewerId: U.michaelbrennan, type: "methodological", status: "completed", recommendation: "Sound", summary: "Search strategy is comprehensive and heterogeneity is explored appropriately.", checklist: { "Design is appropriate for the question": true, "Risk of bias is addressed": true }, ratings: { rigor: "High", bias: "Moderate", relevance: "High", reproducibility: "Data available" }, conflicts: "None declared", postVersion: 1, completedAt: ago(4) },
+    { postId: p1.id, reviewerId: U.rafaelgomez, type: "methodological", status: "completed", recommendation: "Sound", summary: "Randomized, double-blind design appropriate for the question. Primary outcome prespecified. Attrition balanced between arms.", checklist: { "Design is appropriate for the question": true, "Outcomes were prespecified": true }, ratings: { rigor: "High", bias: "Low", relevance: "Moderate", reproducibility: "Pending further evidence" }, conflicts: "None declared", postVersion: 1, completedAt: ago(2), publicAt: ago(2) },
+    { postId: p1.id, reviewerId: U.michaelbrennan, type: "statistical", status: "completed", recommendation: "Sound with caveats", summary: "Analysis follows the registered plan. The subgroup by ejection fraction should be read as exploratory; no multiplicity correction was applied.", checklist: { "Analysis matches the prespecified plan": true, "Effect sizes come with confidence intervals": true }, conflicts: "None declared", postVersion: 1, completedAt: ago(1.5), publicAt: ago(1.5) },
+    { postId: p2.id, reviewerId: U.michaelbrennan, type: "methodological", status: "completed", recommendation: "Sound", summary: "Search strategy is comprehensive and heterogeneity is explored appropriately.", checklist: { "Design is appropriate for the question": true, "Risk of bias is addressed": true }, ratings: { rigor: "High", bias: "Moderate", relevance: "High", reproducibility: "Data available" }, conflicts: "None declared", postVersion: 1, completedAt: ago(4), publicAt: ago(4) },
     { postId: p2.id, reviewerId: U.rafaelgomez, type: "statistical", status: "in_progress", conflicts: "None declared", postVersion: 1 },
-    { postId: p3.id, reviewerId: U.michaelbrennan, type: "source_fidelity", status: "completed", recommendation: "Faithful to source", summary: "The post represents the preprint accurately and states that it has not been peer-reviewed by a journal.", checklist: { "The post states the study's main finding accurately": true, "Limitations mentioned in the paper are not omitted": true }, conflicts: "None declared", postVersion: 1, completedAt: ago(8) },
+    { postId: p3.id, reviewerId: U.michaelbrennan, type: "source_fidelity", status: "completed", recommendation: "Faithful to source", summary: "The post represents the preprint accurately and states that it has not been peer-reviewed by a journal.", checklist: { "The post states the study's main finding accurately": true, "Limitations mentioned in the paper are not omitted": true }, conflicts: "None declared", postVersion: 1, completedAt: ago(8), publicAt: ago(8) },
   ]);
 
   const [c1] = await db.insert(schema.contributions).values({ postId: p1.id, authorId: U.emilycarter, type: "interpretation", body: "These findings are consistent with previous studies, but heterogeneity across patient populations matters here.", createdAt: ago(2) }).returning();
