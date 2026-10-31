@@ -328,6 +328,7 @@ img.av{object-fit:cover;background:#E4E7EC}
 .pay-copy p{color:#CFCBD6;line-height:1.6;font-size:17px;margin:0 0 16px;max-width:34em}
 .pay-copy p.pay-note{font-size:15px;color:#A7A2B0;margin:24px 0 0;padding-top:16px;border-top:1px solid #2E2B3A}
 .pay a{color:#F5F7FB;font-weight:600;text-decoration:underline;text-decoration-color:#FF8A6B;text-underline-offset:4px}
+.pay-copy h3{font-family:var(--display);font-size:19px;font-weight:600;letter-spacing:-.01em;color:#F5F7FB;margin:28px 0 10px}
 .pay-copy sup{font-size:11px;line-height:0}.pay-copy sup a{text-decoration:none;color:#A7A2B0}
 .pay-refs{grid-column:1/-1;margin:8px 0 0;padding:20px 0 0 18px;border-top:1px solid #2E2B3A;font-size:13px;line-height:1.5;color:#A7A2B0;columns:2;column-gap:56px}
 .pay-refs li{break-inside:avoid;margin:0 0 6px}
@@ -1224,34 +1225,38 @@ a.inl:hover{text-decoration:underline}
   <section class="sec pay" id="philosophy" aria-labelledby="pay-h">
     <div class="wrap">
       <div class="pay-copy">
-        <p class="eyebrow">Our philosophy · A new model for peer review</p>
-        <h2 id="pay-h">We never pay for a verdict. <em>We reward the record.</em></h2>
-        <p>Peer review is a public good. Each reviewer bears the cost and all of science shares the benefit, so review is chronically undersupplied: researchers gave more than 100 million hours to it in 2020, almost all of them unpaid,<sup><a href="#ref-1">1</a></sup> and editors now need about 4.5 invitations to secure a single review, nearly double the 2018 rate.<sup><a href="#ref-2">2</a></sup></p>
-        <p>Paying for each review buys little. At Critical Care Medicine, $250 a review raised completion from 42% to 50% of invitations, with no change in quality,<sup><a href="#ref-3">3</a></sup> and a payment that depends on anyone’s opinion of the verdict ends up buying it.</p>
-        <p>Yet good judgment already has a market. Expert-data firms such as Mercor pay more than 30,000 experts an average of over $85 an hour.<sup><a href="#ref-4">4</a></sup> What buyers cannot easily see is the quality of someone’s judgment; a CV doesn’t show it. A public, audited record of review is exactly that signal.</p>
-        <p>For that record to mean something, judgment has to be measurable. It can be: groups of researchers correctly classified 61% to 69% of claims about whether studies would replicate, and earlier prediction markets were about 73% accurate,<sup><a href="#ref-5">5</a></sup> while forecasting tournaments showed that the best individual forecasters can be identified from a scored record and keep their edge.<sup><a href="#ref-6">6</a></sup> So each review on Lyncei adds a quick forecast, made before seeing anyone else’s, about something checked within weeks, such as whether a blind audit will confirm the post is faithful to its source. Forecasts are scored against other reviewers on the same cases, with a rule under which reporting your true belief is the best strategy.<sup><a href="#ref-7">7</a></sup></p>
-        <p>Then we keep the verdict apart from money. No payment ever depends on a verdict: public reviews are never paid, and the record they build opens paid expert work commissioned by organizations that need it. Authors and readers never pay.</p>
-        <p>Forecasting tournaments proved that scored judgment can be found and hired; recognition services have counted reviews, and some journals have paid for them. As far as we know, nobody has brought these together for peer review. That is the model we are building, and we will test it in a preregistered randomized trial.</p>
+        <p class="eyebrow">Our philosophy</p>
+        <h2 id="pay-h">Bringing the human back to science. <em>Keeping it rigorous.</em></h2>
+        <h3>A social network built for science</h3>
+        <p>Science is made by people, yet it reaches most of us either as an abstract with no voice or as a viral clip stripped of its caveats. Researchers already share their work on TikTok and Instagram,<sup><a href="#ref-1">1</a></sup> and Nature has argued that the future of science communication is no longer the article alone.<sup><a href="#ref-2">2</a></sup></p>
+        <p>Lyncei is a social network built for that reality. Researchers explain their work in posts and short videos, with their own name, voice and reasoning, and every claim travels with its source, its limits and its review. The feed is designed to reward what holds up, not only what spreads.</p>
+        <h3>A new economy for peer review</h3>
+        <p>That only works if review keeps up, and it is under strain: researchers gave more than 100 million hours to it in 2020, almost all unpaid,<sup><a href="#ref-3">3</a></sup> and editors now need about 4.5 invitations to secure one review, nearly double the 2018 rate.<sup><a href="#ref-4">4</a></sup> Paying per review buys little: at Critical Care Medicine, $250 raised completion from 42% to 50%, with no change in quality.<sup><a href="#ref-5">5</a></sup></p>
+        <p>We never pay for a verdict; we reward the record. Judgment can be measured: groups of researchers correctly classified 61% to 69% of replication claims,<sup><a href="#ref-6">6</a></sup> and forecasting tournaments showed that the best forecasters can be identified and keep their edge.<sup><a href="#ref-7">7</a></sup> So each public review adds a quick forecast, made before seeing anyone else’s and scored against other reviewers with a rule under which honesty is the best strategy.<sup><a href="#ref-8">8</a></sup> The audited record that results opens paid expert work, in a market that already pays experts more than $85 an hour on average.<sup><a href="#ref-9">9</a></sup></p>
+        <p>As far as we know, nobody has brought these together for science. That is what we are building, and we will test it in a preregistered randomized trial.</p>
         <p class="pay-note">Forecasts, audits, calibration cases and the first paid work are being built with our founding reviewers.</p>
       </div>
       <div class="pay-rules">
-        <div class="pay-cols" aria-hidden="true"><span>Step</span><span>How it works</span></div>
-        <ul aria-label="How Lyncei turns public review into paid expert work">
-          <li><span>1 · Review in public</span><span>Short, unpaid and citable, signed or verified-anonymous. Since nobody is paid for a review, nobody can buy one.</span></li>
-          <li><span>2 · Add a quick forecast</span><span>One probability, given before you see anyone else’s, on cases assigned to you rather than chosen. A calibrated skeptic and a calibrated enthusiast score the same.</span></li>
-          <li><span>3 · Build an audited record</span><span>Measured within your field by your forecasts, cases with known errors, blind audits and how useful authors found your reviews. Never by likes.</span></li>
-          <li><span>4 · Unlock paid work</span><span>Journals, foundations and other organizations commission private expert work. Lyncei offers it first to the strongest records in the field, pays the reviewer and keeps a margin.</span></li>
-          <li><span>5 · Keep it current</span><span>Recent work counts most, so access depends on reviewing in public. Proven misconduct resets the record.</span></li>
+        <div class="pay-cols" aria-hidden="true"><span>Principle</span><span>In practice</span></div>
+        <ul aria-label="Lyncei's principles, as a social network and for peer review">
+          <li><span>Science with a face</span><span>Researchers share their work in posts and short videos, under their own name, in their own words.</span></li>
+          <li><span>The source travels with the claim</span><span>Every post links its study and says what it doesn’t show, wherever it’s shared.</span></li>
+          <li><span>Discussion with evidence</span><span>Objections and corrections need a DOI or a link. Questions don’t.</span></li>
+          <li><span>Rigor over reach</span><span>Likes, shares and views never change a review label.</span></li>
+          <li><span>Review in public, with a forecast</span><span>Short, unpaid and citable reviews, each with one probability scored against other reviewers. A calibrated skeptic and a calibrated enthusiast score the same.</span></li>
+          <li><span>An audited record that pays</span><span>Built from forecasts, blind audits and how useful authors found your reviews. It opens paid expert work commissioned by journals, foundations and other organizations.</span></li>
         </ul>
       </div>
       <ol class="pay-refs" aria-label="References">
-        <li id="ref-1">Aczel B, Szaszi B, Holcombe AO. <a href="https://researchintegrityjournal.biomedcentral.com/articles/10.1186/s41073-021-00118-2" target="_blank" rel="noopener noreferrer">A billion-dollar donation: estimating the cost of researchers’ time spent on peer review</a>. Research Integrity and Peer Review, 2021.</li>
-        <li id="ref-2">Silverchair. <a href="https://www.silverchair.com/news/the-numbers-behind-the-noise/" target="_blank" rel="noopener noreferrer">The numbers behind the noise: what our 2026 peer review report shows</a>. Future of Peer Review Report, 2026.</li>
-        <li id="ref-3">Cotton CS, Alam A, Tosta S, Buchman TG, Maslove DM. <a href="https://peerreviewcongress.org/abstract/monetary-incentives-for-peer-review-at-a-medical-journal-a-quasi-randomized-experimental-study/" target="_blank" rel="noopener noreferrer">Monetary incentives for peer review at a medical journal: a quasi-randomized experimental study</a>. Critical Care Medicine, 2025.</li>
-        <li id="ref-4"><a href="https://techcrunch.com/2025/10/27/mercor-quintuples-valuation-to-10b-with-350m-series-c/" target="_blank" rel="noopener noreferrer">Mercor quintuples valuation to $10B with $350M Series C</a>. TechCrunch, 2025.</li>
-        <li id="ref-5">Marcoci A, van der Linden S, et al. <a href="https://www.nature.com/articles/s41562-024-01961-1" target="_blank" rel="noopener noreferrer">Predicting the replicability of social and behavioural science claims in COVID-19 preprints</a>. Nature Human Behaviour, 2025.</li>
-        <li id="ref-6">Mellers B, Stone E, Murray T, et al. Identifying and cultivating superforecasters as a method of improving probabilistic predictions. Perspectives on Psychological Science, 2015.</li>
-        <li id="ref-7">Gneiting T, Raftery AE. Strictly proper scoring rules, prediction, and estimation. Journal of the American Statistical Association, 2007.</li>
+        <li id="ref-1"><a href="https://www.nature.com/articles/d41586-024-02294-9" target="_blank" rel="noopener noreferrer">How PhD influencers are logging lab life on TikTok and Instagram</a>. Nature, news feature, 2024.</li>
+        <li id="ref-2"><a href="https://www.nature.com/articles/d41586-026-01723-1" target="_blank" rel="noopener noreferrer">The future of science communication is not an article like this</a>. Nature, editorial, 2026.</li>
+        <li id="ref-3">Aczel B, Szaszi B, Holcombe AO. <a href="https://researchintegrityjournal.biomedcentral.com/articles/10.1186/s41073-021-00118-2" target="_blank" rel="noopener noreferrer">A billion-dollar donation: estimating the cost of researchers’ time spent on peer review</a>. Research Integrity and Peer Review, 2021.</li>
+        <li id="ref-4">Silverchair. <a href="https://www.silverchair.com/news/the-numbers-behind-the-noise/" target="_blank" rel="noopener noreferrer">The numbers behind the noise: what our 2026 peer review report shows</a>. Future of Peer Review Report, 2026.</li>
+        <li id="ref-5">Cotton CS, Alam A, Tosta S, Buchman TG, Maslove DM. <a href="https://peerreviewcongress.org/abstract/monetary-incentives-for-peer-review-at-a-medical-journal-a-quasi-randomized-experimental-study/" target="_blank" rel="noopener noreferrer">Monetary incentives for peer review at a medical journal: a quasi-randomized experimental study</a>. Critical Care Medicine, 2025.</li>
+        <li id="ref-6">Marcoci A, van der Linden S, et al. <a href="https://www.nature.com/articles/s41562-024-01961-1" target="_blank" rel="noopener noreferrer">Predicting the replicability of social and behavioural science claims in COVID-19 preprints</a>. Nature Human Behaviour, 2025.</li>
+        <li id="ref-7">Mellers B, Stone E, Murray T, et al. Identifying and cultivating superforecasters as a method of improving probabilistic predictions. Perspectives on Psychological Science, 2015.</li>
+        <li id="ref-8">Gneiting T, Raftery AE. Strictly proper scoring rules, prediction, and estimation. Journal of the American Statistical Association, 2007.</li>
+        <li id="ref-9"><a href="https://techcrunch.com/2025/10/27/mercor-quintuples-valuation-to-10b-with-350m-series-c/" target="_blank" rel="noopener noreferrer">Mercor quintuples valuation to $10B with $350M Series C</a>. TechCrunch, 2025.</li>
       </ol>
     </div>
   </section>
