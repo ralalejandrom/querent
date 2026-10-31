@@ -321,6 +321,23 @@ img.av{object-fit:cover;background:#E4E7EC}
 .jcard a.more{font-weight:600;color:var(--blue)}
 @media (max-width:860px){.partners .three,.pform,.pform .grid{grid-template-columns:minmax(0,1fr)}}
 
+.sec.pay{background:#16141F;color:#F5F7FB}
+.pay .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:56px;align-items:start}
+.pay .eyebrow{color:#A7A2B0}
+.pay h2{color:#F5F7FB}.pay h2 em{font-style:normal;color:#6273F4}
+.pay-copy p{color:#CFCBD6;line-height:1.6;font-size:17px;margin:0 0 16px;max-width:34em}
+.pay-copy p.pay-note{font-size:15px;color:#A7A2B0;margin:24px 0 0;padding-top:16px;border-top:1px solid #2E2B3A}
+.pay a{color:#F5F7FB;font-weight:600;text-decoration:underline;text-decoration-color:#FF8A6B;text-underline-offset:4px}
+.pay-rules{margin:0}
+.pay-rules .pay-cols,.pay-rules li{display:grid;grid-template-columns:minmax(0,0.8fr) minmax(0,1.2fr);gap:20px}
+.pay-rules .pay-cols{font-size:13px;font-weight:600;color:#A7A2B0;padding:0 0 10px}
+.pay-rules ul{list-style:none;margin:0;padding:0}
+.pay-rules li{padding:16px 0;border-top:1px solid #2E2B3A;font-size:15px;line-height:1.45}
+.pay-rules li span:first-child{color:#A7A2B0}
+.pay-rules li span:last-child{color:#F5F7FB}
+@media (max-width:860px){.pay .wrap{grid-template-columns:minmax(0,1fr);gap:32px}}
+@media (max-width:560px){.pay-rules .pay-cols{display:none}.pay-rules li{grid-template-columns:minmax(0,1fr);gap:4px}.pay-rules li span:first-child{font-size:13px;font-weight:600}}
+
 .pill.ghost{background:var(--surface);color:var(--blue);box-shadow:inset 0 0 0 1.5px var(--blue)}
 .pill[disabled]{opacity:.6;cursor:progress}
 .pill:focus-visible,.form input:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
@@ -787,6 +804,7 @@ a.inl:hover{text-decoration:underline}
     <nav class="nav" aria-label="Main">
       <a href="#how">How review works</a>
       <a href="#example">Example</a>
+      <a href="#philosophy">Philosophy</a>
       <a href="#partners">Partners</a>
       <a href="#join">Join</a>
     </nav>
@@ -1194,6 +1212,29 @@ a.inl:hover{text-decoration:underline}
           <button class="pill lg" type="submit" style="margin-top:14px">Apply as a founding reviewer</button>
           <p class="note" id="note-ra" aria-live="polite"></p>
         </form>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec pay" id="philosophy" aria-labelledby="pay-h">
+    <div class="wrap">
+      <div class="pay-copy">
+        <p class="eyebrow">Our philosophy</p>
+        <h2 id="pay-h">Paid for being useful. <em>Never for being popular.</em></h2>
+        <p>Paying peer reviewers divides researchers. Review is skilled work that journals sell, and reviewers rarely see any of it. But money can also reward speed over care, sway a verdict or hide a conflict.</p>
+        <p>The early evidence is encouraging. When <a href="https://www.researchinformation.info/news/biology-open-paid-peer-review-model-cuts-times-to-five-working-days/" target="_blank" rel="noopener noreferrer">Biology Open paid reviewers</a> only for timely, useful reports, decisions came in days instead of weeks, with no drop in quality. So Lyncei will pay reviewers, more as their work proves useful, with a rule for every worry in place before the first payment.</p>
+        <p class="pay-note">Payments start once institutions fund them. Until then, and always, every review earns citable credit on your profile, and researchers never pay to post, read or review.</p>
+      </div>
+      <div class="pay-rules">
+        <div class="pay-cols" aria-hidden="true"><span>The worry</span><span>Our rule</span></div>
+        <ul aria-label="Worries about paying reviewers, and Lyncei's rule for each">
+          <li><span>Pay rewards popularity</span><span>Views, likes and followers earn nothing. Pay follows how useful authors found your reviews.</span></li>
+          <li><span>Money buys a verdict</span><span>The same pay whatever you conclude. Clients never choose the reviewer.</span></li>
+          <li><span>Fast, shallow reviews</span><span>Only a set number of reviews a month count toward pay, and independent audits can zero a careless one.</span></li>
+          <li><span>Hidden conflicts</span><span>Conflicts are declared on every review, and sponsored reviews say who paid.</span></li>
+          <li><span>Industry money reaches reviewers</span><span>Industry money never enters the shared pool that pays community reviewers.</span></li>
+          <li><span>Authors end up paying</span><span>Institutions pay. Researchers never do, and there are no ads.</span></li>
+        </ul>
       </div>
     </div>
   </section>
