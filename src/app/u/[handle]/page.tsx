@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { isExampleEmail, showExamples } from "@/lib/examples";
 import { notFound } from "next/navigation";
 import { and, count, desc, eq, isNotNull, lte, sql } from "drizzle-orm";
@@ -11,6 +12,20 @@ import { Rail } from "@/components/rail";
 import { toggleBlockAction, toggleFollowAction, signOutAction } from "@/app/actions";
 import { startConversationAction } from "@/app/dm-actions";
 import { followsUser } from "@/lib/dm";
+
+export async function generateMetadata({ params }: { params: Promise<{ handle: string }> }): Promise<Metadata> {
+  const { handle } = await params;
+  const [u] = await db.select({ handle: schema.users.handle, displayName: schema.users.displayName, field: schema.users.field, email: schema.users.email, deletedAt: schema.users.deletedAt })
+    .from(schema.users).where(sql`lower(${schema.users.handle}) = ${handle.toLowerCase()}`).limit(1);
+  if (!u || u.deletedAt) return { title: "Profile" };
+  const description = u.field ? `${u.displayName} · ${u.field} · on Lyncei` : `${u.displayName} on Lyncei`;
+  return {
+    title: u.displayName, description,
+    alternates: { canonical: `/u/${u.handle}` },
+    // Fictional example accounts stay out of search results.
+    ...(isExampleEmail(u.email) ? { robots: { index: false, follow: true } } : {}),
+  };
+}
 
 export default async function Profile({ params, searchParams }: { params: Promise<{ handle: string }>; searchParams: Promise<{ dm?: string }> }) {
   const { handle } = await params;

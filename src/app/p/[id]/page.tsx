@@ -21,7 +21,13 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const d = await getPostDetail((await params).id, null);
   if (!d) return { title: "Post" };
   const desc = `${d.post.rigor.label} on Lyncei · ${d.post.author.displayName}`;
-  return { title: d.post.title, description: desc, openGraph: { title: d.post.title, description: desc, type: "article" }, twitter: { card: "summary_large_image", title: d.post.title, description: desc } };
+  return {
+    title: d.post.title, description: desc,
+    alternates: { canonical: `/p/${d.post.id}` },
+    // Fictional example posts stay out of search results, so nobody mistakes them for real research.
+    ...(d.post.author.example ? { robots: { index: false, follow: true } } : {}),
+    openGraph: { title: d.post.title, description: desc, type: "article" }, twitter: { card: "summary_large_image", title: d.post.title, description: desc },
+  };
 }
 
 export default async function PostPage({ params }: Params) {
