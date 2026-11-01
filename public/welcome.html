@@ -752,6 +752,13 @@ footer .brand .word{font-size:18px}
   @keyframes talkzoom2{from{scale:1.02}to{scale:1.06}}
 }
 
+/* Contact */
+.contact{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:40px;align-items:center}
+.contact p.txt{font-size:18px;color:var(--ink-2);line-height:1.5;margin:12px 0 0;max-width:30em}
+.contact-links{display:flex;flex-direction:column;align-items:flex-start;gap:14px}
+.contact-links .inl{white-space:normal}
+@media (max-width:860px){.contact{grid-template-columns:minmax(0,1fr);gap:24px}}
+
 /* Founding reviewers: highlighted on the hero, in the philosophy section and at the application */
 .hero-badge{display:inline-flex;align-items:center;gap:9px;font-size:14px;font-weight:600;color:var(--ultra);background:var(--lav-soft);border:1px solid color-mix(in srgb,var(--ultra) 25%,transparent);border-radius:999px;padding:6px 14px 6px 12px;text-decoration:none;margin:0 0 18px}
 .hero-badge:hover{text-decoration:underline;text-underline-offset:3px}
@@ -835,6 +842,7 @@ a.inl:hover{text-decoration:underline}
       <a href="#philosophy">Philosophy</a>
       <a href="#partners">Partners</a>
       <a href="#join">Join</a>
+      <a href="#contact">Contact</a>
     </nav>
     <div style="display:flex;gap:10px;align-items:center"><a href="/login" style="text-decoration:none;font-weight:600;font-size:15px">Sign in</a><a class="pill" href="/signup">Create account</a></div>
   </div>
@@ -1352,10 +1360,25 @@ a.inl:hover{text-decoration:underline}
   </section>
 </main>
 
+  <section class="sec" id="contact" aria-labelledby="contact-h">
+    <div class="wrap contact">
+      <div>
+        <p class="eyebrow">Contact</p>
+        <h2 id="contact-h">Talk to the Lyncei team</h2>
+        <p class="txt">Questions, feedback, press or partnerships. We read every message and reply by email, usually within two business days.</p>
+      </div>
+      <div class="contact-links">
+        <a class="pill lg" href="/support">Contact us <span aria-hidden="true">→</span></a>
+        <a class="inl" href="#apply">Researchers: become a founding reviewer →</a>
+        <a class="inl" href="#partners">Universities, institutes and journals: partnerships →</a>
+      </div>
+    </div>
+  </section>
+
 <footer>
   <div class="wrap">
     <a class="brand" href="/" aria-label="Lyncei home"><svg width="26" height="26" aria-hidden="true"><use href="#mark"/></svg><span class="word">Lyncei</span></a>
-    <span>© 2026 Lyncei · Lyncei and the Lyncei logo are trademarks. · Boston, MA · Named after the Accademia dei Lincei, the scientific academy founded in Rome in 1603 that counted Galileo among its members. Product previews show fictional examples; portrait photos from Unsplash. Lyncei is for discussing research, not medical advice. <a href="/guidelines">Review guidelines</a> · <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a></span>
+    <span>© 2026 Lyncei · Lyncei and the Lyncei logo are trademarks. · Boston, MA · Named after the Accademia dei Lincei, the scientific academy founded in Rome in 1603 that counted Galileo among its members. Product previews show fictional examples; portrait photos from Unsplash. Lyncei is for discussing research, not medical advice. <a href="/guidelines">Review guidelines</a> · <a href="/support">Contact</a> · <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a></span>
   </div>
 </footer>
 
