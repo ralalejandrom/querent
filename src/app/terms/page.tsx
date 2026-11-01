@@ -53,6 +53,9 @@ export default function Terms() {
       <h2>Moderation</h2>
       <p>We can hold, label or remove content and suspend or remove accounts that break these terms. Every moderation decision is logged with its reason and sent to the author, who can respond to a review or a label. To appeal a decision, <Link href="/support">contact us</Link>.</p>
 
+      <h2>Our name and logo</h2>
+      <p>Lyncei and the Lyncei logo are trademarks. Please don't use them in a way that suggests Lyncei endorses or is part of something it isn't.</p>
+
       <h2>The service</h2>
       <p>Lyncei is provided as it is, and features may change as it grows. To the extent the law allows, we aren't liable for decisions made based on content posted by users. We'll update these terms as Lyncei grows and change the date at the top when we do.</p>
 
