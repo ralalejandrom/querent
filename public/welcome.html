@@ -752,8 +752,26 @@ footer .brand .word{font-size:18px}
   @keyframes talkzoom2{from{scale:1.02}to{scale:1.06}}
 }
 
-/* Founding reviewer application */
+/* Founding reviewers: highlighted on the hero, in the philosophy section and at the application */
+.hero-badge{display:inline-flex;align-items:center;gap:9px;font-size:14px;font-weight:600;color:var(--ultra);background:var(--lav-soft);border-radius:999px;padding:7px 14px 7px 11px;text-decoration:none;margin:0 0 18px}
+.hero-badge:hover{text-decoration:underline;text-underline-offset:3px}
+.hero-badge .dot{width:8px;height:8px;border-radius:50%;background:var(--ultra);box-shadow:0 0 0 4px color-mix(in srgb,var(--ultra) 22%,transparent)}
+.pay-copy .pay-cta{margin:28px 0 0;padding:24px 24px 26px;border-radius:14px;background:linear-gradient(160deg,rgba(98,115,244,.24),rgba(98,115,244,.08));border:1px solid rgba(154,168,255,.45)}
+.pay-copy .pay-cta p{margin:0;color:#F5F7FB}
+.pay-copy .pay-cta p.pay-cta-k{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#9AA8FF;margin:0 0 8px}
+.pay .pay-cta a.pay-cta-btn{display:inline-flex;align-items:center;gap:8px;margin-top:18px;background:#F5F7FB;color:#16141F;text-decoration:none;font-weight:600;font-size:15px;padding:11px 20px;border-radius:999px}
+.pay .pay-cta a.pay-cta-btn:hover{background:#FFFFFF}
 .rform{margin-top:36px}
+.pform.rform{padding:0;gap:0;overflow:hidden;border:1px solid color-mix(in srgb,var(--ultra) 55%,transparent);box-shadow:0 28px 60px -32px rgba(43,63,216,.5);border-radius:14px}
+.rform .rf-intro{align-self:stretch;background:linear-gradient(160deg,#3346E6 0%,#2B3FD8 55%,#1F2CA8 100%);color:#FFFFFF;padding:34px 32px}
+.rform .rf-intro h3{color:#FFFFFF;font-size:30px;margin:0 0 10px}
+.rform .rf-intro p{color:rgba(255,255,255,.86)}
+.rform .rf-badge{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:#FFFFFF;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);padding:6px 12px 6px 10px;border-radius:999px;margin:0 0 16px}
+.rform .rf-badge svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.rform .rf-intro .rf-points li{color:#FFFFFF}
+.rform .rf-intro .rf-points li::before{background:rgba(255,255,255,.22)}
+.rform .rf-intro .rf-points li::after{border-color:#FFFFFF}
+.rform > .form{padding:32px}
 .rf-points{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:8px;color:var(--ink-2);font-size:15px}
 .rf-points li{position:relative;padding-left:24px}
 .rf-points li::before{content:"";position:absolute;left:0;top:4px;width:14px;height:14px;border-radius:50%;background:var(--lav-soft)}
@@ -824,6 +842,7 @@ a.inl:hover{text-decoration:underline}
   <section class="hero">
     <div class="wrap">
       <div>
+        <a class="hero-badge" href="#apply"><span class="dot" aria-hidden="true"></span>Now inviting founding reviewers <span aria-hidden="true">→</span></a>
         <h1>The future of science, <em>reviewed in the open.</em></h1>
         <p class="lede">The social network for science, with expert review built in.</p>
         <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center"><a class="pill lg" href="/signup">Create your account <span aria-hidden="true">→</span></a><a href="/?tab=foryou" style="font-weight:600;text-decoration:none;border-bottom:1px solid currentColor">See example posts</a></div>
@@ -1201,11 +1220,11 @@ a.inl:hover{text-decoration:underline}
         <li><svg><use href="#i-share"/></svg>ORCID export <span class="chip plan">Planned</span></li>
       </ul>
       <div class="pform rform" id="apply">
-        <div>
-          <p class="eyebrow" style="margin-bottom:8px">Founding reviewers</p>
-          <h3>Apply as a founding reviewer</h3>
-          <p>Short, scoped reviews in your own field, signed or anonymous. Founding reviewers help write the review guidelines.</p>
-          <ul class="rf-points"><li>About 20 minutes per review</li><li>Credit on your profile from day one</li><li>We reply within a week</li></ul>
+        <div class="rf-intro">
+          <span class="rf-badge"><svg aria-hidden="true"><use href="#i-award"/></svg>Founding reviewers</span>
+          <h3>Become a founding reviewer</h3>
+          <p>Short, scoped reviews in your own field, signed or anonymous. Founding reviewers help shape how review works on Lyncei.</p>
+          <ul class="rf-points"><li>Help write the review guidelines</li><li>About 20 minutes per review</li><li>Credit on your profile from day one</li><li>We reply within a week</li></ul>
         </div>
         <form class="form" id="reviewer-form" novalidate>
           <div class="grid">
@@ -1236,8 +1255,12 @@ a.inl:hover{text-decoration:underline}
         <h3>A new economy for peer review</h3>
         <p>That only works if review keeps up, and it is under strain: researchers gave more than 100 million hours to it in 2020, almost all unpaid,<sup><a href="#ref-3">3</a></sup> and editors now need about 4.5 invitations to secure one review, nearly double the 2018 rate.<sup><a href="#ref-4">4</a></sup> Paying per review buys little: at Critical Care Medicine, $250 raised completion from 42% to 50%, with no change in quality.<sup><a href="#ref-5">5</a></sup></p>
         <p>We never pay for a verdict; we reward the record. Judgment can be measured: groups of researchers correctly classified 61% to 69% of replication claims,<sup><a href="#ref-6">6</a></sup> and forecasting tournaments showed that the best forecasters can be identified and keep their edge.<sup><a href="#ref-7">7</a></sup> So each public review adds a quick forecast, made before seeing anyone else’s and scored against other reviewers with a rule under which honesty is the best strategy.<sup><a href="#ref-8">8</a></sup> The audited record that results opens paid expert work, in a market that already pays experts more than $85 an hour on average.<sup><a href="#ref-9">9</a></sup></p>
-        <p>As far as we know, nobody has brought these together for science. That is what we are building, together with our founding reviewers.</p>
-        <p class="pay-note">Forecasts, audits, calibration cases and the first paid work are being built with our founding reviewers.</p>
+        <p>As far as we know, nobody has brought these together for science.</p>
+        <div class="pay-cta">
+          <p class="pay-cta-k">Founding reviewers</p>
+          <p>That is what we are building, together with our founding reviewers. They help write the review guidelines, and the forecasts, audits, calibration cases and the first paid work are being designed with them.</p>
+          <a class="pay-cta-btn" href="#apply">Become a founding reviewer <span aria-hidden="true">→</span></a>
+        </div>
       </div>
       <div class="pay-rules">
         <div class="pay-cols" aria-hidden="true"><span>Principle</span><span>In practice</span></div>
