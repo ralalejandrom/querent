@@ -789,6 +789,33 @@ footer .brand .word{font-size:18px}
 .pform .opt{font-weight:400;color:var(--muted)}
 a.inl{color:var(--ultra);font-weight:600;text-decoration:none;white-space:nowrap}
 a.inl:hover{text-decoration:underline}
+
+/* Explore: the page's sections grouped into five categories that open on click. */
+.explore{border-top:1px solid var(--rule);padding-block:clamp(40px,6vw,72px) clamp(40px,6vw,80px)}
+.explore-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-block:0 18px}
+.explore-head h2{font-family:var(--display);font-weight:600;font-size:clamp(28px,3.2vw,42px);line-height:1.12;letter-spacing:-.025em;margin:0}
+.explore-head p{margin:0;color:var(--muted);font-size:16px}
+.cat>summary{list-style:none;cursor:pointer}
+.cat>summary::-webkit-details-marker{display:none}
+.cat-sum{display:block}
+.cat-row{display:flex;align-items:center;gap:clamp(16px,3vw,32px);padding-block:26px;border-top:1px solid var(--rule)}
+.cat:last-of-type .cat-row{border-bottom:1px solid var(--rule)}
+.cat[open] .cat-row{border-bottom:0}
+.cat-close{display:flex;justify-content:center;padding-block:8px 40px}
+.cat-x{font:inherit;font-size:15px;font-weight:600;color:var(--ink);background:none;border:1px solid var(--rule);border-radius:999px;padding:12px 20px;min-height:44px;cursor:pointer}
+.cat-x:hover{background:var(--accent-soft)}
+.cat-n{font-size:15px;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums;min-width:2ch}
+.cat-tx{display:flex;flex-direction:column;gap:6px;flex:1;min-width:0}
+.cat-t{font-family:var(--display);font-weight:600;font-size:clamp(21px,2.3vw,28px);line-height:1.2;letter-spacing:-.015em;color:var(--ink)}
+.cat-d{font-size:16px;line-height:1.45;color:var(--ink-2);max-width:46em}
+.cat-i{flex:0 0 auto;width:44px;height:44px;border-radius:999px;border:1px solid var(--rule);display:flex;align-items:center;justify-content:center;color:var(--ink);transition:transform .25s ease,background-color .2s ease}
+.cat>summary:hover .cat-i{background:var(--accent-soft)}
+.cat>summary:hover .cat-t{color:var(--ultra)}
+.cat[open] .cat-i{transform:rotate(45deg)}
+.cat>summary:focus-visible{outline:none}
+.cat>summary:focus-visible .cat-row{outline:2px solid var(--ultra);outline-offset:4px;border-radius:8px}
+.cat-body .sec:first-child{border-top:0}
+@media (prefers-reduced-motion: reduce){.cat-i{transition:none}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -838,11 +865,10 @@ a.inl:hover{text-decoration:underline}
       <span class="word">Lyncei</span>
     </a>
     <nav class="nav" aria-label="Main">
-      <a href="#how">How review works</a>
-      <a href="#example">Example</a>
-      <a href="#philosophy">Philosophy</a>
-      <a href="#partners">Partners</a>
-      <a href="#join">Join</a>
+      <a href="#cat-how">How it works</a>
+      <a href="#cat-why">Why Lyncei</a>
+      <a href="#cat-reviewers">Reviewers</a>
+      <a href="#cat-partners">Partners</a>
       <a href="#contact">Contact</a>
     </nav>
     <div style="display:flex;gap:10px;align-items:center"><a href="/login" style="text-decoration:none;font-weight:600;font-size:15px">Sign in</a><a class="pill" href="/signup">Create account</a></div>
@@ -951,7 +977,12 @@ a.inl:hover{text-decoration:underline}
     <div class="wrap fields-head"><p class="fields-line">Built for science.</p></div>
   </section>
 
-  <section class="features" aria-label="How Lyncei works">
+  <section class="explore" id="explore" aria-labelledby="explore-h">
+  <div class="wrap explore-head"><h2 id="explore-h">Explore Lyncei</h2><p>Open only what you want to know.</p></div>
+  <details class="cat" id="cat-how" name="explore">
+    <summary><span class="wrap cat-sum"><span class="cat-row"><span class="cat-n">01</span><span class="cat-tx"><span class="cat-t">How it works</span><span class="cat-d">Posts and short videos linked to their sources, and how review checks them.</span></span><span class="cat-i" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 2v12M2 8h12"/></svg></span></span></span></summary>
+    <div class="cat-body">
+    <section class="features" aria-label="How Lyncei works">
     <div class="wrap">
       <div class="feat" id="discover">
         <h3><span class="num">01</span>Discover</h3>
@@ -1000,8 +1031,58 @@ a.inl:hover{text-decoration:underline}
       </div>
     </div>
   </section>
-
-  <section class="sec why" id="why-now" aria-labelledby="whynow-h">
+    <section class="sec" id="how" aria-labelledby="how-h">
+    <div class="wrap how-grid">
+      <div class="how-copy">
+        <p class="eyebrow">How review works</p>
+        <h2 id="how-h">Two different questions, labeled separately</h2>
+        <ol class="qsteps">
+          <li><span class="qn">1</span><div><h3>Source fidelity</h3><p>Does the post match the study it cites?</p></div></li>
+          <li><span class="qn">2</span><div><h3>Critical appraisal</h3><p>What limits how far the result can go?</p></div></li>
+        </ol>
+        <p class="banner"><b>Review shows what was checked.</b> It doesn’t certify a finding as true.</p>
+        <ul class="pillrow">
+          <li><svg><use href="#i-eye"/></svg>Reviews are public</li>
+          <li><svg><use href="#i-pen"/></svg>Signed or anonymous</li>
+          <li><svg class="sealic"><use href="#i-verified"/></svg>Verified reviewers <span class="chip plan">Planned</span></li>
+        </ul>
+      </div>
+      <div class="howdemo" role="img" aria-label="Animated example: a post's linked source is checked, then a critical appraisal adds its notes and the label changes to expert-reviewed">
+        <div class="hd-card">
+          <div class="hd-h"><img class="av" src="https://images.unsplash.com/photo-1758691737587-7630b4d31d16?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><div><b>Dr. Sarah <span class="nw">Whitfield<svg class="vf" role="img" aria-label="Verified"><use href="#i-verified"/></svg></span></b><small>Cardiology · 3h</small></div></div>
+          <p class="hd-t">Early results from a multicenter trial on SGLT2 inhibitors in heart failure</p>
+          <div class="hd-src"><span class="doc" aria-hidden="true"></span><div><b>Multicenter randomized trial</b><small>Linked source · DOI</small></div><span class="tick" aria-hidden="true"><svg><use href="#i-check"/></svg></span><span class="scan" aria-hidden="true"></span></div>
+          <div class="hd-labels"><span class="chip ok l1">Source checked</span><span class="chip info l2">Critical appraisal</span></div>
+          <ul class="hd-notes">
+            <li class="n1"><i class="ok"></i>Randomized, multicenter</li>
+            <li class="n2"><i class="warn"></i>Short follow-up</li>
+            <li class="n3"><i class="warn"></i>Holds for older adults?</li>
+          </ul>
+          <div class="hd-foot"><span class="rig"><span class="r0">Source-linked</span><span class="r1">Expert-reviewed</span></span><span class="hd-rv">2 reviewers</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+    <section class="sec alt" id="example" aria-labelledby="ex-h">
+    <div class="wrap">
+      <p class="eyebrow">Illustrative example</p>
+      <h2 id="ex-h">See how a claim improves through review</h2>
+      <ol class="steps">
+        <li class="step"><span class="n">1</span><h4>Original claim</h4><p class="claim">“Treatment X <mark class="bad">improves</mark> patient outcomes.”</p></li>
+        <li class="step note-step"><span class="n">2</span><h4>Reviewer feedback</h4><p class="claim">“The study reports an <mark class="hl">association</mark> in an <mark class="hl">observational cohort</mark>; it does not establish a treatment effect.”</p><p class="small muted">Anonymous reviewer · Epidemiology</p></li>
+        <li class="step"><span class="n">3</span><h4>Revised claim</h4><p class="claim">“Treatment X <mark class="good">was associated with</mark> better outcomes in this cohort, <mark class="good">but causality remains uncertain</mark>.”</p></li>
+        <li class="step"><span class="n">4</span><h4>Visible outcome</h4><p><span class="chip ok">Claim revised</span></p><p class="small">Reviewer feedback and author response available.</p></li>
+      </ol>
+      <p class="small muted">Hypothetical example. “Treatment X” is not a real treatment, and no real study is described.</p>
+    </div>
+  </section>
+      <div class="wrap cat-close"><button type="button" class="cat-x">Close this section</button></div>
+    </div>
+  </details>
+  <details class="cat" id="cat-why" name="explore">
+    <summary><span class="wrap cat-sum"><span class="cat-row"><span class="cat-n">02</span><span class="cat-tx"><span class="cat-t">Why Lyncei</span><span class="cat-d">Why science needs this now, and what we believe.</span></span><span class="cat-i" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 2v12M2 8h12"/></svg></span></span></span></summary>
+    <div class="cat-body">
+    <section class="sec why" id="why-now" aria-labelledby="whynow-h">
     <div class="wrap">
       <div class="why-copy">
         <p class="eyebrow">Why now</p>
@@ -1043,140 +1124,55 @@ a.inl:hover{text-decoration:underline}
       </div>
     </div>
   </section>
-
-  <section class="sec reels" id="reels" aria-labelledby="reels-h">
+    <section class="sec pay" id="philosophy" aria-labelledby="pay-h">
     <div class="wrap">
-      <div class="reels-head">
-        <div>
-          <p class="eyebrow">Short videos</p>
-          <h2 id="reels-h">Short science videos, with the evidence attached</h2>
-          <p class="sub">Researchers explain their work in under two minutes. Every video links to its source, and its review status travels with it wherever it’s shared.</p>
+      <div class="pay-copy">
+        <p class="eyebrow">Our philosophy</p>
+        <h2 id="pay-h">Bringing the human back to science. <em>Keeping it rigorous.</em></h2>
+        <h3>A social network built for science</h3>
+        <p>Science is made by people, yet it reaches most of us either as an abstract with no voice or as a viral clip stripped of its caveats. Researchers already share their work on TikTok and Instagram,<sup><a href="#ref-1">1</a></sup> and Nature has argued that the future of science communication is no longer the article alone.<sup><a href="#ref-2">2</a></sup></p>
+        <p>Lyncei is a social network built for that reality. Researchers explain their work in posts and short videos, with their own name, voice and reasoning, and every claim travels with its source, its limits and its review. The feed is designed to reward what holds up, not only what spreads.</p>
+        <h3>A new economy for peer review</h3>
+        <p>That only works if review keeps up, and it is under strain: researchers gave more than 100 million hours to it in 2020, almost all unpaid,<sup><a href="#ref-3">3</a></sup> and editors now need about 4.5 invitations to secure one review, nearly double the 2018 rate.<sup><a href="#ref-4">4</a></sup> Paying per review buys little: at Critical Care Medicine, $250 raised completion from 42% to 50%, with no change in quality.<sup><a href="#ref-5">5</a></sup></p>
+        <p>We never pay for a verdict; we reward the record. Judgment can be measured: groups of researchers correctly classified 61% to 69% of replication claims,<sup><a href="#ref-6">6</a></sup> and forecasting tournaments showed that the best forecasters can be identified and keep their edge.<sup><a href="#ref-7">7</a></sup> So each public review adds a quick forecast, made before seeing anyone else’s and scored against other reviewers with a rule under which honesty is the best strategy.<sup><a href="#ref-8">8</a></sup> The audited record that results opens paid expert work, in a market that already pays experts more than $85 an hour on average.<sup><a href="#ref-9">9</a></sup></p>
+        <p>As far as we know, nobody has brought these together for science.</p>
+        <div class="pay-cta">
+          <p class="pay-cta-k">Founding reviewers</p>
+          <p>That is what we are building, together with our founding reviewers. They help write the review guidelines, and the forecasts, audits, calibration cases and the first paid work are being designed with them.</p>
+          <a class="pay-cta-btn" href="#apply">Become a founding reviewer <span aria-hidden="true">→</span></a>
         </div>
       </div>
-      <div class="phones" role="img" aria-label="Illustrative preview of three short science videos, each showing its source and review status">
-        <div class="reel">
-          <div class="selfie" role="img" aria-label="A scientist in her lab, smiling and talking to the camera to explain her study"><div class="sf-img" style="background-image:url('https://images.unsplash.com/photo-1618053448748-b7251851d014?w=640&h=1350&fit=crop&crop=faces,center&q=78&fm=jpg')"></div></div>
-          <div class="who"><img class="av" src="https://images.unsplash.com/photo-1618053448748-b7251851d014?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><b>Dr. Hana <span class="nw">Lee<svg class="vf" role="img" aria-label="Verified"><use href="#i-verified"/></svg></span></b></div>
-          <div class="side"><span>♥<small>2.1k</small></span><span>💬<small>148</small></span></div>
-          <div class="cap">
-            <span class="subs" aria-hidden="true"><span class="sub">So here’s what we found…</span><span class="sub">During sleep, the brain replays the day</span><span class="sub">But we only studied 24 people</span></span>
-            <span class="chip ok">Source checked</span>
-            <p>How memories are replayed during sleep, in 90 seconds</p>
-            <span class="src">Source · cited study ↗</span>
-          </div>
-          <span class="rbar" aria-hidden="true"><i></i></span><span class="snd" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="fh" aria-hidden="true"><i>♥</i><i>♥</i><i>♥</i></span>
-        </div>
-        <div class="reel mid">
-          <svg class="art" viewBox="0 0 240 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-            <defs><radialGradient id="g2" cx="50%" cy="40%" r="75%"><stop offset="0" stop-color="#5A2B22"/><stop offset="1" stop-color="#140E10"/></radialGradient></defs>
-            <rect width="240" height="520" fill="url(#g2)"/>
-            <g class="a-rings" fill="none" stroke="#FFB49E" stroke-opacity=".5"><circle cx="120" cy="190" r="70"/><circle cx="120" cy="190" r="46"/><circle cx="120" cy="190" r="22" fill="#FF8A6B" fill-opacity=".35"/></g>
-            <g class="a-orbit" fill="#FFD9CC" fill-opacity=".8"><circle cx="58" cy="120" r="10"/><circle cx="190" cy="140" r="7"/><circle cx="182" cy="265" r="12"/><circle cx="62" cy="272" r="6"/></g>
-          </svg>
-          <div class="who"><img class="av" src="https://images.unsplash.com/photo-1778110827669-4f16d6d91e8f?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><b>Dr. Hannah <span class="nw">Becker<svg class="vf" role="img" aria-label="Verified"><use href="#i-verified"/></svg></span></b></div>
-          <div class="side"><span>♥<small>5.4k</small></span><span>💬<small>312</small></span></div>
-          <div class="cap">
-            <span class="subs" aria-hidden="true"><span class="sub">Where the sensors were</span><span class="sub">…and where they weren’t</span><span class="sub">What it can’t tell us yet</span></span>
-            <span class="chip info">Critical appraisal available</span>
-            <p>What our ocean-warming data shows, and what it doesn’t</p>
-            <span class="src">Source · cited dataset ↗</span>
-          </div>
-          <span class="rbar" aria-hidden="true"><i></i></span><span class="snd" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="fh" aria-hidden="true"><i>♥</i><i>♥</i><i>♥</i></span>
-        </div>
-        <div class="reel">
-          <svg class="art" viewBox="0 0 240 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-            <defs><linearGradient id="g3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#23303F"/><stop offset="1" stop-color="#0F1218"/></linearGradient></defs>
-            <rect width="240" height="520" fill="url(#g3)"/>
-            <g stroke="#3B4A5C" stroke-width="1"><path d="M30 290H210M30 240H210M30 190H210M30 140H210"/></g>
-            <g class="a-bars" fill="#8FA6C4" fill-opacity=".55"><rect x="44" y="230" width="22" height="60" rx="3"/><rect x="80" y="200" width="22" height="90" rx="3"/><rect x="116" y="215" width="22" height="75" rx="3"/><rect x="152" y="170" width="22" height="120" rx="3"/></g>
-            <path class="a-line" pathLength="1" d="M40 250C80 230 100 160 140 175s50-40 72-60" fill="none" stroke="#FF8A6B" stroke-width="3" stroke-linecap="round"/>
-          </svg>
-          <div class="who"><img class="av" src="https://images.unsplash.com/photo-1766036387944-cc85412b18a2?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><b>Ethan Miller</b></div>
-          <div class="side"><span>♥<small>860</small></span><span>💬<small>57</small></span></div>
-          <div class="cap">
-            <span class="subs" aria-hidden="true"><span class="sub">More screen time, less sleep</span><span class="sub">But which came first?</span><span class="sub">A cohort alone can’t say</span></span>
-            <span class="chip prog">Review in progress</span>
-            <p>Does more screen time mean worse sleep? Reading the data</p>
-            <span class="src">Source · cited cohort ↗</span>
-          </div>
-          <span class="rbar" aria-hidden="true"><i></i></span><span class="snd" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="fh" aria-hidden="true"><i>♥</i><i>♥</i><i>♥</i></span>
-        </div>
-      </div>
-      <p class="small muted center">Illustrative preview. Creators, topics and numbers are examples, not real accounts or studies.</p>
-    </div>
-  </section>
-
-  <section class="sec" id="how" aria-labelledby="how-h">
-    <div class="wrap how-grid">
-      <div class="how-copy">
-        <p class="eyebrow">How review works</p>
-        <h2 id="how-h">Two different questions, labeled separately</h2>
-        <ol class="qsteps">
-          <li><span class="qn">1</span><div><h3>Source fidelity</h3><p>Does the post match the study it cites?</p></div></li>
-          <li><span class="qn">2</span><div><h3>Critical appraisal</h3><p>What limits how far the result can go?</p></div></li>
-        </ol>
-        <p class="banner"><b>Review shows what was checked.</b> It doesn’t certify a finding as true.</p>
-        <ul class="pillrow">
-          <li><svg><use href="#i-eye"/></svg>Reviews are public</li>
-          <li><svg><use href="#i-pen"/></svg>Signed or anonymous</li>
-          <li><svg class="sealic"><use href="#i-verified"/></svg>Verified reviewers <span class="chip plan">Planned</span></li>
+      <div class="pay-rules">
+        <div class="pay-cols" aria-hidden="true"><span>Principle</span><span>In practice</span></div>
+        <ul aria-label="Lyncei's principles, as a social network and for peer review">
+          <li><span>Science with a face</span><span>Researchers share their work in posts and short videos, under their own name, in their own words.</span></li>
+          <li><span>The source travels with the claim</span><span>Every post links its study and says what it doesn’t show, wherever it’s shared.</span></li>
+          <li><span>Discussion with evidence</span><span>Objections and corrections need a DOI or a link. Questions don’t.</span></li>
+          <li><span>Rigor over reach</span><span>Likes, shares and views never change a review label.</span></li>
+          <li><span>Review in public, with a forecast</span><span>Short, unpaid and citable reviews, each with one probability scored against other reviewers. A calibrated skeptic and a calibrated enthusiast score the same.</span></li>
+          <li><span>An audited record that pays</span><span>Built from forecasts, blind audits and how useful authors found your reviews. It opens paid expert work commissioned by journals, foundations and other organizations.</span></li>
         </ul>
       </div>
-      <div class="howdemo" role="img" aria-label="Animated example: a post's linked source is checked, then a critical appraisal adds its notes and the label changes to expert-reviewed">
-        <div class="hd-card">
-          <div class="hd-h"><img class="av" src="https://images.unsplash.com/photo-1758691737587-7630b4d31d16?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><div><b>Dr. Sarah <span class="nw">Whitfield<svg class="vf" role="img" aria-label="Verified"><use href="#i-verified"/></svg></span></b><small>Cardiology · 3h</small></div></div>
-          <p class="hd-t">Early results from a multicenter trial on SGLT2 inhibitors in heart failure</p>
-          <div class="hd-src"><span class="doc" aria-hidden="true"></span><div><b>Multicenter randomized trial</b><small>Linked source · DOI</small></div><span class="tick" aria-hidden="true"><svg><use href="#i-check"/></svg></span><span class="scan" aria-hidden="true"></span></div>
-          <div class="hd-labels"><span class="chip ok l1">Source checked</span><span class="chip info l2">Critical appraisal</span></div>
-          <ul class="hd-notes">
-            <li class="n1"><i class="ok"></i>Randomized, multicenter</li>
-            <li class="n2"><i class="warn"></i>Short follow-up</li>
-            <li class="n3"><i class="warn"></i>Holds for older adults?</li>
-          </ul>
-          <div class="hd-foot"><span class="rig"><span class="r0">Source-linked</span><span class="r1">Expert-reviewed</span></span><span class="hd-rv">2 reviewers</span></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="sec fair" id="fair" aria-labelledby="fair-h">
-    <div class="wrap">
-      <p class="eyebrow">Fair by design</p>
-      <h2 id="fair-h">Reviews judge the work, <em>not the person</em></h2>
-      <div class="modes">
-        <div class="mode"><svg class="mill" viewBox="0 0 220 90" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="34" cy="34" r="14"/><path d="M14 74c3-13 11-20 20-20s17 7 20 20"/><path d="M22 33h24" stroke-width="7" stroke-opacity=".9"/><circle cx="186" cy="34" r="14"/><path d="M166 74c3-13 11-20 20-20s17 7 20 20"/><path d="M174 33h24" stroke-width="7" stroke-opacity=".9"/><rect x="92" y="18" width="36" height="48" rx="4"/><path d="M100 32h20M100 42h20M100 52h12"/><path d="M58 44h26M136 44h26" stroke-dasharray="3 5"/></g></svg><div class="mhead"><h3>Before you publish</h3><span class="stat plan">Planned</span></div><p>Double-anonymous. Private until you choose.</p></div>
-        <div class="mode"><svg class="mill" viewBox="0 0 220 90" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="20" y="8" width="44" height="76" rx="9"/><path d="M38 38v16l13-8z" fill="currentColor"/><rect x="150" y="18" width="40" height="52" rx="4"/><path d="M158 32h24M158 42h24M158 52h14"/><path d="M76 46h62" stroke-dasharray="3 5"/><circle cx="107" cy="46" r="11" fill="var(--fair-bg)"/><path d="M102 46.5l3.5 3.5 6.5-7"/></g></svg><div class="mhead"><h3>After it’s out</h3><span class="stat ok">Live</span></div><p>The video is checked against its source.</p></div>
-      </div>
-      <ul class="tiles">
-        <li><span class="ico"><svg><use href="#i-eyeoff"/></svg></span><b>Likes hidden while reviewing</b><span class="stat ok">Live</span></li>
-        <li><span class="ico"><svg><use href="#i-list"/></svg></span><b>Scoped, structured reviews</b><span class="stat ok">Live</span></li>
-        <li><span class="ico"><svg><use href="#i-scale"/></svg></span><b>Conflicts declared first</b><span class="stat ok">Live</span></li>
-        <li><span class="ico"><svg><use href="#i-shuffle"/></svg></span><b>Reviewers assigned, not chosen</b><span class="stat plan">Planned</span></li>
-        <li><span class="ico"><svg><use href="#i-people"/></svg></span><b>More reach, more reviewers</b><span class="stat plan">Planned</span></li>
-        <li><span class="ico"><svg><use href="#i-shield"/></svg></span><b>Reviewer identity protected</b><span class="stat ok">Live</span></li>
-        <li><span class="ico"><svg><use href="#i-msg"/></svg></span><b>Authors read reviews first and reply</b><span class="stat ok">Live</span></li>
-        <li><span class="ico"><svg><use href="#i-award"/></svg></span><b>Reputation from usefulness, not volume</b><span class="stat ok">Live</span></li>
-        <li><span class="ico"><svg><use href="#i-scale"/></svg></span><b>Labels never sound better than the verdicts</b><span class="stat ok">Live</span></li>
-      </ul>
-      <p class="fair-more"><a href="/guidelines">Read the review guidelines</a></p>
-    </div>
-  </section>
-
-  <section class="sec alt" id="example" aria-labelledby="ex-h">
-    <div class="wrap">
-      <p class="eyebrow">Illustrative example</p>
-      <h2 id="ex-h">See how a claim improves through review</h2>
-      <ol class="steps">
-        <li class="step"><span class="n">1</span><h4>Original claim</h4><p class="claim">“Treatment X <mark class="bad">improves</mark> patient outcomes.”</p></li>
-        <li class="step note-step"><span class="n">2</span><h4>Reviewer feedback</h4><p class="claim">“The study reports an <mark class="hl">association</mark> in an <mark class="hl">observational cohort</mark>; it does not establish a treatment effect.”</p><p class="small muted">Anonymous reviewer · Epidemiology</p></li>
-        <li class="step"><span class="n">3</span><h4>Revised claim</h4><p class="claim">“Treatment X <mark class="good">was associated with</mark> better outcomes in this cohort, <mark class="good">but causality remains uncertain</mark>.”</p></li>
-        <li class="step"><span class="n">4</span><h4>Visible outcome</h4><p><span class="chip ok">Claim revised</span></p><p class="small">Reviewer feedback and author response available.</p></li>
+      <ol class="pay-refs" aria-label="References">
+        <li id="ref-1"><a href="https://www.nature.com/articles/d41586-024-02294-9" target="_blank" rel="noopener noreferrer">How PhD influencers are logging lab life on TikTok and Instagram</a>. Nature, news feature, 2024.</li>
+        <li id="ref-2"><a href="https://www.nature.com/articles/d41586-026-01723-1" target="_blank" rel="noopener noreferrer">The future of science communication is not an article like this</a>. Nature, editorial, 2026.</li>
+        <li id="ref-3">Aczel B, Szaszi B, Holcombe AO. <a href="https://researchintegrityjournal.biomedcentral.com/articles/10.1186/s41073-021-00118-2" target="_blank" rel="noopener noreferrer">A billion-dollar donation: estimating the cost of researchers’ time spent on peer review</a>. Research Integrity and Peer Review, 2021.</li>
+        <li id="ref-4">Silverchair. <a href="https://www.silverchair.com/news/the-numbers-behind-the-noise/" target="_blank" rel="noopener noreferrer">The numbers behind the noise: what our 2026 peer review report shows</a>. Future of Peer Review Report, 2026.</li>
+        <li id="ref-5">Cotton CS, Alam A, Tosta S, Buchman TG, Maslove DM. <a href="https://peerreviewcongress.org/abstract/monetary-incentives-for-peer-review-at-a-medical-journal-a-quasi-randomized-experimental-study/" target="_blank" rel="noopener noreferrer">Monetary incentives for peer review at a medical journal: a quasi-randomized experimental study</a>. Critical Care Medicine, 2025.</li>
+        <li id="ref-6">Marcoci A, van der Linden S, et al. <a href="https://www.nature.com/articles/s41562-024-01961-1" target="_blank" rel="noopener noreferrer">Predicting the replicability of social and behavioural science claims in COVID-19 preprints</a>. Nature Human Behaviour, 2025.</li>
+        <li id="ref-7">Mellers B, Stone E, Murray T, et al. Identifying and cultivating superforecasters as a method of improving probabilistic predictions. Perspectives on Psychological Science, 2015.</li>
+        <li id="ref-8">Gneiting T, Raftery AE. Strictly proper scoring rules, prediction, and estimation. Journal of the American Statistical Association, 2007.</li>
+        <li id="ref-9"><a href="https://techcrunch.com/2025/10/27/mercor-quintuples-valuation-to-10b-with-350m-series-c/" target="_blank" rel="noopener noreferrer">Mercor quintuples valuation to $10B with $350M Series C</a>. TechCrunch, 2025.</li>
       </ol>
-      <p class="small muted">Hypothetical example. “Treatment X” is not a real treatment, and no real study is described.</p>
     </div>
   </section>
-
-  <section class="sec" id="reviewers" aria-labelledby="why-h">
+      <div class="wrap cat-close"><button type="button" class="cat-x">Close this section</button></div>
+    </div>
+  </details>
+  <details class="cat" id="cat-reviewers" name="explore">
+    <summary><span class="wrap cat-sum"><span class="cat-row"><span class="cat-n">03</span><span class="cat-tx"><span class="cat-t">For researchers and reviewers</span><span class="cat-d">Credit for your reviews, a fair process, and a place to explain your work. Apply as a founding reviewer.</span></span><span class="cat-i" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 2v12M2 8h12"/></svg></span></span></span></summary>
+    <div class="cat-body">
+    <section class="sec" id="reviewers" aria-labelledby="why-h">
     <div class="wrap">
       <p class="eyebrow">For reviewers</p>
       <h2 id="why-h">What you get as a reviewer</h2>
@@ -1253,51 +1249,96 @@ a.inl:hover{text-decoration:underline}
       </div>
     </div>
   </section>
-
-  <section class="sec pay" id="philosophy" aria-labelledby="pay-h">
+    <section class="sec fair" id="fair" aria-labelledby="fair-h">
     <div class="wrap">
-      <div class="pay-copy">
-        <p class="eyebrow">Our philosophy</p>
-        <h2 id="pay-h">Bringing the human back to science. <em>Keeping it rigorous.</em></h2>
-        <h3>A social network built for science</h3>
-        <p>Science is made by people, yet it reaches most of us either as an abstract with no voice or as a viral clip stripped of its caveats. Researchers already share their work on TikTok and Instagram,<sup><a href="#ref-1">1</a></sup> and Nature has argued that the future of science communication is no longer the article alone.<sup><a href="#ref-2">2</a></sup></p>
-        <p>Lyncei is a social network built for that reality. Researchers explain their work in posts and short videos, with their own name, voice and reasoning, and every claim travels with its source, its limits and its review. The feed is designed to reward what holds up, not only what spreads.</p>
-        <h3>A new economy for peer review</h3>
-        <p>That only works if review keeps up, and it is under strain: researchers gave more than 100 million hours to it in 2020, almost all unpaid,<sup><a href="#ref-3">3</a></sup> and editors now need about 4.5 invitations to secure one review, nearly double the 2018 rate.<sup><a href="#ref-4">4</a></sup> Paying per review buys little: at Critical Care Medicine, $250 raised completion from 42% to 50%, with no change in quality.<sup><a href="#ref-5">5</a></sup></p>
-        <p>We never pay for a verdict; we reward the record. Judgment can be measured: groups of researchers correctly classified 61% to 69% of replication claims,<sup><a href="#ref-6">6</a></sup> and forecasting tournaments showed that the best forecasters can be identified and keep their edge.<sup><a href="#ref-7">7</a></sup> So each public review adds a quick forecast, made before seeing anyone else’s and scored against other reviewers with a rule under which honesty is the best strategy.<sup><a href="#ref-8">8</a></sup> The audited record that results opens paid expert work, in a market that already pays experts more than $85 an hour on average.<sup><a href="#ref-9">9</a></sup></p>
-        <p>As far as we know, nobody has brought these together for science.</p>
-        <div class="pay-cta">
-          <p class="pay-cta-k">Founding reviewers</p>
-          <p>That is what we are building, together with our founding reviewers. They help write the review guidelines, and the forecasts, audits, calibration cases and the first paid work are being designed with them.</p>
-          <a class="pay-cta-btn" href="#apply">Become a founding reviewer <span aria-hidden="true">→</span></a>
-        </div>
+      <p class="eyebrow">Fair by design</p>
+      <h2 id="fair-h">Reviews judge the work, <em>not the person</em></h2>
+      <div class="modes">
+        <div class="mode"><svg class="mill" viewBox="0 0 220 90" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="34" cy="34" r="14"/><path d="M14 74c3-13 11-20 20-20s17 7 20 20"/><path d="M22 33h24" stroke-width="7" stroke-opacity=".9"/><circle cx="186" cy="34" r="14"/><path d="M166 74c3-13 11-20 20-20s17 7 20 20"/><path d="M174 33h24" stroke-width="7" stroke-opacity=".9"/><rect x="92" y="18" width="36" height="48" rx="4"/><path d="M100 32h20M100 42h20M100 52h12"/><path d="M58 44h26M136 44h26" stroke-dasharray="3 5"/></g></svg><div class="mhead"><h3>Before you publish</h3><span class="stat plan">Planned</span></div><p>Double-anonymous. Private until you choose.</p></div>
+        <div class="mode"><svg class="mill" viewBox="0 0 220 90" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="20" y="8" width="44" height="76" rx="9"/><path d="M38 38v16l13-8z" fill="currentColor"/><rect x="150" y="18" width="40" height="52" rx="4"/><path d="M158 32h24M158 42h24M158 52h14"/><path d="M76 46h62" stroke-dasharray="3 5"/><circle cx="107" cy="46" r="11" fill="var(--fair-bg)"/><path d="M102 46.5l3.5 3.5 6.5-7"/></g></svg><div class="mhead"><h3>After it’s out</h3><span class="stat ok">Live</span></div><p>The video is checked against its source.</p></div>
       </div>
-      <div class="pay-rules">
-        <div class="pay-cols" aria-hidden="true"><span>Principle</span><span>In practice</span></div>
-        <ul aria-label="Lyncei's principles, as a social network and for peer review">
-          <li><span>Science with a face</span><span>Researchers share their work in posts and short videos, under their own name, in their own words.</span></li>
-          <li><span>The source travels with the claim</span><span>Every post links its study and says what it doesn’t show, wherever it’s shared.</span></li>
-          <li><span>Discussion with evidence</span><span>Objections and corrections need a DOI or a link. Questions don’t.</span></li>
-          <li><span>Rigor over reach</span><span>Likes, shares and views never change a review label.</span></li>
-          <li><span>Review in public, with a forecast</span><span>Short, unpaid and citable reviews, each with one probability scored against other reviewers. A calibrated skeptic and a calibrated enthusiast score the same.</span></li>
-          <li><span>An audited record that pays</span><span>Built from forecasts, blind audits and how useful authors found your reviews. It opens paid expert work commissioned by journals, foundations and other organizations.</span></li>
-        </ul>
-      </div>
-      <ol class="pay-refs" aria-label="References">
-        <li id="ref-1"><a href="https://www.nature.com/articles/d41586-024-02294-9" target="_blank" rel="noopener noreferrer">How PhD influencers are logging lab life on TikTok and Instagram</a>. Nature, news feature, 2024.</li>
-        <li id="ref-2"><a href="https://www.nature.com/articles/d41586-026-01723-1" target="_blank" rel="noopener noreferrer">The future of science communication is not an article like this</a>. Nature, editorial, 2026.</li>
-        <li id="ref-3">Aczel B, Szaszi B, Holcombe AO. <a href="https://researchintegrityjournal.biomedcentral.com/articles/10.1186/s41073-021-00118-2" target="_blank" rel="noopener noreferrer">A billion-dollar donation: estimating the cost of researchers’ time spent on peer review</a>. Research Integrity and Peer Review, 2021.</li>
-        <li id="ref-4">Silverchair. <a href="https://www.silverchair.com/news/the-numbers-behind-the-noise/" target="_blank" rel="noopener noreferrer">The numbers behind the noise: what our 2026 peer review report shows</a>. Future of Peer Review Report, 2026.</li>
-        <li id="ref-5">Cotton CS, Alam A, Tosta S, Buchman TG, Maslove DM. <a href="https://peerreviewcongress.org/abstract/monetary-incentives-for-peer-review-at-a-medical-journal-a-quasi-randomized-experimental-study/" target="_blank" rel="noopener noreferrer">Monetary incentives for peer review at a medical journal: a quasi-randomized experimental study</a>. Critical Care Medicine, 2025.</li>
-        <li id="ref-6">Marcoci A, van der Linden S, et al. <a href="https://www.nature.com/articles/s41562-024-01961-1" target="_blank" rel="noopener noreferrer">Predicting the replicability of social and behavioural science claims in COVID-19 preprints</a>. Nature Human Behaviour, 2025.</li>
-        <li id="ref-7">Mellers B, Stone E, Murray T, et al. Identifying and cultivating superforecasters as a method of improving probabilistic predictions. Perspectives on Psychological Science, 2015.</li>
-        <li id="ref-8">Gneiting T, Raftery AE. Strictly proper scoring rules, prediction, and estimation. Journal of the American Statistical Association, 2007.</li>
-        <li id="ref-9"><a href="https://techcrunch.com/2025/10/27/mercor-quintuples-valuation-to-10b-with-350m-series-c/" target="_blank" rel="noopener noreferrer">Mercor quintuples valuation to $10B with $350M Series C</a>. TechCrunch, 2025.</li>
-      </ol>
+      <ul class="tiles">
+        <li><span class="ico"><svg><use href="#i-eyeoff"/></svg></span><b>Likes hidden while reviewing</b><span class="stat ok">Live</span></li>
+        <li><span class="ico"><svg><use href="#i-list"/></svg></span><b>Scoped, structured reviews</b><span class="stat ok">Live</span></li>
+        <li><span class="ico"><svg><use href="#i-scale"/></svg></span><b>Conflicts declared first</b><span class="stat ok">Live</span></li>
+        <li><span class="ico"><svg><use href="#i-shuffle"/></svg></span><b>Reviewers assigned, not chosen</b><span class="stat plan">Planned</span></li>
+        <li><span class="ico"><svg><use href="#i-people"/></svg></span><b>More reach, more reviewers</b><span class="stat plan">Planned</span></li>
+        <li><span class="ico"><svg><use href="#i-shield"/></svg></span><b>Reviewer identity protected</b><span class="stat ok">Live</span></li>
+        <li><span class="ico"><svg><use href="#i-msg"/></svg></span><b>Authors read reviews first and reply</b><span class="stat ok">Live</span></li>
+        <li><span class="ico"><svg><use href="#i-award"/></svg></span><b>Reputation from usefulness, not volume</b><span class="stat ok">Live</span></li>
+        <li><span class="ico"><svg><use href="#i-scale"/></svg></span><b>Labels never sound better than the verdicts</b><span class="stat ok">Live</span></li>
+      </ul>
+      <p class="fair-more"><a href="/guidelines">Read the review guidelines</a></p>
     </div>
   </section>
-
-  <section class="sec partners" id="partners" aria-labelledby="partners-h">
+    <section class="sec reels" id="reels" aria-labelledby="reels-h">
+    <div class="wrap">
+      <div class="reels-head">
+        <div>
+          <p class="eyebrow">Short videos</p>
+          <h2 id="reels-h">Short science videos, with the evidence attached</h2>
+          <p class="sub">Researchers explain their work in under two minutes. Every video links to its source, and its review status travels with it wherever it’s shared.</p>
+        </div>
+      </div>
+      <div class="phones" role="img" aria-label="Illustrative preview of three short science videos, each showing its source and review status">
+        <div class="reel">
+          <div class="selfie" role="img" aria-label="A scientist in her lab, smiling and talking to the camera to explain her study"><div class="sf-img" style="background-image:url('https://images.unsplash.com/photo-1618053448748-b7251851d014?w=640&h=1350&fit=crop&crop=faces,center&q=78&fm=jpg')"></div></div>
+          <div class="who"><img class="av" src="https://images.unsplash.com/photo-1618053448748-b7251851d014?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><b>Dr. Hana <span class="nw">Lee<svg class="vf" role="img" aria-label="Verified"><use href="#i-verified"/></svg></span></b></div>
+          <div class="side"><span>♥<small>2.1k</small></span><span>💬<small>148</small></span></div>
+          <div class="cap">
+            <span class="subs" aria-hidden="true"><span class="sub">So here’s what we found…</span><span class="sub">During sleep, the brain replays the day</span><span class="sub">But we only studied 24 people</span></span>
+            <span class="chip ok">Source checked</span>
+            <p>How memories are replayed during sleep, in 90 seconds</p>
+            <span class="src">Source · cited study ↗</span>
+          </div>
+          <span class="rbar" aria-hidden="true"><i></i></span><span class="snd" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="fh" aria-hidden="true"><i>♥</i><i>♥</i><i>♥</i></span>
+        </div>
+        <div class="reel mid">
+          <svg class="art" viewBox="0 0 240 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <defs><radialGradient id="g2" cx="50%" cy="40%" r="75%"><stop offset="0" stop-color="#5A2B22"/><stop offset="1" stop-color="#140E10"/></radialGradient></defs>
+            <rect width="240" height="520" fill="url(#g2)"/>
+            <g class="a-rings" fill="none" stroke="#FFB49E" stroke-opacity=".5"><circle cx="120" cy="190" r="70"/><circle cx="120" cy="190" r="46"/><circle cx="120" cy="190" r="22" fill="#FF8A6B" fill-opacity=".35"/></g>
+            <g class="a-orbit" fill="#FFD9CC" fill-opacity=".8"><circle cx="58" cy="120" r="10"/><circle cx="190" cy="140" r="7"/><circle cx="182" cy="265" r="12"/><circle cx="62" cy="272" r="6"/></g>
+          </svg>
+          <div class="who"><img class="av" src="https://images.unsplash.com/photo-1778110827669-4f16d6d91e8f?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><b>Dr. Hannah <span class="nw">Becker<svg class="vf" role="img" aria-label="Verified"><use href="#i-verified"/></svg></span></b></div>
+          <div class="side"><span>♥<small>5.4k</small></span><span>💬<small>312</small></span></div>
+          <div class="cap">
+            <span class="subs" aria-hidden="true"><span class="sub">Where the sensors were</span><span class="sub">…and where they weren’t</span><span class="sub">What it can’t tell us yet</span></span>
+            <span class="chip info">Critical appraisal available</span>
+            <p>What our ocean-warming data shows, and what it doesn’t</p>
+            <span class="src">Source · cited dataset ↗</span>
+          </div>
+          <span class="rbar" aria-hidden="true"><i></i></span><span class="snd" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="fh" aria-hidden="true"><i>♥</i><i>♥</i><i>♥</i></span>
+        </div>
+        <div class="reel">
+          <svg class="art" viewBox="0 0 240 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <defs><linearGradient id="g3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#23303F"/><stop offset="1" stop-color="#0F1218"/></linearGradient></defs>
+            <rect width="240" height="520" fill="url(#g3)"/>
+            <g stroke="#3B4A5C" stroke-width="1"><path d="M30 290H210M30 240H210M30 190H210M30 140H210"/></g>
+            <g class="a-bars" fill="#8FA6C4" fill-opacity=".55"><rect x="44" y="230" width="22" height="60" rx="3"/><rect x="80" y="200" width="22" height="90" rx="3"/><rect x="116" y="215" width="22" height="75" rx="3"/><rect x="152" y="170" width="22" height="120" rx="3"/></g>
+            <path class="a-line" pathLength="1" d="M40 250C80 230 100 160 140 175s50-40 72-60" fill="none" stroke="#FF8A6B" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+          <div class="who"><img class="av" src="https://images.unsplash.com/photo-1766036387944-cc85412b18a2?w=96&h=96&fit=facearea&facepad=2.4&q=75&fm=jpg" alt="" loading="lazy" decoding="async"><b>Ethan Miller</b></div>
+          <div class="side"><span>♥<small>860</small></span><span>💬<small>57</small></span></div>
+          <div class="cap">
+            <span class="subs" aria-hidden="true"><span class="sub">More screen time, less sleep</span><span class="sub">But which came first?</span><span class="sub">A cohort alone can’t say</span></span>
+            <span class="chip prog">Review in progress</span>
+            <p>Does more screen time mean worse sleep? Reading the data</p>
+            <span class="src">Source · cited cohort ↗</span>
+          </div>
+          <span class="rbar" aria-hidden="true"><i></i></span><span class="snd" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="fh" aria-hidden="true"><i>♥</i><i>♥</i><i>♥</i></span>
+        </div>
+      </div>
+      <p class="small muted center">Illustrative preview. Creators, topics and numbers are examples, not real accounts or studies.</p>
+    </div>
+  </section>
+      <div class="wrap cat-close"><button type="button" class="cat-x">Close this section</button></div>
+    </div>
+  </details>
+  <details class="cat" id="cat-partners" name="explore">
+    <summary><span class="wrap cat-sum"><span class="cat-row"><span class="cat-n">04</span><span class="cat-tx"><span class="cat-t">For universities, institutes and journals</span><span class="cat-d">Shape Lyncei for your institution as a founding partner.</span></span><span class="cat-i" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 2v12M2 8h12"/></svg></span></span></span></summary>
+    <div class="cat-body">
+    <section class="sec partners" id="partners" aria-labelledby="partners-h">
     <div class="wrap">
       <p class="eyebrow">Partnerships</p>
       <h2 id="partners-h">Build it with us</h2>
@@ -1337,8 +1378,13 @@ a.inl:hover{text-decoration:underline}
       </div>
     </div>
   </section>
-
-  <section class="sec alt" id="join" aria-labelledby="join-h">
+      <div class="wrap cat-close"><button type="button" class="cat-x">Close this section</button></div>
+    </div>
+  </details>
+  <details class="cat" id="cat-join" name="explore">
+    <summary><span class="wrap cat-sum"><span class="cat-row"><span class="cat-n">05</span><span class="cat-tx"><span class="cat-t">Join or contact us</span><span class="cat-d">Create a free account, or talk to the team.</span></span><span class="cat-i" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 2v12M2 8h12"/></svg></span></span></span></summary>
+    <div class="cat-body">
+    <section class="sec alt" id="join" aria-labelledby="join-h">
     <div class="wrap">
       <p class="eyebrow">Join Lyncei</p>
       <h2 id="join-h">Create your free account</h2>
@@ -1358,9 +1404,7 @@ a.inl:hover{text-decoration:underline}
       <p class="small muted">We only ask for what’s in these forms, and we’ll use it only to contact you about reviewing and partnerships.</p>
     </div>
   </section>
-</main>
-
-  <section class="sec" id="contact" aria-labelledby="contact-h">
+    <section class="sec" id="contact" aria-labelledby="contact-h">
     <div class="wrap contact">
       <div>
         <p class="eyebrow">Contact</p>
@@ -1374,6 +1418,13 @@ a.inl:hover{text-decoration:underline}
       </div>
     </div>
   </section>
+      <div class="wrap cat-close"><button type="button" class="cat-x">Close this section</button></div>
+    </div>
+  </details>
+  </section>
+</main>
+
+  
 
 <footer>
   <div class="wrap">
@@ -1437,7 +1488,7 @@ a.inl:hover{text-decoration:underline}
     else if(el.tagName==='DIV'&&!el.className&&el.children.length){ for(var j=0;j<el.children.length;j++) mark(el.children[j]); }
     else items.push(el);
   }
-  document.querySelectorAll('main > .sec > .wrap, main > .features > .wrap').forEach(function(w){
+  document.querySelectorAll('main .sec > .wrap, main .features > .wrap').forEach(function(w){
     for(var i=0;i<w.children.length;i++) mark(w.children[i]);
   });
   items.forEach(function(el){el.classList.add('reveal');});
@@ -1513,6 +1564,30 @@ a.inl:hover{text-decoration:underline}
         note.textContent='We couldn\u2019t reach the server. Check your connection and try again.';note.classList.add('err');
       }finally{btn.disabled=false;btn.textContent=label;}
     });
+  });
+})();
+
+/* Explore: open the category that holds a linked section (nav, badges, /welcome#apply), then scroll to it. */
+(function(){
+  function go(id,smooth){
+    var el=id&&document.getElementById(id); if(!el) return false;
+    var d=el.closest('details.cat'); if(d&&!d.open) d.open=true;
+    if(el.matches('details.cat')) el.open=true;
+    requestAnimationFrame(function(){el.scrollIntoView({behavior:smooth?'smooth':'auto',block:'start'});});
+    return true;
+  }
+  document.addEventListener('click',function(e){
+    var a=e.target.closest('a[href^="#"]'); if(!a) return;
+    var id=decodeURIComponent(a.getAttribute('href').slice(1));
+    if(!id||id==='top') return;
+    var el=document.getElementById(id); if(!el||!el.closest('#explore')) return;
+    e.preventDefault(); history.pushState(null,'','#'+id);
+    go(id,!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches));
+  });
+  window.addEventListener('hashchange',function(){go(decodeURIComponent(location.hash.slice(1)),false);});
+  if(location.hash) go(decodeURIComponent(location.hash.slice(1)),false);
+  document.querySelectorAll('.cat-x').forEach(function(b){
+    b.addEventListener('click',function(){var d=b.closest('details.cat'); d.open=false; d.querySelector('summary').scrollIntoView({block:'start'}); d.querySelector('summary').focus({preventScroll:true});});
   });
 })();
 </script>
