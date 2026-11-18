@@ -823,12 +823,13 @@ a.inl:hover{text-decoration:underline}
 body{background:#000}
 .site-header{background:rgba(0,0,0,.72);border-bottom-color:transparent}
 .mhero{min-height:calc(100svh - 72px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(36px,6vh,64px);padding-block:clamp(32px,6vh,72px) clamp(56px,9vh,96px);text-align:center;overflow:hidden}
-.mhero-orb{position:relative;width:clamp(150px,24vh,250px);height:clamp(300px,50vh,520px);flex:0 0 auto}
-.mhero-orb::before,.mhero-orb span{content:"";position:absolute;inset:0;border-radius:999px}
-.mhero-orb::before{inset:-6px;background:linear-gradient(180deg,#F0561A 0%,#E2547E 18%,#3E8FD0 50%,#F08A1A 80%,#F04A12 100%);filter:blur(26px);opacity:.75}
-.mhero-orb span{background:linear-gradient(180deg,#E27BA4 0%,#BE89D2 13%,#8B91D8 24%,#4BA2D6 37%,#2EAED4 49%,#5DBFCF 58%,#A8D0BE 66%,#F1C873 75%,#FBB227 85%,#F7871A 94%,#F06417 100%);filter:blur(11px)}
+.mhero-orb{position:relative;width:clamp(170px,26vh,270px);height:clamp(330px,52vh,560px);flex:0 0 auto}
+.mhero-orb::before,.mhero-orb::after,.mhero-orb span{content:"";position:absolute;border-radius:999px}
+.mhero-orb::before{inset:-4px;background:linear-gradient(180deg,#F2551C 0%,#E8507A 10%,rgba(80,120,200,0) 30%,rgba(80,120,200,0) 70%,#F57A14 90%,#EE4A10 100%);filter:blur(10px);opacity:.9}
+.mhero-orb span{inset:0;background:linear-gradient(180deg,#E07AA6 0%,#C58AD0 10%,#8F92DA 22%,#4E9FD8 34%,#2AABD5 46%,#3DB6D2 54%,#86C8C8 62%,#D9CF9F 69%,#F7C863 76%,#FBB12A 84%,#F8901B 92%,#F26A17 100%);filter:blur(6px);will-change:transform}
+.mhero-orb::after{inset:6px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");mix-blend-mode:soft-light;opacity:.55;filter:blur(.4px)}
 @media (prefers-reduced-motion: no-preference){.mhero-orb{animation:mbreathe 9s ease-in-out infinite}}
-@keyframes mbreathe{0%,100%{transform:scale(1);filter:hue-rotate(0deg)}50%{transform:scale(1.035);filter:hue-rotate(-12deg)}}
+@keyframes mbreathe{0%,100%{transform:scale(1);filter:hue-rotate(0deg)}50%{transform:scale(1.03);filter:hue-rotate(-10deg)}}
 .mhero-copy{display:flex;flex-direction:column;align-items:center;gap:16px}
 .mhero-copy h1{font-family:var(--display);font-weight:500;font-size:clamp(30px,4.4vw,54px);line-height:1.08;letter-spacing:-.03em;color:#F5F5F7;max-width:17ch}
 .mhero-copy p{margin:0;color:#9AA0A9;font-size:clamp(16px,1.6vw,19px)}
