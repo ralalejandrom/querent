@@ -850,6 +850,7 @@ body{background:#000}
 .msteps b,.mrules b{color:var(--ink);font-weight:600}
 .mrules{list-style:none;margin:24px 0 0;padding:0;display:grid;gap:14px;max-width:760px}
 .mrules li{font-size:17px;line-height:1.5;color:var(--ink-2);padding-top:14px;border-top:1px solid var(--rule)}
+.mrules-h{margin:40px 0 0;font-size:20px;font-weight:600;color:var(--ink)}
 .mnote{margin:22px 0 0;color:var(--muted);font-size:15px}
 .mlede{max-width:760px;font-size:18px;line-height:1.6;color:var(--ink-2);margin:18px 0 0}
 .mlede a{color:var(--ink);text-underline-offset:3px}
@@ -905,7 +906,7 @@ body{background:#000}
     <nav class="nav" aria-label="Main">
       <a href="#cat-journals">For journals</a>
       <a href="#cat-reviewers">For reviewers</a>
-      <a href="#cat-rules">Our rules</a>
+      <a href="#cat-rules">Human-verified</a>
       <a href="#contact">Contact</a>
     </nav>
     <div style="display:flex;gap:10px;align-items:center"><a href="/login" style="text-decoration:none;font-weight:600;font-size:15px">Sign in</a></div>
@@ -1001,12 +1002,19 @@ body{background:#000}
     </div>
   </details>
   <details class="cat" id="cat-rules" name="explore">
-    <summary><span class="wrap cat-sum"><span class="cat-row"><span class="cat-n">03</span><span class="cat-tx"><span class="cat-t">Our rules</span><span class="cat-d">What we will never do.</span></span><span class="cat-i" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 2v12M2 8h12"/></svg></span></span></span></summary>
+    <summary><span class="wrap cat-sum"><span class="cat-row"><span class="cat-n">03</span><span class="cat-tx"><span class="cat-t">Human-verified</span><span class="cat-d">What we check about every reviewer, and what we will never do.</span></span><span class="cat-i" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 2v12M2 8h12"/></svg></span></span></span></summary>
     <div class="cat-body">
     <section class="sec" id="rules" aria-labelledby="rules-h">
     <div class="wrap">
-      <p class="eyebrow">Our rules</p>
-      <h2 id="rules-h">What we will never do</h2>
+      <p class="eyebrow">Human-verified</p>
+      <h2 id="rules-h">What “human‑verified” means</h2>
+      <ol class="msteps">
+        <li><b>The person is real.</b> Institutional email and ORCID confirmed, and identity checked before the first payment.</li>
+        <li><b>The expertise is real.</b> Publications and affiliation confirmed. Reviewers only receive manuscripts in topics they have published on.</li>
+        <li><b>The review is theirs.</b> Written and signed by the reviewer, never drafted by AI. The manuscript is never shared with AI tools.</li>
+      </ol>
+      <p class="mlede">No software can prove a text was written without AI. So we verify the person, check the work, and make every review a signed personal commitment. Breaking it means leaving Lyncei.</p>
+      <h3 class="mrules-h">What we will never do</h3>
       <ul class="mrules">
         <li><b>Pay for a verdict.</b> Reviewers are paid for timely, careful work, never for accepting or rejecting.</li>
         <li><b>Let AI write the review.</b> Manuscripts are never uploaded to AI tools, and every review is signed by a person.</li>
