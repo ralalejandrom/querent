@@ -2,7 +2,7 @@
 @font-face{font-family:"DM Sans";src:url(/fonts/dm-sans-var.woff2) format("woff2");font-weight:100 1000;font-display:swap}
 :root{
   --bg:#FFFFFF; --surface:#FFFFFF; --sunk:#F4F6F8; --ink:#0E1116; --ink-2:#374151; --muted:#6B7280; --rule:#E5E7EB;
-  --accent:#16141F; --accent-soft:#F2F4F6; --gold:#C8401F;
+  --accent:#16141F; --accent-soft:#F2F4F6; --gold:#2E5FE6;
   --green:#0E7A4E; --green-soft:#E7F5EE; --amber:#A15C07; --amber-soft:#FDF3E2; --red:#C0262D; --red-soft:#FDECEC; --blue:#16141F; --blue-soft:#F2F4F6;
   --sans:"DM Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
   --display:var(--sans);
@@ -11,7 +11,7 @@
 }
 @media (prefers-color-scheme: dark){:root{
   --bg:#0B0D10; --surface:#13161B; --sunk:#1A1E24; --ink:#F3F4F6; --ink-2:#CBD2DB; --muted:#8B95A3; --rule:#262B33;
-  --accent:#FF8A6B; --accent-soft:#2A1712; --gold:#FF8A6B;
+  --accent:#FF8A6B; --accent-soft:#2A1712; --gold:#4F86F7;
   --green:#4FC48D; --green-soft:#10251B; --amber:#E7A94A; --amber-soft:#2A1F10; --red:#F07A7F; --red-soft:#2C1416; --blue:#FF8A6B; --blue-soft:#2A1712; color-scheme:dark}}
 
 *{box-sizing:border-box}
