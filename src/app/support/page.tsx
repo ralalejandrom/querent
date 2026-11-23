@@ -32,7 +32,6 @@ export default async function Support() {
         <li><b>Delete your account:</b> Settings → Delete account. It takes effect right away.</li>
         <li><b>Block someone:</b> open their profile and choose ··· then Block.</li>
         <li><b>Report a post or comment:</b> use “Report” on the post or under the comment.</li>
-        <li><b>Become a reviewer:</b> <a href="/welcome#apply">apply as a reviewer</a>.</li>
       </ul>
     </main>
   );
