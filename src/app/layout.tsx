@@ -11,15 +11,17 @@ import { GuestSignIn, NativeBridge, NavLink } from "@/components/client";
 import { signOutAction } from "./actions";
 import { dmCounts } from "@/lib/dm";
 
-const TAGLINE = "The future of science, reviewed in the open";
-const PITCH = "The social network for science, with expert review built in. Share research, follow the questions you care about, and see what experts think.";
+/** Pre-launch: search engines and link previews show only the teaser line, nothing about the product yet. */
+const TEASER = "In 1603, four people in Rome set out to see what others couldn't. Science will need that again.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.SITE_URL || process.env.APP_URL || "https://lyncei.com"),
-  title: { default: `Lyncei | ${TAGLINE}`, template: "%s · Lyncei" },
-  description: PITCH,
-  openGraph: { type: "website", siteName: "Lyncei", title: `Lyncei | ${TAGLINE}`, description: PITCH, images: [{ url: "/og.png?v=2", width: 1200, height: 630, alt: `Lyncei | ${TAGLINE}.` }] },
-  twitter: { card: "summary_large_image", title: `Lyncei | ${TAGLINE}`, description: PITCH, images: ["/og.png?v=2"] },
+  title: { default: "Lyncei", template: "%s · Lyncei" },
+  description: TEASER,
+  openGraph: { type: "website", siteName: "Lyncei", title: "Lyncei", description: TEASER, images: [{ url: "/og.png?v=4", width: 1200, height: 630, alt: "Lyncei" }] },
+  twitter: { card: "summary_large_image", title: "Lyncei", description: TEASER, images: ["/og.png?v=4"] },
+  // Pre-launch: keep every app page out of search results. The public teaser (/welcome, static HTML) stays indexable.
+  robots: { index: false, follow: false },
 };
 export const viewport: Viewport = { width: "device-width", initialScale: 1, viewportFit: "cover" };
 
